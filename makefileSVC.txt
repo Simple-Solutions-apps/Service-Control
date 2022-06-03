@@ -1,0 +1,60 @@
+CC = x86_64-w64-mingw32-gcc.exe
+CFlags = -Wall -O2
+
+DirSrc = .\src
+DirObj= .\obj
+DirRes = .\res
+DirBin = .\bin
+DirLib = .\lib
+DirRes = .\res
+
+APP = $(DirBin)\FolderMonSVC.exe
+
+srcMain = $(DirSrc)\main.c
+srcFunctions = $(DirSrc)\functions.c
+srcUtilsStorageIO = $(DirSrc)\UtilsStorageIO.c
+srcUtilsStrings = $(DirSrc)\UtilsStrings.c
+srcArgsHandler = $(DirSrc)\ArgsHandler.c
+srcMsgHandler = $(DirSrc)\MsgHandler.c
+srcResources = $(DirRes)\icon.rc
+
+objMain = $(DirObj)\main.o
+objFunctions = $(DirObj)\functions.o
+objUtilsStorageIO = $(DirObj)\UtilsStorageIO.o
+objUtilsStrings = $(DirObj)\UtilsStrings.o
+objArgsHandler = $(DirObj)\ArgsHandler.o
+objMsgHandler = $(DirObj)\MsgHandler.o
+objResources = $(DirObj)\resources.o
+
+objs = $(objMain) $(objUtilsStorageIO) $(objUtilsStrings) $(objArgsHandler) $(objMsgHandler) $(objFunctions) $(objResources)
+
+$(objMain): $(srcMain)
+	$(CC) $(CFlags) -c $(srcMain) -o $(objMain)
+$(objFunctions): $(srcFunctions)
+	$(CC) $(CFlags) -c $(srcFunctions) -o $(objFunctions)
+$(objUtilsStorageIO): $(srcUtilsStorageIO)
+	$(CC) $(CFlags) -c $(srcUtilsStorageIO) -o $(objUtilsStorageIO)
+$(objUtilsStrings): $(srcUtilsStrings)
+	$(CC) $(CFlags) -c $(srcUtilsStrings) -o $(objUtilsStrings)
+$(objArgsHandler): $(srcArgsHandler)
+	$(CC) $(CFlags) -c $(srcArgsHandler) -o $(objArgsHandler)
+$(objMsgHandler): $(srcMsgHandler)
+	$(CC) $(CFlags) -c $(srcMsgHandler) -o $(objMsgHandler)
+$(objResources): $(srcResources)
+	windres.exe $(srcResources) -o $(objResources)
+
+build: $(objs)
+	$(CC) -o $(APP) $(objs)
+clean:
+	del $(DirObj)\*.o $(DirBin)\*.exe
+run:
+	$(APP) -c 1 -b "C:\Bak\Projects\VSCode\WIPS\File Broker\bin\FileBroker.exe" -q "C:\Bak\Projects\VSCode\WIPS\Folder Monitor SVC\bin"
+rebuild:
+	make clean
+	make build
+commit:
+	copy /Y C:\Bak\Projects\VSCodeWorkspace\.vscode\tasks.json .\VSCode\tasks.json
+	copy /Y %AppData%\code\user\keybindings.json .\VSCode\keybindings.json
+	git add .
+	git commit -a -m "Automated commit(s)"
+	git push

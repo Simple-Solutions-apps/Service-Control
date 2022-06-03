@@ -1,0 +1,8 @@
+https://docs.microsoft.com/en-us/windows/win32/controls/visual-styles-overview
+https://docs.microsoft.com/en-us/windows/win32/controls/cookbook-overview
+
+HBRUSH hBackGrnd = CreateSolidBrush(RGB(30, 30, 30)); //Dark mode color?
+wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1); //Default color (white)
+wc.hIcon = LoadIcon(NULL, IDI_APPLICATION); //Default icon
+wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION); //Default icon
+wc.lpszMenuName = NULL; //when not using a menu

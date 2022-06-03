@@ -1,0 +1,7 @@
+Answer:
+https://stackoverflow.com/questions/15967949/how-to-run-application-with-admin-privileges-using-manifest-file-in-visual-studi
+
+others:
+https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessasusera?redirectedfrom=MSDN
+https://docs.microsoft.com/en-us/previous-versions/bb756929(v=msdn.10)?redirectedfrom=MSDN
+https://www.codeproject.com/Questions/544981/IsplusProcessplusRunningplusasplusAdministrator
