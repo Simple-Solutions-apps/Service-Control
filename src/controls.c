@@ -110,7 +110,6 @@ void CreateControls(HWND hwnd)
 	if(sLabelSvcName == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
-
 	}	
 	SendMessage(sLabelSvcName, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
 	SendMessage(sLabelSvcName, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Service name:");
