@@ -1,4 +1,5 @@
 https://docs.microsoft.com/en-us/windows/win32/controls/window-controls
+https://docs.microsoft.com/en-us/windows/win32/controls/common-control-window-classes
 https://docs.microsoft.com/en-us/windows/win32/winmsg/about-window-classes#application-global-classes
 https://docs.microsoft.com/en-us/windows/win32/controls/individual-control-info
 https://docs.microsoft.com/en-us/windows/win32/api/commctrl

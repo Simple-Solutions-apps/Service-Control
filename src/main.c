@@ -33,7 +33,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	HANDLE vModHandle = GetModuleHandle(NULL);
 
 	//definitions
-	sBrush = CreateSolidBrush(RGB(242, 242, 242)); //nice light gey color	
+	//sBrush = CreateSolidBrush(RGB(242, 242, 242)); //nice light gey color
+	sBrush = GetSysColorBrush(COLOR_WINDOW);
 
 	//assign window class structure
 	sWinClass.cbSize = sizeof (WNDCLASSEX);
@@ -57,7 +58,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RECT sRect;
 	GetClientRect(GetDesktopWindow(), &sRect);
 	sRect.left = (sRect.right / 2) - (WIN_WIDTH / 2);
-	sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20;
+	sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20; //-20 for task bar presumed to be a the bottom
 
 	//initiate common controls libary >V6.00 (commctrl32.dll) for modern visual styles should be located in ..\\lib folder
 
@@ -75,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	//assign window handler (create window)
-	hWnd = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Services Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+	hWnd = CreateWindowEx(WS_EX_COMPOSITED, cWindowClassName, "Services Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 	sRect.left, sRect.top, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL); 
 
 	//verify window has been created correctly if not bail

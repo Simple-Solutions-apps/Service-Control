@@ -11,7 +11,6 @@
 #include "..\include\controls.h"
 
 //Declarations
-HFONT cDefaultFont;
 
 HWND sGrpBoxParams;
 HWND sGrpBoxCMDLine;
@@ -64,8 +63,8 @@ HIMAGELIST sImageList;
 
 void CreateControls(HWND hwnd)
 {
-	cDefaultFont = GetStockObject(SYSTEM_FONT); //ANSI_FIXED_FONT ANSI_VAR_FONT DEVICE_DEFAULT_FONT DEFAULT_GUI_FONT OEM_FIXED_FONT SYSTEM_FIXED_FONT
-
+	//cDefaultFont = GetStockObject(SYSTEM_FONT); //ANSI_FIXED_FONT ANSI_VAR_FONT DEVICE_DEFAULT_FONT DEFAULT_GUI_FONT OEM_FIXED_FONT SYSTEM_FIXED_FONT
+	
 	HANDLE vModHandle = GetModuleHandle(NULL);
 
 	sGrpBoxParams = CreateWindowEx(0, "BUTTON", "Parameters", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
@@ -88,175 +87,144 @@ void CreateControls(HWND hwnd)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to label
-	SendMessage(sLabelCommand, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	//SendMessage(sLabelCommand, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Command:");
-
+	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelSvrName = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelSvrName = CreateWindowEx(0, "STATIC", "Server name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_SVRNAME, vModHandle, NULL);
 	if(sLabelSvrName == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
-	}	
-	SendMessage(sLabelSvrName, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelSvrName, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Server name:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelSvcName = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelSvcName = CreateWindowEx(0, "STATIC", "Service name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_SVCNAME, vModHandle, NULL);
 	if(sLabelSvcName == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 	}	
-	SendMessage(sLabelSvcName, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelSvcName, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Service name:");
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelType = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelType = CreateWindowEx(0, "STATIC", "Type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_TYPE, vModHandle, NULL);
 	if(sLabelType == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelType, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelType, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Type:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelInteract = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelInteract = CreateWindowEx(0, "STATIC", "Interact type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_INTERACT, vModHandle, NULL);
 	if(sLabelInteract == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelInteract, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelInteract, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Interact type:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelStart = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelStart = CreateWindowEx(0, "STATIC", "Start Type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_START, vModHandle, NULL);
 	if(sLabelStart == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelStart, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelStart, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Start Type:");
+	}
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelError = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelError = CreateWindowEx(0, "STATIC", "Error:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_ERROR, vModHandle, NULL);
 	if(sLabelError == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(hwnd, "Could not create Label Error.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelError, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelError, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Error:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelPathBin = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelPathBin = CreateWindowEx(0, "STATIC", "Binary Path:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_PATHBIN, vModHandle, NULL);
 	if(sLabelPathBin == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelPathBin, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelPathBin, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Binary Path:");
+	}
 		
 	iPosLabelY = 70;
 	
-	sLabelGroup = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelGroup = CreateWindowEx(0, "STATIC", "Group:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_GROUP, vModHandle, NULL);
 	if(sLabelGroup == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelGroup, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelGroup, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Group:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelTag = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelTag = CreateWindowEx(0, "STATIC", "Tag:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_TAG, vModHandle, NULL);
 	if(sLabelTag == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelTag, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelTag, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Tag:");
+	}
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelDepend = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelDepend = CreateWindowEx(0, "STATIC", "Dependencies:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_DEPEND, vModHandle, NULL);
 	if(sLabelDepend == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelDepend, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelDepend, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Dependencies:");
+	}
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelAccName = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelAccName = CreateWindowEx(0, "STATIC", "Account name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_ACCNAME, vModHandle, NULL);
 	if(sLabelAccName == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelAccName, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelAccName, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Account name:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelObjName = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelObjName = CreateWindowEx(0, "STATIC", "Object name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_OBJNAME, vModHandle, NULL);
 	if(sLabelObjName == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelObjName, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelObjName, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Object name:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelDispName = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelDispName = CreateWindowEx(0, "STATIC", "Display name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_DISPNAME, vModHandle, NULL);
 	if(sLabelDispName == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelDispName, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelDispName, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Display name:");
+	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
-	sLabelPW = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sLabelPW = CreateWindowEx(0, "STATIC", "Password:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_PW, vModHandle, NULL);
 	if(sLabelPW == NULL)
 	{
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
-	}	
-	SendMessage(sLabelPW, WM_SETFONT, (WPARAM)cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sLabelPW, WM_SETTEXT, (WPARAM)cDefaultFont, (LPARAM) "Password:");
+	}
 	}
 	//end creating labels
 
@@ -268,7 +236,7 @@ void CreateControls(HWND hwnd)
 	int  k = 0; //loop index for combo boxes
 	
 	//create combo box
-	sComboCommand = CreateWindow(WC_COMBOBOX, "",
+	sComboCommand = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_COMMAND, vModHandle, NULL);
 	if(sComboCommand == NULL)
@@ -288,35 +256,30 @@ void CreateControls(HWND hwnd)
 		SendMessage(sComboCommand,(UINT) CB_ADDSTRING,(WPARAM) 0, (LPARAM) A); 
 	}	
 	// Send the CB_SETCURSEL message to display an initial item in the selection field  
-	SendMessage(sComboCommand, CB_SETCURSEL, (WPARAM)-1, (LPARAM)0);
+	SendMessage(sComboCommand, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 		
 	//creating Edit edit box
-	sEditSvrName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditSvrName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, ES_LEFT | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_SVRNAME, vModHandle, NULL);
 	if(sEditSvrName == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditSvrName, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditSvrName, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sEditSvcName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditSvcName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_SVCNAME, vModHandle, NULL);
 	if(sEditSvcName == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	SendMessage(sEditSvcName, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditSvcName, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sComboType = CreateWindow(WC_COMBOBOX, "",
+	sComboType = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_TYPE, vModHandle, NULL);
 	if(sComboType == NULL)
@@ -337,11 +300,11 @@ void CreateControls(HWND hwnd)
 		// Add string to combo box.
 		SendMessage(sComboType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
 	}	 
-	SendMessage(sComboType, CB_SETCURSEL, (WPARAM)-1, (LPARAM)0);
+	SendMessage(sComboType, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sComboInteract = CreateWindow(WC_COMBOBOX, "",
+	sComboInteract = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_INTERACT, vModHandle, NULL);
 	if(sComboInteract == NULL)
@@ -359,11 +322,11 @@ void CreateControls(HWND hwnd)
 		SendMessage(sComboInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
 	}	
 	// Send the CB_SETCURSEL message to display an initial item in the selection field  
-	SendMessage(sComboInteract, CB_SETCURSEL, (WPARAM)-1, (LPARAM)0);
+	SendMessage(sComboInteract, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sComboStart = CreateWindow(WC_COMBOBOX, "",
+	sComboStart = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_START, vModHandle, NULL);
 	if(sComboStart == NULL)
@@ -384,11 +347,11 @@ void CreateControls(HWND hwnd)
 		// Add string to combo box.
 		SendMessage(sComboStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
 	}  
-	SendMessage(sComboStart, CB_SETCURSEL, (WPARAM)-1, (LPARAM)0);
+	SendMessage(sComboStart, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sComboError = CreateWindow(WC_COMBOBOX, "",
+	sComboError = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_ERROR, vModHandle, NULL);
 	if(sComboError == NULL)
@@ -408,34 +371,29 @@ void CreateControls(HWND hwnd)
 		SendMessage(sComboError,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
 	}	
 	// Send the CB_SETCURSEL message to display an initial item in the selection field  
-	SendMessage(sComboError, CB_SETCURSEL, (WPARAM)-1, (LPARAM)0);
+	SendMessage(sComboError, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sEditPathBin = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditPathBin = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol2, iPosCtrlY, 420, 25, hwnd, (HMENU) IDC_EDIT_PATHBIN, vModHandle, NULL);
 	if(sEditPathBin == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditPathBin, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditPathBin, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 
 	iPosCtrlY = 65;
 
-	sEditGroup = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditGroup = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_GROUP, vModHandle, NULL);
 	if(sEditGroup == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	SendMessage(sEditGroup, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditGroup, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sComboTag = CreateWindow(WC_COMBOBOX, "",
+	sComboTag = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_TAG, vModHandle, NULL);
 	if(sComboError == NULL)
@@ -452,78 +410,62 @@ void CreateControls(HWND hwnd)
 		// Add string to combo box.
 		SendMessage(sComboTag,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
 	}	  
-	SendMessage(sComboTag, CB_SETCURSEL, (WPARAM)-1, (LPARAM)0);
+	SendMessage(sComboTag, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sEditDepend = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditDepend = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_DEPEND, vModHandle, NULL);
 	if(sEditPathBin == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	SendMessage(sEditDepend, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditDepend, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sEditAccName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditAccName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_ACCNAME, vModHandle, NULL);
 	if(sEditAccName == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	SendMessage(sEditAccName, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditAccName, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sEditObjName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditObjName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_OBJNAME, vModHandle, NULL);
 	if(sEditObjName == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditObjName, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditObjName, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 
-	sEditDispName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditDispName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_DISPNAME, vModHandle, NULL);
 	if(sEditDispName == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditDispName, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditDispName, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
-	sEditPW = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditPW = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_PW, vModHandle, NULL);
 	if(sEditPW == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditPW, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditPW, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 
 	sBtnBrowse = CreateWindowEx(0, "BUTTON", "Browse", WS_CHILD | WS_VISIBLE, //BS_DEFPUSHBUTTON "Enter button"
 	548, 275, 60, 25, hwnd, (HMENU) IDC_BTN_BROWSE, vModHandle, NULL);
 
-	sEditDesc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+	sEditDesc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "The description of each parameter will appear here.", WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
 	548, 65, 300, 205, hwnd, (HMENU) IDC_EDIT_PW, vModHandle, NULL);
 	if(sEditDesc == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditDesc, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditDesc, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "The description to each parameter will appear here.");
 
 	sGrpBoxCMDLine = CreateWindowEx(0, "BUTTON", "Build", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
 	5, 320, 850, 70, hwnd, (HMENU) IDC_GRPBOX_CMDLINE, vModHandle, NULL);
@@ -535,17 +477,13 @@ void CreateControls(HWND hwnd)
 		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
-	SendMessage(sLabelCMDLine, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
 
-	sEditCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	sEditCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	120, 345, 665, 25, hwnd, (HMENU) IDC_EDIT_CMDLINE, vModHandle, NULL);
 	if(sEditCMDLine == NULL)
 	{
 		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
-	//Adding text to edit box
-	SendMessage(sEditCMDLine, WM_SETFONT, (WPARAM) cDefaultFont, MAKELPARAM(0, 0));
-	SendMessage(sEditCMDLine, WM_SETTEXT, (WPARAM) cDefaultFont, (LPARAM) "");
 
 	sBtnCMDRun = CreateWindowEx(0, "BUTTON", "Run", WS_CHILD | WS_VISIBLE,
 	790, 345, 60, 25, hwnd, (HMENU) IDC_BTN_CMDRUN, vModHandle, NULL);
