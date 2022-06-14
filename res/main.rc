@@ -1,4 +1,9 @@
 
+/*-------------------------------------------
+  Copyright Simple Solutions, 2022
+  Revised: 2022/06/13 00:17
+-------------------------------------------*/
+
 //Standard includes
 #include <windows.h>
 #include <afxres.h>
@@ -7,36 +12,16 @@
 #include "..\include\resource.h"
 #include "..\include\controls.h"
 
-//https://docs.microsoft.com/en-us/windows/win32/menurc/resources
+//Window icon
+IDI_APPICON ICON "..\\assets\\images\\mainicon.ico"
 
-IDI_APPICON ICON "..\\assets\\images\\mainicon.ico" //Window icon
+//Toolbar custom bitmap
+IDB_TBBITMAP_LARGE_COLOR BITMAP "..\\assets\\images\\TB_BTNSET_CLRSTD.bmp"
 
 //manifest file
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\\Manifest\\ExampleApp.exe.manifest"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\\Manifest\\ServiceControl.exe.manifest"
 
-IDM_MAINMENU MENU
-BEGIN
-	POPUP "&File"
-	BEGIN
-		MENUITEM "E&xit", IDMI_MAINMENU_FILE_EXIT
-		MENUITEM "&Minimize", IDMI_MAINMENU_FILE_MIN
-	END
-	POPUP "&Authentication"
-	BEGIN
-		MENUITEM "Log &in", IDMI_MAINMENU_AUTH_LOGIN
-		MENUITEM "Log &out", IDMI_MAINMENU_AUTH_LOGOUT
-	END
-	POPUP "M&odeless"
-	BEGIN
-		MENUITEM "&Show", IDMI_MAINMENU_DIALOG_SHOW
-		MENUITEM "&Hide", IDMI_MAINMENU_DIALOG_HIDE
-	END
-	POPUP "&Help"
-	BEGIN
-		MENUITEM "&About", IDMI_MAINMENU_HELP_ABOUT //Model dialog window
-	END
-END
-
+//About dialog
 IDD_ABOUT DIALOGEX DISCARDABLE 0, 0, 239, 66
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"

@@ -39,6 +39,7 @@ $(objResources): $(srcResources)
 
 build: $(objs)
 	$(CC) -o $(APP) $(objs) $(dllCommCtrls) -s -mwindows
+	$(APP)
 clean:
 	del $(DirObj)\*.o $(DirBin)\*.exe
 run:

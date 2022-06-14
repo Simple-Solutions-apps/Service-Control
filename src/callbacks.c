@@ -30,66 +30,66 @@ BOOL bFileModified = FALSE;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(msg)
-	{
-		case WM_CREATE:
-			{				
-				CreateControls(hwnd); //function to create all controls. Review controls.h and controls.c
-			}	
-			break;
+		{
+			case WM_CREATE:
+				{				
+					CreateControls(hwnd); //function to create all controls. Review controls.h and controls.c
+				}	
+				break;
 
-		case WM_SIZE:
+			case WM_SIZE:
 
-			break;
-		case WM_CLOSE:
-			DestroyWindow(hwnd);
-			break;
+				break;
+			case WM_CLOSE:
+				DestroyWindow(hwnd);
+				break;
 
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
+			case WM_DESTROY:
+				PostQuitMessage(0);
+				break;
 
-		case WM_COMMAND:
-			switch(LOWORD(wParam))
+			case WM_CTLCOLORSTATIC:
+				SetBkColor((HDC) wParam, RGB(255, 255, 255));
+				SetTextColor((HDC) wParam, RGB(0, 0, 0));
+				return (LRESULT) GetStockObject(DC_BRUSH);
+				break;
+
+			case WM_CTLCOLOREDIT:
+				SetBkColor((HDC) wParam, RGB(255, 255, 255));
+				SetTextColor((HDC) wParam, RGB(0, 0, 0));
+				return (LRESULT) GetStockObject(DC_BRUSH);
+				break;
+
+			case WM_CTLCOLORLISTBOX:
+				SetBkColor((HDC) wParam, RGB(255, 255, 255));
+				SetTextColor((HDC) wParam, RGB(0, 0, 0));
+				return (LRESULT) GetStockObject(DC_BRUSH);
+				break;
+
+			case WM_COMMAND:
+				switch(LOWORD(wParam))
 				{	
-					//main menu cases defined in resource.h					
-					case IDMI_MAINMENU_FILE_EXIT:
-						PostQuitMessage(0);
-						break;
-
-					case IDMI_MAINMENU_FILE_MIN:
-						ShowWindow(hwnd, SW_MINIMIZE);
-						break;
-					
-					case IDMI_MAINMENU_HELP_ABOUT:
-						//this is a Model dialog box creation (execution stops for everything else)					
-						iReturn = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT), hwnd, (DLGPROC) AboutDlgProc);
-
-						if(iReturn == IDOK)
-						{
-							MessageBox(hwnd, "Dialog exited with IDOK.", "Notice", MB_OK | MB_ICONINFORMATION);
-						}
-						else if(iReturn == IDCANCEL)
-						{
-							MessageBox(hwnd, "Dialog exited with IDCANCEL.", "Notice", MB_OK | MB_ICONINFORMATION);
-						}
-						else if(iReturn == -1)
-						{
-							MessageBox(hwnd, "Dialog failed!", "Error", MB_OK | MB_ICONINFORMATION);
-						}
+					case IDC_MAIN_TOOLBAR_FILE_NEW:
+						MessageBox(hwnd, "New File", "New File", MB_OK | MB_ICONINFORMATION);
 						break;
 
 					case IDC_MAIN_TOOLBAR_FILE_OPEN:
-
 						break;
-					case IDC_MAIN_TOOLBAR_FILE_SAVEAS:
 
-						break;					
-				}
-				break;
-				//Other menu commands...
-		default:
-			return DefWindowProc(hwnd, msg, wParam, lParam);
-	}
+					case IDC_MAIN_TOOLBAR_FILE_SAVETXT:
+						break;
+
+					case IDC_MAIN_TOOLBAR_FILE_SAVEBAT:
+						break;
+					case IDC_MAIN_TOOLBAR_SVC_OPEN:
+						break;
+					case IDC_MAIN_TOOLBAR_ABOUT:
+						break;
+				}				
+
+			default:
+				return DefWindowProc(hwnd, msg, wParam, lParam);
+		}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 

@@ -1,2 +1,0 @@
-https://www.transmissionzero.co.uk/computing/win32-apps-with-mingw/
-https://docs.huihoo.com/windows/windows-api-tutorials/index.htm

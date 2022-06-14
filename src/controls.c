@@ -9,527 +9,689 @@
 
 //custom includes
 #include "..\include\controls.h"
+#include "..\include\resource.h"
 
-//Declarations
-
-HWND sGrpBoxParams;
-HWND sGrpBoxCMDLine;
-
-HWND sLabelCommand;
-HWND sLabelSvrName;
-HWND sLabelSvcName;
-HWND sLabelType;
-HWND sLabelInteract;
-HWND sLabelStart;
-HWND sLabelError;
-HWND sLabelPathBin;
-HWND sLabelGroup;
-HWND sLabelTag;
-HWND sLabelDepend;
-HWND sLabelAccName;
-HWND sLabelObjName;
-HWND sLabelDispName;
-HWND sLabelPW;
-HWND sLabelDesc;
-HWND sLabelCMDLine;
-
-HWND sComboCommand;
-HWND sComboType;
-HWND sComboInteract;
-HWND sComboStart;
-HWND sComboError;
-HWND sComboTag;
-
-HWND sEditDepend;
-HWND sEditAccName;
-HWND sEditObjName;
-HWND sEditDispName;
-HWND sEditPW;
-HWND sEditDesc;
-HWND sEditSvrName;
-HWND sEditSvcName;
-HWND sEditPathBin;
-HWND sEditGroup;
-HWND sEditCMDLine;
-
-HWND sBtnBrowse;
-HWND sBtnCMDRun;
-
-HWND sToolBar;
-HWND sStatusBar;
-
-//image list handle for toolbar
-HIMAGELIST sImageList;
-
-void CreateControls(HWND hwnd)
+int CreateControls(HWND sHdlWinMain)
 {
-	//cDefaultFont = GetStockObject(SYSTEM_FONT); //ANSI_FIXED_FONT ANSI_VAR_FONT DEVICE_DEFAULT_FONT DEFAULT_GUI_FONT OEM_FIXED_FONT SYSTEM_FIXED_FONT
-	
-	HANDLE vModHandle = GetModuleHandle(NULL);
+	//declaring controls
+	HWND sToolBar;
 
-	sGrpBoxParams = CreateWindowEx(0, "BUTTON", "Parameters", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-	5, 40, 850, 275, hwnd, (HMENU) IDC_GRPBOX_PARAMS, vModHandle, NULL);
-	
-	int iPosLabelY = 70;
+	HWND sGrpBoxParams;
+	HWND sGrpBoxCMDLine;
+	HWND sGrpBoxFile;
+
+	HWND sLabelCommand;
+	HWND sLabelSvrName;
+	HWND sLabelSvcName;
+	HWND sLabelType;
+	HWND sLabelInteract;
+	HWND sLabelStart;
+	HWND sLabelError;
+	HWND sLabelPathBin;
+	HWND sLabelGroup;
+	HWND sLabelTag;
+	HWND sLabelDepend;
+	HWND sLabelAccName;
+	HWND sLabelObjName;
+	HWND sLabelDispName;
+	HWND sLabelPW;
+	HWND sLabelCMDLine;
+
+	HWND sComboCommand;
+	HWND sComboType;
+	HWND sComboInteract;
+	HWND sComboStart;
+	HWND sComboError;
+	HWND sComboTag;
+
+	HWND sEditDepend;
+	HWND sEditAccName;
+	HWND sEditObjName;
+	HWND sEditDispName;
+	HWND sEditPW;
+	HWND sEditDesc;
+	HWND sEditSvrName;
+	HWND sEditSvcName;
+	HWND sEditPathBin;
+	HWND sEditGroup;
+	HWND sEditCMDLine;
+	HWND sEditFile;
+
+	HWND sBtnBrowse;
+	HWND sBtnCMDRun;
+
+	//declare variables/structures for toolbar
+	TBBUTTON sButtonsToAdd[TB_BTN_COUNT]; //Container for toolbar buttons
+	HIMAGELIST sImageList;
+	HBITMAP sBitmap;
+	int iBitmapIndex;
+
+	//declare variables for combo boxes 
+	TCHAR cComboOptions[7][15];
+	TCHAR cTempBuff[16];
+	int  iLoopIndex = 0; //loop index for combo boxes
+
+	//define X and Y Coordinates for labels and controls
+	int iPosLabelY = 90;
 	int iIncLabelY = 30;
-	int iPosCtrlY = 65;
+	int iPosCtrlY = 85;
 	int iIncCtrlY = 30;
 	int iPosCol1 = 10;
 	int iPosCol2 = iPosCol1 + 110;
 	int iPosCol3 = iPosCol2 + 160;
 	int iPosCol4 = iPosCol3 + 110;
 
-	//begin creating labels
+	//declare this module/executable instance handle
+	HMODULE vModInstHandle;
+
+	//attempt to create this module instance handle
+	vModInstHandle = GetModuleHandle(NULL);
+	
+	//verify if module instance handle was created correctly
+	if(vModInstHandle == NULL)
 	{
-	sLabelCommand = CreateWindowEx(0, "STATIC", "Command", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_COMMAND, vModHandle, NULL);
-	if(sLabelCommand == NULL)
+		MessageBox(sHdlWinMain, "Could not create module instance handle.", "Error", MB_OK | MB_ICONERROR);
+		return __LINE__;
+	}
+
+	//attempt to create toolbar 
+	sToolBar = CreateWindowEx(0, "ToolbarWindow32", NULL,
+	CCS_ADJUSTABLE | WS_BORDER | WS_CHILD | WS_VISIBLE | TBSTYLE_FLAT,
+	0, 0, 0, 0, sHdlWinMain, (HMENU) IDC_MAIN_TOOLBAR, vModInstHandle, NULL);
+
+	//verify if toolbar was created correctly
+	if(sToolBar == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create toolbar.", "Error", MB_OK | MB_ICONERROR);
+		return __LINE__;
+	}
+
+	//attempt to create bitmap
+	sBitmap = (HBITMAP) LoadImage(vModInstHandle, MAKEINTRESOURCE(IDB_TBBITMAP_LARGE_COLOR), IMAGE_BITMAP,
+	TB_BTN_BITMAP_W, TB_BTN_BITMAP_H, LR_CREATEDIBSECTION);
+
+	//verify if bitmap was added to image list correctly
+	if(sBitmap == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create bitmap.", "Error", MB_OK | MB_ICONERROR);
+		return __LINE__;
+	}
+
+	//attempt to create image list
+	sImageList = ImageList_Create(TB_BTN_BITMAP_H, TB_BTN_BITMAP_H, ILC_COLOR32,
+	(TB_BTN_BITMAP_W / TB_BTN_BITMAP_H), (TB_BTN_BITMAP_W / TB_BTN_BITMAP_H));
+
+	//verify if image list was created correctly
+	if(sImageList == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create image list.", "Error", MB_OK | MB_ICONERROR);
+		return __LINE__;
 	}
 	
+	//attempt to add bitmap to image list
+	iBitmapIndex = ImageList_Add(sImageList, sBitmap, NULL);
+
+	//verify if bitmap was added to image list correctly
+	if(iBitmapIndex == -1)
+	{
+		MessageBox(sHdlWinMain, "Could not add bitmap to image list.", "Error", MB_OK | MB_ICONERROR);
+		return __LINE__;
+	}
+	
+	//define functionality for buttons
+	ZeroMemory(sButtonsToAdd, sizeof(sButtonsToAdd));
+    sButtonsToAdd[0].iBitmap = MAKELONG(0, 0);
+    sButtonsToAdd[0].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[0].idCommand = IDC_MAIN_TOOLBAR_FILE_NEW;
+	sButtonsToAdd[0].iString = (INT_PTR) "New file";
+
+    sButtonsToAdd[1].iBitmap = MAKELONG(1, 0);
+    sButtonsToAdd[1].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[1].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[1].idCommand = IDC_MAIN_TOOLBAR_FILE_OPEN;
+	sButtonsToAdd[1].iString = (INT_PTR) "Open file";
+
+	sButtonsToAdd[2].iBitmap = 0;
+    sButtonsToAdd[2].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[2].fsStyle = TBSTYLE_SEP;
+    sButtonsToAdd[2].idCommand =0;
+
+    sButtonsToAdd[3].iBitmap = MAKELONG(2, 0);
+    sButtonsToAdd[3].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[3].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[3].idCommand = IDC_MAIN_TOOLBAR_FILE_SAVETXT;
+	sButtonsToAdd[3].iString = (INT_PTR) "Save as text";
+
+    sButtonsToAdd[4].iBitmap = MAKELONG(3, 0);
+    sButtonsToAdd[4].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[4].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[4].idCommand = IDC_MAIN_TOOLBAR_FILE_SAVEBAT;
+	sButtonsToAdd[4].iString = (INT_PTR) "Save as batch";
+
+	sButtonsToAdd[5].iBitmap = 0;
+    sButtonsToAdd[5].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[5].fsStyle = TBSTYLE_SEP;
+    sButtonsToAdd[5].idCommand =0;
+
+	sButtonsToAdd[6].iBitmap = MAKELONG(4, 0);
+    sButtonsToAdd[6].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[6].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[6].idCommand = IDC_MAIN_TOOLBAR_SVC_OPEN;
+	sButtonsToAdd[6].iString = (INT_PTR) "Open Services";
+
+	sButtonsToAdd[7].iBitmap = MAKELONG(5, 0);
+    sButtonsToAdd[7].fsState = TBSTATE_ENABLED;
+    sButtonsToAdd[7].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[7].idCommand = IDC_MAIN_TOOLBAR_ABOUT;
+	sButtonsToAdd[7].iString = (INT_PTR) "About";
+
+	//send messages to toolbar (apply definitions)
+	SendMessage(sToolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0); //Send the TB_BUTTONSTRUCTSIZE message (for backward compatibility)
+	//SendMessage(sToolBar, CCM_SETVERSION, (WPARAM) 5, 0); //enable multiple image lists (versions <5)
+	SendMessage(sToolBar, TB_SETIMAGELIST, 0, (LPARAM) sImageList); //add bitmap to toolbar
+	SendMessage(sToolBar, TB_ADDBUTTONS, TB_BTN_COUNT, (LPARAM) &sButtonsToAdd); //add buttons to toolbar
+	SendMessage(sToolBar, TB_AUTOSIZE, 0, 0); //resize buttons on toolbar
+
+	//attempt to create group box (Typical going forward)
+	sGrpBoxParams = CreateWindowEx(0, "BUTTON", "Parameters", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+	5, 60, 850, 275, sHdlWinMain, (HMENU) IDC_GRPBOX_PARAMS, vModInstHandle, NULL);
+
+	//verify group box was created correctly (Typical going forward)
+	if(sGrpBoxParams == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create group box.", "Error", MB_OK | MB_ICONERROR);
+	}
+
+	//begin creating labels
+
+	//attempt to create label (Typical going forward)
+	sLabelCommand = CreateWindowEx(0, "STATIC", "Command", WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_COMMAND, vModInstHandle, NULL);
+	
+	//verify label was created correctly (Typical going forward)
+	if(sLabelCommand == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+	}
+	
+	//increment X and Y coordinates for next control (Typical going forward)
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelSvrName = CreateWindowEx(0, "STATIC", "Server name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_SVRNAME, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_SVRNAME, vModInstHandle, NULL);
+
 	if(sLabelSvrName == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelSvcName = CreateWindowEx(0, "STATIC", "Service name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_SVCNAME, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_SVCNAME, vModInstHandle, NULL);
+
 	if(sLabelSvcName == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 	}	
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelType = CreateWindowEx(0, "STATIC", "Type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_TYPE, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_TYPE, vModInstHandle, NULL);
+
 	if(sLabelType == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelInteract = CreateWindowEx(0, "STATIC", "Interact type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_INTERACT, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_INTERACT, vModInstHandle, NULL);
+
 	if(sLabelInteract == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelStart = CreateWindowEx(0, "STATIC", "Start Type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_START, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_START, vModInstHandle, NULL);
+
 	if(sLabelStart == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelError = CreateWindowEx(0, "STATIC", "Error:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_ERROR, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_ERROR, vModInstHandle, NULL);
+
 	if(sLabelError == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label Error.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label Error.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelPathBin = CreateWindowEx(0, "STATIC", "Binary Path:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol1, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_PATHBIN, vModHandle, NULL);
+	iPosCol1, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_PATHBIN, vModInstHandle, NULL);
+
 	if(sLabelPathBin == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
-	iPosLabelY = 70;
+	iPosLabelY = 90;
 	
 	sLabelGroup = CreateWindowEx(0, "STATIC", "Group:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_GROUP, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_GROUP, vModInstHandle, NULL);
+
 	if(sLabelGroup == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelTag = CreateWindowEx(0, "STATIC", "Tag:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_TAG, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_TAG, vModInstHandle, NULL);
+
 	if(sLabelTag == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelDepend = CreateWindowEx(0, "STATIC", "Dependencies:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_DEPEND, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_DEPEND, vModInstHandle, NULL);
+
 	if(sLabelDepend == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelAccName = CreateWindowEx(0, "STATIC", "Account name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_ACCNAME, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_ACCNAME, vModInstHandle, NULL);
+
 	if(sLabelAccName == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelObjName = CreateWindowEx(0, "STATIC", "Object name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_OBJNAME, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_OBJNAME, vModInstHandle, NULL);
+
 	if(sLabelObjName == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelDispName = CreateWindowEx(0, "STATIC", "Display name:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_DISPNAME, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_DISPNAME, vModInstHandle, NULL);
+
 	if(sLabelDispName == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
 	sLabelPW = CreateWindowEx(0, "STATIC", "Password:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	iPosCol3, iPosLabelY, 105, 20, hwnd, (HMENU) IDC_LABEL_PW, vModHandle, NULL);
+	iPosCol3, iPosLabelY, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_PW, vModInstHandle, NULL);
 	if(sLabelPW == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
-	}
-	//end creating labels
-
-	//creating controls
-
-	//declarations for combo boxes 
-	TCHAR cComboOptions[6][15];
-	TCHAR A[16];
-	int  k = 0; //loop index for combo boxes
 	
-	//create combo box
+	//attempt to create combo box (Typical going forward)
 	sComboCommand = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_COMMAND, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_COMBO_COMMAND, vModInstHandle, NULL);
+
+	//verify combo box was created correctly (Typical going forward)
 	if(sComboCommand == NULL)
 	{
-		MessageBox(hwnd, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	//define combo box list text
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "config");
-	strcpy(cComboOptions[1], "create");
+	strcpy(cComboOptions[0], "create"); //blank/none
+	strcpy(cComboOptions[1], "config");
 	strcpy(cComboOptions[2], "delete");
 	strcpy(cComboOptions[3], "query");
-	memset(&A, 0, sizeof (A));      
-	for(k = 0; k <= 3; k++)
+	memset(&cTempBuff, 0, sizeof (cTempBuff)); 
+
+	//send message to add each list option text (Typical going forward)   
+	for(iLoopIndex = 0; iLoopIndex <= 3; iLoopIndex++)
 	{
-		strcpy(&A[0], (TCHAR*)cComboOptions[k]);
-		// Add string to combo box.
-		SendMessage(sComboCommand,(UINT) CB_ADDSTRING,(WPARAM) 0, (LPARAM) A); 
-	}	
-	// Send the CB_SETCURSEL message to display an initial item in the selection field  
-	SendMessage(sComboCommand, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
+		strcpy(&cTempBuff[0], (TCHAR*)cComboOptions[iLoopIndex]);
+
+		SendMessage(sComboCommand,(UINT) CB_ADDSTRING,(WPARAM) 0, (LPARAM) cTempBuff); 
+	}
+
+	//send message to select default option (Typical going forward)
+	SendMessage(sComboCommand, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 		
-	//creating Edit edit box
+	//attempt to create edit box (Typical going forward)
 	sEditSvrName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, ES_LEFT | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_SVRNAME, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_SVRNAME, vModInstHandle, NULL);
+
+	//verify edit box was created correctly (Typical going forward)
 	if(sEditSvrName == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sEditSvcName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_SVCNAME, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_SVCNAME, vModInstHandle, NULL);
+
 	if(sEditSvcName == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sComboType = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_TYPE, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_COMBO_TYPE, vModInstHandle, NULL);
+
 	if(sComboType == NULL)
 	{
-		MessageBox(hwnd, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "own");
-	strcpy(cComboOptions[1], "share");
-	strcpy(cComboOptions[2], "kernal");
-	strcpy(cComboOptions[3], "filesys");
-	strcpy(cComboOptions[4], "rec");
-	strcpy(cComboOptions[5], "interact type");
-	memset(&A, 0, sizeof (A));       
-	for(k = 0; k <= 5; k += 1)
+	strcpy(cComboOptions[0], "");
+	strcpy(cComboOptions[1], "own");
+	strcpy(cComboOptions[2], "share");
+	strcpy(cComboOptions[3], "kernal");
+	strcpy(cComboOptions[4], "filesys");
+	strcpy(cComboOptions[5], "rec");
+	strcpy(cComboOptions[6], "interact type");
+	memset(&cTempBuff, 0, sizeof (cTempBuff));
+
+	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
 	{
-		strcpy(&A[0], (TCHAR*)cComboOptions[k]);
-		// Add string to combo box.
-		SendMessage(sComboType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
-	}	 
-	SendMessage(sComboType, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
+		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
+
+		SendMessage(sComboType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+	}
+
+	SendMessage(sComboType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sComboInteract = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_INTERACT, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_COMBO_INTERACT, vModInstHandle, NULL);
+
 	if(sComboInteract == NULL)
 	{
-		MessageBox(hwnd, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "own");
-	strcpy(cComboOptions[1], "share");
-	memset(&A, 0, sizeof (A));       
-	for(k = 0; k <= 1; k += 1)
+	strcpy(cComboOptions[0], "");
+	strcpy(cComboOptions[1], "own");
+	strcpy(cComboOptions[2], "share");
+	memset(&cTempBuff, 0, sizeof (cTempBuff));
+
+	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		strcpy(&A[0], (TCHAR*)cComboOptions[k]);
-		// Add string to combo box.
-		SendMessage(sComboInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
+		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
+		SendMessage(sComboInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}	
-	// Send the CB_SETCURSEL message to display an initial item in the selection field  
-	SendMessage(sComboInteract, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
+ 
+	SendMessage(sComboInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sComboStart = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_START, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_COMBO_START, vModInstHandle, NULL);
+
 	if(sComboStart == NULL)
 	{
-		MessageBox(hwnd, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "boot");
-	strcpy(cComboOptions[1], "system");
-	strcpy(cComboOptions[2], "auto");
-	strcpy(cComboOptions[3], "demand");
-	strcpy(cComboOptions[4], "disabled");
-	strcpy(cComboOptions[5], "delayed-auto");
-	memset(&A, 0, sizeof (A));       
-	for(k = 0; k <= 5; k += 1)
+	strcpy(cComboOptions[0], "");
+	strcpy(cComboOptions[1], "boot");
+	strcpy(cComboOptions[2], "system");
+	strcpy(cComboOptions[3], "auto");
+	strcpy(cComboOptions[4], "demand");
+	strcpy(cComboOptions[5], "disabled");
+	strcpy(cComboOptions[6], "delayed-auto");
+	memset(&cTempBuff, 0, sizeof (cTempBuff));
+
+	for(iLoopIndex = 0; iLoopIndex <= 5; iLoopIndex++)
 	{
-		strcpy(&A[0], (TCHAR*)cComboOptions[k]);
-		// Add string to combo box.
-		SendMessage(sComboStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
-	}  
-	SendMessage(sComboStart, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
+		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
+		SendMessage(sComboStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+	} 
+
+	SendMessage(sComboStart, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sComboError = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol2, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_ERROR, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_COMBO_ERROR, vModInstHandle, NULL);
+
 	if(sComboError == NULL)
 	{
-		MessageBox(hwnd, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "normal");
-	strcpy(cComboOptions[1], "severe");
-	strcpy(cComboOptions[2], "critical");
-	strcpy(cComboOptions[3], "ignore");
-	memset(&A, 0, sizeof (A));       
-	for(k = 0; k <= 3; k += 1)
+	strcpy(cComboOptions[0], "");
+	strcpy(cComboOptions[1], "normal");
+	strcpy(cComboOptions[2], "severe");
+	strcpy(cComboOptions[3], "critical");
+	strcpy(cComboOptions[4], "ignore");
+	memset(&cTempBuff, 0, sizeof (cTempBuff));
+
+	for(iLoopIndex = 0; iLoopIndex <= 4; iLoopIndex++)
 	{
-		strcpy(&A[0], (TCHAR*)cComboOptions[k]);
-		// Add string to combo box.
-		SendMessage(sComboError,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
+		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
+
+		SendMessage(sComboError,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}	
-	// Send the CB_SETCURSEL message to display an initial item in the selection field  
-	SendMessage(sComboError, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
+ 
+	SendMessage(sComboError, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sEditPathBin = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol2, iPosCtrlY, 420, 25, hwnd, (HMENU) IDC_EDIT_PATHBIN, vModHandle, NULL);
+	iPosCol2, iPosCtrlY, 420, 25, sHdlWinMain, (HMENU) IDC_EDIT_PATHBIN, vModInstHandle, NULL);
+
 	if(sEditPathBin == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
-	iPosCtrlY = 65;
+	iPosCtrlY = 85;
 
 	sEditGroup = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_GROUP, vModHandle, NULL);
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_GROUP, vModInstHandle, NULL);
+
 	if(sEditGroup == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sComboTag = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_COMBO_TAG, vModHandle, NULL);
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_COMBO_TAG, vModInstHandle, NULL);
+
 	if(sComboError == NULL)
 	{
-		MessageBox(hwnd, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "yes");
-	strcpy(cComboOptions[1], "no");
-	memset(&A, 0, sizeof (A));       
-	for(k = 0; k <= 1; k += 1)
+	strcpy(cComboOptions[0], "");
+	strcpy(cComboOptions[1], "yes");
+	strcpy(cComboOptions[2], "no");
+	memset(&cTempBuff, 0, sizeof (cTempBuff));   
+
+	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		strcpy(&A[0], (TCHAR*)cComboOptions[k]);
-		// Add string to combo box.
-		SendMessage(sComboTag,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) A); 
-	}	  
-	SendMessage(sComboTag, CB_SETCURSEL, (WPARAM) 1, (LPARAM)0);
+		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
+
+		SendMessage(sComboTag,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+	}	
+
+	SendMessage(sComboTag, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sEditDepend = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_DEPEND, vModHandle, NULL);
-	if(sEditPathBin == NULL)
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_DEPEND, vModInstHandle, NULL);
+
+	if(sEditDepend == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sEditAccName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_ACCNAME, vModHandle, NULL);
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_ACCNAME, vModInstHandle, NULL);
+
 	if(sEditAccName == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sEditObjName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_OBJNAME, vModHandle, NULL);
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_OBJNAME, vModInstHandle, NULL);
+
 	if(sEditObjName == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 
 	sEditDispName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_DISPNAME, vModHandle, NULL);
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_DISPNAME, vModInstHandle, NULL);
+
 	if(sEditDispName == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
 	sEditPW = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	iPosCol4, iPosCtrlY, 150, 25, hwnd, (HMENU) IDC_EDIT_PW, vModHandle, NULL);
+	iPosCol4, iPosCtrlY, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_PW, vModInstHandle, NULL);
+
 	if(sEditPW == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
 	sBtnBrowse = CreateWindowEx(0, "BUTTON", "Browse", WS_CHILD | WS_VISIBLE, //BS_DEFPUSHBUTTON "Enter button"
-	548, 275, 60, 25, hwnd, (HMENU) IDC_BTN_BROWSE, vModHandle, NULL);
+	548, 295, 60, 25, sHdlWinMain, (HMENU) IDC_BTN_BROWSE, vModInstHandle, NULL);
+
+	if(sBtnBrowse == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
+	}
 
 	sEditDesc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "The description of each parameter will appear here.", WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-	548, 65, 300, 205, hwnd, (HMENU) IDC_EDIT_PW, vModHandle, NULL);
+	548, 85, 300, 205, sHdlWinMain, (HMENU) IDC_EDIT_PW, vModInstHandle, NULL);
+
 	if(sEditDesc == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
 	sGrpBoxCMDLine = CreateWindowEx(0, "BUTTON", "Build", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-	5, 320, 850, 70, hwnd, (HMENU) IDC_GRPBOX_CMDLINE, vModHandle, NULL);
+	5, 340, 850, 70, sHdlWinMain, (HMENU) IDC_GRPBOX_CMDLINE, vModInstHandle, NULL);
 
-	sLabelCMDLine = CreateWindowEx(0, "STATIC", "Command line:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	10, 350, 105, 20, hwnd, (HMENU) IDC_LABEL_CMDLINE, vModHandle, NULL);
-	if(sLabelCMDLine == NULL)
+	if(sGrpBoxCMDLine == NULL)
 	{
-		MessageBox(hwnd, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create group box.", "Error", MB_OK | MB_ICONERROR);
 
 	}
 
-	sEditCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
-	120, 345, 665, 25, hwnd, (HMENU) IDC_EDIT_CMDLINE, vModHandle, NULL);
+	sLabelCMDLine = CreateWindowEx(0, "STATIC", "Command line:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	10, 370, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_CMDLINE, vModInstHandle, NULL);
+
+	if(sLabelCMDLine == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+
+	}
+
+	sEditCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+	120, 365, 665, 25, sHdlWinMain, (HMENU) IDC_EDIT_CMDLINE, vModInstHandle, NULL);
+
 	if(sEditCMDLine == NULL)
 	{
-		MessageBox(hwnd, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
 	sBtnCMDRun = CreateWindowEx(0, "BUTTON", "Run", WS_CHILD | WS_VISIBLE,
-	790, 345, 60, 25, hwnd, (HMENU) IDC_BTN_CMDRUN, vModHandle, NULL);
+	790, 365, 60, 25, sHdlWinMain, (HMENU) IDC_BTN_CMDRUN, vModInstHandle, NULL);
 
-	sToolBar = CreateWindowEx(0, "ToolbarWindow32", NULL, CCS_ADJUSTABLE | WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, hwnd, (HMENU) IDC_MAIN_TOOLBAR, vModHandle, NULL);
-	if(sToolBar == NULL)
+	if(sBtnCMDRun == NULL)
 	{
-		MessageBox(hwnd, "Could not create Tool bar.", "Error", MB_OK | MB_ICONERROR);
+		MessageBox(sHdlWinMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
 	}
 
-	// Send the TB_BUTTONSTRUCTSIZE message, which is required for backward compatibility.
-	SendMessage(sToolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0);
+	sGrpBoxFile = CreateWindowEx(0, "BUTTON", "File contents", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+	5, 415, 850, 250, sHdlWinMain, (HMENU) IDC_GRPBOX_PARAMS, vModInstHandle, NULL);
 
-	const int iButtonsCount = 3;
+	if(sGrpBoxFile == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not group box.", "Error", MB_OK | MB_ICONERROR);
+	}
 
-	//first you add a list of images to use
-	//add a list of buttons
-	TBBUTTON tbButtonsToAdd[iButtonsCount]; //Container for three buttons
-	TBADDBITMAP tbaBitMap;
+	sEditFile = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
+	10, 440, 840, 220, sHdlWinMain, (HMENU) IDC_EDIT_FILE, vModInstHandle, NULL);
 
-	//add the standard bitmaps to the toolbar
-	tbaBitMap.hInst = HINST_COMMCTRL;
-	tbaBitMap.nID = IDB_STD_SMALL_COLOR;
-	
-	SendMessage(sToolBar, TB_ADDBITMAP, 0, (LPARAM) &tbaBitMap);
-	//add functionality for buttons
-	ZeroMemory(tbButtonsToAdd, sizeof(tbButtonsToAdd));
-    tbButtonsToAdd[0].iBitmap = STD_FILENEW;
-    tbButtonsToAdd[0].fsState = TBSTATE_ENABLED;
-    tbButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
-    tbButtonsToAdd[0].idCommand = IDC_MAIN_TOOLBAR_FILE_NEW;
+	if(sEditFile == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+	}
 
-    tbButtonsToAdd[1].iBitmap = STD_FILEOPEN;
-    tbButtonsToAdd[1].fsState = TBSTATE_ENABLED;
-    tbButtonsToAdd[1].fsStyle = TBSTYLE_BUTTON;
-    tbButtonsToAdd[1].idCommand = IDC_MAIN_TOOLBAR_FILE_OPEN;
-
-    tbButtonsToAdd[2].iBitmap = STD_FILESAVE;
-    tbButtonsToAdd[2].fsState = TBSTATE_ENABLED;
-    tbButtonsToAdd[2].fsStyle = TBSTYLE_BUTTON;
-    tbButtonsToAdd[2].idCommand = IDC_MAIN_TOOLBAR_FILE_SAVEAS;
-
-	// Add buttons.
-	SendMessage(sToolBar, TB_ADDBUTTONS, sizeof(tbButtonsToAdd)/sizeof(TBBUTTON), (LPARAM) &tbButtonsToAdd);
-	//resize buttons
-	SendMessage(sToolBar, TB_AUTOSIZE, 0, 0);
-	//show buttons
-	ShowWindow(sToolBar, TRUE);
+	return 0;
 }

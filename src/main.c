@@ -11,30 +11,28 @@
 #include "..\include\resource.h"
 #include "..\include\callbacks.h"
 
-//declare & define window class name
-const char cWindowClassName[] = "CSGUI";
-
 //Window width and height definitions
 #define WIN_WIDTH 870
 #define WIN_HEIGHT 700
 
-
 //windows main application entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{	
-	//declarations
+{
+	//declarations	
 	WNDCLASSEX sWinClass;
+	HWND sHdlWinMain;
 	MSG sMsg;
-	HBRUSH sBrush;
-	INITCOMMONCONTROLSEX sIcex;
-
-	HWND hWnd; //main window handle
-
-	HANDLE vModHandle = GetModuleHandle(NULL);
+	RECT sRect;
+	HANDLE vModHandle;
+	INITCOMMONCONTROLSEX sInitCtrlEx;	
 
 	//definitions
-	//sBrush = CreateSolidBrush(RGB(242, 242, 242)); //nice light gey color
-	sBrush = GetSysColorBrush(COLOR_WINDOW);
+
+	//Handle to this executable
+	vModHandle = GetModuleHandle(NULL);
+
+	//define window class name
+	const char cWindowClassName[] = "CommandAppGUI"; 
 
 	//assign window class structure
 	sWinClass.cbSize = sizeof (WNDCLASSEX);
@@ -43,51 +41,60 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sWinClass.cbClsExtra = 0;
 	sWinClass.cbWndExtra = 0;
 	sWinClass.hInstance = hInstance;
-	sWinClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	sWinClass.hbrBackground = sBrush;
+	sWinClass.hCursor = (HCURSOR) LoadCursor(NULL, IDC_ARROW);
+	sWinClass.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
 	sWinClass.lpszClassName = cWindowClassName;
-	sWinClass.hIcon = LoadIcon(vModHandle, MAKEINTRESOURCE(IDI_APPICON));
-	sWinClass.hIconSm = (HICON)LoadImage(vModHandle, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, 0);
-	sWinClass.lpszMenuName = MAKEINTRESOURCE(IDM_MAINMENU);
+	sWinClass.hIcon = (HICON) LoadIcon(vModHandle, MAKEINTRESOURCE(IDI_APPICON));
+	sWinClass.hIconSm = (HICON) LoadImage(vModHandle, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, 0);
+	sWinClass.lpszMenuName = NULL;
 
-	//assign common controls initialization structure
-	sIcex.dwSize = sizeof (INITCOMMONCONTROLSEX);
-	sIcex.dwICC = ICC_STANDARD_CLASSES;
-
-	//calculate window center
-	RECT sRect;
-	GetClientRect(GetDesktopWindow(), &sRect);
-	sRect.left = (sRect.right / 2) - (WIN_WIDTH / 2);
-	sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20; //-20 for task bar presumed to be a the bottom
-
-	//initiate common controls libary >V6.00 (commctrl32.dll) for modern visual styles should be located in ..\\lib folder
-
-	//verify that common controls were initiated for modern visual styles correctly
-	if(InitCommonControlsEx(&sIcex) == FALSE)
-	{
-		MessageBox(NULL, "Standard classes could not be loaded", "Common controls", MB_ICONINFORMATION | MB_OK);
-	}
-
-	//register main window class
+	//attempt to register main window class
 	if(!RegisterClassEx(&sWinClass))
 	{
-		MessageBox(NULL, "Window Registration Failed!", "Error!", MB_ICONERROR | MB_OK);
+		MessageBox(NULL, "Main window Registration Failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
 		return __LINE__;
 	}
 
-	//assign window handler (create window)
-	hWnd = CreateWindowEx(WS_EX_COMPOSITED, cWindowClassName, "Services Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
-	sRect.left, sRect.top, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL); 
+	//attempt to get desktop rectangle
+	if(GetClientRect(GetDesktopWindow(), &sRect) == FALSE)
+	{
+		MessageBox(NULL, "Could not center window.", "Error!", MB_ICONEXCLAMATION | MB_OK);
 
-	//verify window has been created correctly if not bail
-	if(hWnd == NULL)
+		//attempt to create the main window with default positioning coordinates
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
+	}
+	else
+	{
+		//calculate window center
+		sRect.left = (sRect.right / 2) - (WIN_WIDTH / 2);
+		sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20; //-20 for task bar presumed to be at the bottom	
+
+		//attempt to create main window with centered positioning coordinates
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+		sRect.left, sRect.top, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
+	}
+
+	//verify main window has been created correctly
+	if(sHdlWinMain == NULL)
 	{
 		MessageBox(NULL, "Window Creation Failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
 		return __LINE__;
 	}
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
+	//initiate common controls libary > V6.00 (commctrl32.dll)
+	//for modern visual styles, Should be located in ..\lib folder.
+	sInitCtrlEx.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	sInitCtrlEx.dwICC = ICC_STANDARD_CLASSES;
+
+	//verify that common controls for modern visual styles were initiated correctly
+	if(InitCommonControlsEx(&sInitCtrlEx) == FALSE)
+	{
+		MessageBox(sHdlWinMain, "Standard classes Not been loaded", "Common controls", MB_ICONINFORMATION | MB_OK);
+	}
+
+	ShowWindow(sHdlWinMain, nCmdShow);
+	UpdateWindow(sHdlWinMain);
 
 	//main window nervous system
 	while(GetMessage(&sMsg, NULL, 0, 0) > 0)

@@ -3,7 +3,7 @@
 <assemblyIdentity
     version="1.0.0.0"
     processorArchitecture="*"
-    name="Simple Solutions.Sandbox App.ExampleApp"
+    name="Service Control GUI"
     type="win32"
 />
 <description>App for program testing</description>
