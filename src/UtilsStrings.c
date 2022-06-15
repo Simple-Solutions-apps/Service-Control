@@ -1,12 +1,9 @@
-//File containing code related to styrings/arrays
-//Note this file still needs commenting and is a WIP
-
 /*-------------------------------------------
   Copyright Simple Solutions, 2021
   Revised: 2021/09/24 14:13
 -------------------------------------------*/
 
-//Standard includs
+//Standard includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +12,7 @@
 //custom includes
 #include "..\include\UtilsStrings.h"
 
-//determine if string is a intiger
+//determine if string is a integer
 int IsInt(char *cString)
 {
   for(int i = 0; cString[i] != '\0'; i++)

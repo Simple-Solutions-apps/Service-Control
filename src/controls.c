@@ -60,6 +60,11 @@ int CreateControls(HWND sHdlWinMain)
 	HWND sBtnBrowse;
 	HWND sBtnCMDRun;
 
+	//declare font to use
+	HFONT sFontHandle;
+
+	LRESULT iResult;
+
 	//declare variables/structures for toolbar
 	TBBUTTON sButtonsToAdd[TB_BTN_COUNT]; //Container for toolbar buttons
 	HIMAGELIST sImageList;
@@ -94,6 +99,15 @@ int CreateControls(HWND sHdlWinMain)
 		return __LINE__;
 	}
 
+	//attempt to create font to use
+	sFontHandle = CreateFont(16, 0, 0, 0, FW_LIGHT, FALSE, 0, 0, 0, 0, 0, 0, 0, "Arial");
+
+	//verify that font to use was created correctly
+	if(sFontHandle == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create font.", "Error", MB_OK | MB_ICONINFORMATION);
+	}
+
 	//attempt to create toolbar 
 	sToolBar = CreateWindowEx(0, "ToolbarWindow32", NULL,
 	CCS_ADJUSTABLE | WS_BORDER | WS_CHILD | WS_VISIBLE | TBSTYLE_FLAT,
@@ -108,9 +122,9 @@ int CreateControls(HWND sHdlWinMain)
 
 	//attempt to create bitmap
 	sBitmap = (HBITMAP) LoadImage(vModInstHandle, MAKEINTRESOURCE(IDB_TBBITMAP_LARGE_COLOR), IMAGE_BITMAP,
-	TB_BTN_BITMAP_W, TB_BTN_BITMAP_H, LR_CREATEDIBSECTION);
+	TB_BTN_BITMAP_W, TB_BTN_BITMAP_H, LR_CREATEDIBSECTION /*<- this is important*/);
 
-	//verify if bitmap was added to image list correctly
+	//verify if bitmap was created correctly
 	if(sBitmap == NULL)
 	{
 		MessageBox(sHdlWinMain, "Could not create bitmap.", "Error", MB_OK | MB_ICONERROR);
@@ -140,6 +154,7 @@ int CreateControls(HWND sHdlWinMain)
 	
 	//define functionality for buttons
 	ZeroMemory(sButtonsToAdd, sizeof(sButtonsToAdd));
+
     sButtonsToAdd[0].iBitmap = MAKELONG(0, 0);
     sButtonsToAdd[0].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
@@ -203,6 +218,9 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create group box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	//attempt to set the default font for label 
+	SendMessage(sGrpBoxParams, WM_SETFONT, sFontHandle, TRUE);
+
 	//begin creating labels
 
 	//attempt to create label (Typical going forward)
@@ -214,6 +232,9 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	//attempt to set the default font for label  (Typical going forward)
+	SendMessage(sLabelCommand, WM_SETFONT, sFontHandle, TRUE);
 	
 	//increment X and Y coordinates for next control (Typical going forward)
 	iPosLabelY = iPosLabelY + iIncLabelY;
@@ -225,6 +246,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sLabelSvrName, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -234,7 +257,9 @@ int CreateControls(HWND sHdlWinMain)
 	if(sLabelSvcName == NULL)
 	{
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
-	}	
+	}
+ 
+	SendMessage(sLabelSvcName, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -246,6 +271,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+ 
+	SendMessage(sLabelType, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -257,6 +284,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+ 
+	SendMessage(sLabelInteract, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -268,6 +297,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+ 
+	SendMessage(sLabelStart, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -279,6 +310,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label Error.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelError, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -290,6 +323,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelPathBin, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = 90;
 	
@@ -301,6 +336,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelGroup, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -312,6 +349,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelTag, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -323,6 +362,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelDepend, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -334,6 +375,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelAccName, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -345,6 +388,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelObjName, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -356,6 +401,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelDispName, WM_SETFONT, sFontHandle, TRUE);
 		
 	iPosLabelY = iPosLabelY + iIncLabelY;
 	
@@ -366,6 +413,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
 
 	}
+
+	SendMessage(sLabelPW, WM_SETFONT, sFontHandle, TRUE);
 	
 	//attempt to create combo box (Typical going forward)
 	sComboCommand = CreateWindowEx(0, "ComboBox", NULL,
@@ -378,7 +427,9 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
-	//define combo box list text
+	SendMessage(sComboCommand, WM_SETFONT, sFontHandle, TRUE);
+
+	//define combo box list options text
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
 	strcpy(cComboOptions[0], "create"); //blank/none
 	strcpy(cComboOptions[1], "config");
@@ -408,6 +459,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditSvrName, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -418,6 +471,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditSvcName, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -429,6 +484,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sComboType, WM_SETFONT, sFontHandle, TRUE);
 
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
 	strcpy(cComboOptions[0], "");
@@ -460,6 +517,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sComboInteract, WM_SETFONT, sFontHandle, TRUE);
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
 	strcpy(cComboOptions[0], "");
 	strcpy(cComboOptions[1], "own");
@@ -484,6 +543,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sComboStart, WM_SETFONT, sFontHandle, TRUE);
 
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
 	strcpy(cComboOptions[0], "");
@@ -514,6 +575,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sComboError, WM_SETFONT, sFontHandle, TRUE);
+
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
 	strcpy(cComboOptions[0], "");
 	strcpy(cComboOptions[1], "normal");
@@ -541,6 +604,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sEditPathBin, WM_SETFONT, sFontHandle, TRUE);
+
 	iPosCtrlY = 85;
 
 	sEditGroup = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
@@ -550,6 +615,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditGroup, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -561,6 +628,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create combo box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sComboError, WM_SETFONT, sFontHandle, TRUE);
 
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
 	strcpy(cComboOptions[0], "");
@@ -586,6 +655,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditDepend, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -596,6 +667,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditAccName, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -607,6 +680,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sEditObjName, WM_SETFONT, sFontHandle, TRUE);
+
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 
 	sEditDispName = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
@@ -616,6 +691,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditDispName, WM_SETFONT, sFontHandle, TRUE);
 	
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -627,6 +704,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sEditPW, WM_SETFONT, sFontHandle, TRUE);
+
 	sBtnBrowse = CreateWindowEx(0, "BUTTON", "Browse", WS_CHILD | WS_VISIBLE, //BS_DEFPUSHBUTTON "Enter button"
 	548, 295, 60, 25, sHdlWinMain, (HMENU) IDC_BTN_BROWSE, vModInstHandle, NULL);
 
@@ -635,6 +714,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sBtnBrowse, WM_SETFONT, sFontHandle, TRUE);
+
 	sEditDesc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "The description of each parameter will appear here.", WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
 	548, 85, 300, 205, sHdlWinMain, (HMENU) IDC_EDIT_PW, vModInstHandle, NULL);
 
@@ -642,6 +723,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditDesc, WM_SETFONT, sFontHandle, TRUE);
 
 	sGrpBoxCMDLine = CreateWindowEx(0, "BUTTON", "Build", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
 	5, 340, 850, 70, sHdlWinMain, (HMENU) IDC_GRPBOX_CMDLINE, vModInstHandle, NULL);
@@ -652,6 +735,8 @@ int CreateControls(HWND sHdlWinMain)
 
 	}
 
+	SendMessage(sGrpBoxCMDLine, WM_SETFONT, sFontHandle, TRUE);
+
 	sLabelCMDLine = CreateWindowEx(0, "STATIC", "Command line:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	10, 370, 105, 20, sHdlWinMain, (HMENU) IDC_LABEL_CMDLINE, vModInstHandle, NULL);
 
@@ -661,6 +746,8 @@ int CreateControls(HWND sHdlWinMain)
 
 	}
 
+	SendMessage(sLabelCMDLine, WM_SETFONT, sFontHandle, TRUE);
+
 	sEditCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
 	120, 365, 665, 25, sHdlWinMain, (HMENU) IDC_EDIT_CMDLINE, vModInstHandle, NULL);
 
@@ -668,6 +755,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditCMDLine, WM_SETFONT, sFontHandle, TRUE);
 
 	sBtnCMDRun = CreateWindowEx(0, "BUTTON", "Run", WS_CHILD | WS_VISIBLE,
 	790, 365, 60, 25, sHdlWinMain, (HMENU) IDC_BTN_CMDRUN, vModInstHandle, NULL);
@@ -677,6 +766,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sBtnCMDRun, WM_SETFONT, sFontHandle, TRUE);
+
 	sGrpBoxFile = CreateWindowEx(0, "BUTTON", "File contents", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
 	5, 415, 850, 250, sHdlWinMain, (HMENU) IDC_GRPBOX_PARAMS, vModInstHandle, NULL);
 
@@ -685,6 +776,8 @@ int CreateControls(HWND sHdlWinMain)
 		MessageBox(sHdlWinMain, "Could not group box.", "Error", MB_OK | MB_ICONERROR);
 	}
 
+	SendMessage(sGrpBoxFile, WM_SETFONT, sFontHandle, TRUE);
+
 	sEditFile = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
 	10, 440, 840, 220, sHdlWinMain, (HMENU) IDC_EDIT_FILE, vModInstHandle, NULL);
 
@@ -692,6 +785,8 @@ int CreateControls(HWND sHdlWinMain)
 	{
 		MessageBox(sHdlWinMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
+
+	SendMessage(sEditFile, WM_SETFONT, sFontHandle, TRUE);
 
 	return 0;
 }

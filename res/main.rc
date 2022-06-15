@@ -22,13 +22,11 @@ IDB_TBBITMAP_LARGE_COLOR BITMAP "..\\assets\\images\\TB_BTNSET_CLRSTD.bmp"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\\Manifest\\ServiceControl.exe.manifest"
 
 //About dialog
-IDD_ABOUT DIALOGEX DISCARDABLE 0, 0, 239, 66
+IDD_ABOUT DIALOGEX DISCARDABLE 255, 30, 239, 66
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
-FONT 8, "MS Sans Serif"
+FONT 10, "Arial"
 BEGIN
-	DEFPUSHBUTTON "&OK",IDOK,174,18,50,14
-	PUSHBUTTON "&Cancel",IDCANCEL,174,35,50,14
 	GROUPBOX "About this program...",IDC_STATIC,7,7,225,52
-	CTEXT "An example program showing how to use Win32 API\r\n\r\nby -Construct-",IDC_STATIC,16,18,144,33
+	CTEXT "A graphical user interface (GUI) for the windows sc.exe (Service control) command line interface program\r\n\r\nPlease consider supporting...",IDC_STATIC, 16, 18, 210, 33
 END

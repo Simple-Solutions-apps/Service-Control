@@ -13,7 +13,6 @@ srcMain = $(DirSrc)\main.c
 srcMsgBoxes = $(DirSrc)\MsgBoxes.c
 srcControls = $(DirSrc)\controls.c
 srcCallbacks = $(DirSrc)\callbacks.c
-srcFunctions = $(DirSrc)\functions.c
 srcResources = $(DirRes)\main.rc
 
 objMain = $(DirObj)\main.o
@@ -39,7 +38,6 @@ $(objResources): $(srcResources)
 
 build: $(objs)
 	$(CC) -o $(APP) $(objs) $(dllCommCtrls) -s -mwindows
-	$(APP)
 clean:
 	del $(DirObj)\*.o $(DirBin)\*.exe
 run:

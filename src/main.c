@@ -24,11 +24,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG sMsg;
 	RECT sRect;
 	HANDLE vModHandle;
-	INITCOMMONCONTROLSEX sInitCtrlEx;	
+	INITCOMMONCONTROLSEX sInitCtrlEx;
+	LRESULT iResult;		
 
 	//definitions
 
-	//Handle to this executable
+	//define handle to this module/executable
 	vModHandle = GetModuleHandle(NULL);
 
 	//define window class name
