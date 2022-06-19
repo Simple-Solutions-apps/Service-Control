@@ -8,13 +8,50 @@
 	#define RESOURCES_H
 
 	//icons
-	#define IDI_APPICON 100
+	#define IDI_APPICON 800
 
 	//bitmaps
 	#define IDB_TBBITMAP_LARGE_COLOR 200
 
+	//strings (text)
+	#define IDS_COMMAND_CONF 1400
+	#define IDS_COMMAND_CREATE 1401
+	#define IDS_COMMAND_DELETE 1402
+	#define IDS_COMMAND_QUERY 1403
+	#define IDS_SVRNAME 1404
+	#define IDS_SVCNAME 1405
+	#define IDS_TYPE_OWN 1406
+	#define IDS_TYPE_SHARE 1407
+	#define IDS_TYPE_KERNEL 1408
+	#define IDS_TYPE_FILSYS 1408
+	#define IDS_TYPE_REC 1409
+	#define IDS_TYPE_ADAPT 1410
+	#define IDS_TYPE_INTERACT 1411
+	#define IDS_INTERACT_OWN 1412
+	#define IDS_INTERACT_SHARE 1413
+	#define IDS_START_BOOT 1414
+	#define IDS_START_SYSTEM 1415
+	#define IDS_START_AUTO 1416
+	#define IDS_START_DEMAND 1417
+	#define IDS_START_DISABLED 1418
+	#define IDS_START_DELAYED 1419
+	#define IDS_ERROR_NORMAL 1420
+	#define IDS_ERROR_SEVERE 1421
+	#define IDS_ERROR_CRITICAL 1422
+	#define IDS_ERROR_IGNORE 1423
+	#define IDS_PATHBIN 1424
+	#define IDS_GROUP 1425
+	#define IDS_TAG_YES 1426
+	#define IDS_TAG_NO 1427
+	#define IDS_DEPEND 1428
+	#define IDS_ACCNAME 1429
+	#define IDS_OBJNAME 1430
+	#define IDS_DISPNAME 1431
+	#define IDS_PW 1432
+	#define IDS_CMDLINE 1433
+
 	//Dialog windows
-	#define IDD_ABOUT 3100		
+	#define IDD_ABOUT 500		
 
 //end of wrapper
 #endif

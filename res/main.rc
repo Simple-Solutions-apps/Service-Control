@@ -1,4 +1,3 @@
-
 /*-------------------------------------------
   Copyright Simple Solutions, 2022
   Revised: 2022/06/13 00:17
@@ -12,7 +11,7 @@
 #include "..\include\resource.h"
 #include "..\include\controls.h"
 
-//Window icon
+//window icon 
 IDI_APPICON ICON "..\\assets\\images\\mainicon.ico"
 
 //Toolbar custom bitmap
@@ -22,11 +21,51 @@ IDB_TBBITMAP_LARGE_COLOR BITMAP "..\\assets\\images\\TB_BTNSET_CLRSTD.bmp"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\\Manifest\\ServiceControl.exe.manifest"
 
 //About dialog
-IDD_ABOUT DIALOGEX DISCARDABLE 255, 30, 239, 66
+IDD_ABOUT DIALOGEX DISCARDABLE 255, 30, 239, 90
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 10, "Arial"
 BEGIN
-	GROUPBOX "About this program...",IDC_STATIC,7,7,225,52
-	CTEXT "A graphical user interface (GUI) for the windows sc.exe (Service control) command line interface program\r\n\r\nPlease consider supporting...",IDC_STATIC, 16, 18, 210, 33
+	GROUPBOX "About this program",IDC_STATIC,7,7,225,75
+	CTEXT "©2022 Simple Solutions\r\n\r\nA graphical user interface (GUI) for the windows sc.exe\r\n(Service control) command line interface program\r\n\r\nPlease consider supporting...",IDC_STATIC, 16, 18, 210, 60
+END
+
+//Description strings
+STRINGTABLE
+BEGIN
+	IDS_COMMAND_CONF, "Modifies the value of a service's entries in the registry and in the Service Control Manager database."
+	IDS_COMMAND_CREATE, "Creates a subkey and entries for a service in the registry and in the Service Control Manager database." 
+	IDS_COMMAND_DELETE, "Deletes a service subkey from the registry. If the service is running or if another process has an open handle to the service, the service is marked for deletion."
+	IDS_COMMAND_QUERY, "Obtains and displays information about the specified service, driver, type of service, or type of driver."
+	IDS_SVRNAME, "Specifies the name of the remote server on which the service is located. The name must use the Universal Naming Convention (UNC) format (for example, \myserver). To run SC.exe locally, don't use this parameter."
+	IDS_SVCNAME, "Specifies the service name returned by the getkeyname operation. This query parameter isn't used in conjunction with other query parameters (other than servername)."
+	IDS_TYPE_OWN, "Specifies a service that runs in its own process. It doesn't share an executable file with other services. This is the default value."
+	IDS_TYPE_SHARE, "Specifies a service that runs as a shared process. It shares an executable file with other services."
+	IDS_TYPE_KERNEL, "Specifies a driver."
+	IDS_TYPE_FILSYS, "Specifies a file system driver."
+	IDS_TYPE_REC, "Specifies a file system-recognized driver that identifies file systems used on the computer."
+	IDS_TYPE_ADAPT, "Specifies an adapter driver that identifies hardware devices such as keyboards, mice, and disk drives."
+	IDS_TYPE_INTERACT, "Specifies a service that can interact with the desktop, receiving input from users. Interactive services must be run under the LocalSystem account. This type must be used in conjunction with type= own or type= shared (for example, type= interact type= own). Using type= interact by itself will generate an error."
+	IDS_INTERACT_OWN, "Specifies a service that can interact with the desktop, receiving input from users. Interactive services must be run under the LocalSystem account. This type must be used in conjunction with type= own or type= shared (for example, type= interact type= own). Using type= interact by itself will generate an error."
+	IDS_INTERACT_SHARE, "Specifies a service that can interact with the desktop, receiving input from users. Interactive services must be run under the LocalSystem account. This type must be used in conjunction with type= own or type= shared (for example, type= interact type= own). Using type= interact by itself will generate an error."
+	IDS_START_BOOT, "Specifies a device driver that is loaded by the boot loader."
+	IDS_START_SYSTEM, "Specifies a device driver that is started during kernel initialization."
+	IDS_START_AUTO, "Specifies a service that automatically starts each time the computer is restarted and runs even if no one logs on to the computer."
+	IDS_START_DEMAND, "Specifies a service that must be started manually. This is the default value if start= is not specified."
+	IDS_START_DISABLED, "Specifies a service that cannot be started. To start a disabled service, change the start type to some other value."
+	IDS_START_DELAYED, "Specifies a service that starts automatically a short time after other auto services are started."
+	IDS_ERROR_NORMAL, "Specifies that the error is logged and a message box is displayed, informing the user that a service has failed to start. Startup will continue. This is the default setting."
+	IDS_ERROR_SEVERE, "Specifies that the error is logged (if possible). The computer attempts to restart with the last-known good configuration. This could result in the computer being able to restart, but the service may still be unable to run."
+	IDS_ERROR_CRITICAL, "Specifies that the error is logged (if possible). The computer attempts to restart with the last-known good configuration. If the last-known good configuration fails, startup also fails, and the boot process halts with a Stop error."
+	IDS_ERROR_IGNORE, "Specifies that the error is logged and startup continues. No notification is given to the user beyond recording the error in the Event Log."
+	IDS_PATHBIN, "Specifies a path to the service binary file. There is no default for binpath=, and this string must be supplied. Additionally, ntsd -d can be specified in front of the string for debugging. For more information, see Debugging using CDB and NTSD."
+	IDS_GROUP, "Specifies the name of the group of which this service is a member. The list of groups is stored in the registry, in the HKLM\\System\\CurrentControlSet\\Control\\ServiceGroupOrder subkey. The default value is null."
+	IDS_TAG_YES, "Specifies whether or not to obtain a TagID from the CreateService call. Tags are used only for boot-start and system-start drivers."
+	IDS_TAG_NO, "Specifies whether or not to obtain a TagID from the CreateService call. Tags are used only for boot-start and system-start drivers."
+	IDS_DEPEND, "Specifies the names of services or groups that must start before this service. The names are separated by forward slashes (/)."
+	IDS_ACCNAME, "Specifies a name of an account in which a service will run, or specifies a name of the Windows driver object in which the driver will run. The default setting is LocalSystem."
+	IDS_OBJNAME, "Specifies a name of an account in which a service will run, or specifies a name of the Windows driver object in which the driver will run. The default setting is LocalSystem."
+	IDS_DISPNAME, "Specifies a descriptive name for identifying the service in user interface programs. For example, the subkey name of one particular service is wuauserv, which has a more friendly display name of Automatic Updates."
+	IDS_PW, "Specifies a password. This is required if an account other than the LocalSystem account is used."
+	IDS_CMDLINE, "Specifies the entire command line to run"
 END

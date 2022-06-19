@@ -41,6 +41,10 @@
 	#define IDC_LABEL_DISPNAME 1014
 	#define IDC_LABEL_PW 1015
 	#define IDC_LABEL_CMDLINE 1038
+	#define IDC_LABEL_QYTYPE 1042
+	#define IDC_LABEL_STATE 1043
+	#define IDC_LABEL_BUFF 1044
+	#define IDC_LABEL_RESUME 1045
 
 	//buttons
 	#define IDC_BTN_BROWSE 1016
@@ -53,6 +57,8 @@
 	#define IDC_COMBO_START 1020
 	#define IDC_COMBO_ERROR 1021
 	#define IDC_COMBO_TAG 1022
+	#define IDC_COMBO_QYTYPE 1046
+	#define IDC_COMBO_STATE 1047
 
 	//edit boxes
 	#define IDC_EDIT_SVRNAME 1023
@@ -64,8 +70,11 @@
 	#define IDC_EDIT_OBJNAME 1029
 	#define IDC_EDIT_DISPNAME 1030
 	#define IDC_EDIT_PW 1031
+	#define IDC_EDIT_DESC 1041
 	#define IDC_EDIT_CMDLINE 1039
 	#define IDC_EDIT_FILE 1040
+	#define IDC_EDIT_BUFF 1048
+	#define IDC_EDIT_RESUME 1049
 
 	//prototypes
 	int CreateControls(HWND sHdlWinMain);

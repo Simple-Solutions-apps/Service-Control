@@ -25,7 +25,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RECT sRect;
 	HANDLE vModHandle;
 	INITCOMMONCONTROLSEX sInitCtrlEx;
-	LRESULT iResult;		
+	//LRESULT iResult;		
 
 	//definitions
 
@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		MessageBox(NULL, "Could not center window.", "Error!", MB_ICONEXCLAMATION | MB_OK);
 
 		//attempt to create the main window with default positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control *Untitled.bat", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}
 	else
@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20; //-20 for task bar presumed to be at the bottom	
 
 		//attempt to create main window with centered positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control *Untitled.bat", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		sRect.left, sRect.top, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}
 
