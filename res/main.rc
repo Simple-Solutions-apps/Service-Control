@@ -68,4 +68,12 @@ BEGIN
 	IDS_DISPNAME, "Specifies a descriptive name for identifying the service in user interface programs. For example, the subkey name of one particular service is wuauserv, which has a more friendly display name of Automatic Updates."
 	IDS_PW, "Specifies a password. This is required if an account other than the LocalSystem account is used."
 	IDS_CMDLINE, "Specifies the entire command line to run"
+	IDS_QYTYPE_DRIVER, "Specifies that only drivers are enumerated."
+	IDS_QYTYPE_SERVICE, "pecifies only services are enumerated. This is the default value."
+	IDS_QYTYPE_ALL, "Specifies that both drivers and services are enumerated."
+	IDS_STATE_ACTIVE, "Specifies all active services. This is the default value."
+	IDS_STATE_INACTIVE, "Specifies all paused or stopped services."
+	IDS_STATE_ALL, "Specifies all services."
+	IDS_BUFF, "Specifies the size (in bytes) of the enumeration buffer. The default buffer size is 1,024 bytes. You should increase the size of the buffer when the display resulting from a query goes over 1,024 bytes."
+	IDS_RESUME, "Specifies the index number at which enumeration is to begin or resume. The default value is 0 (zero). If more information is returned than what the default buffer can display, use this parameter with the bufsize= parameter."
 END

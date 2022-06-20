@@ -18,8 +18,6 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 {
 	//declarations
 	HMODULE vModHandle;
-	LOGFONT sFontAttributes;
-	NONCLIENTMETRICS sFontMetrics;
 	HFONT sFontMainWindow;	
 
 	int iComboIndex;
@@ -45,6 +43,10 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 	HWND sHndlWinObjName = GetDlgItem(sHdlWinMain, IDC_EDIT_OBJNAME);
 	HWND sHndlWinDispName = GetDlgItem(sHdlWinMain, IDC_EDIT_DISPNAME);
 	HWND sHndlWinPW = GetDlgItem(sHdlWinMain, IDC_EDIT_PW);
+	HWND sHndlWinQyType = GetDlgItem(sHdlWinMain, IDC_COMBO_QYTYPE);
+	HWND sHndlWinState = GetDlgItem(sHdlWinMain, IDC_COMBO_STATE);
+	HWND sHndlWinBuff = GetDlgItem(sHdlWinMain, IDC_EDIT_BUFF);
+	HWND sHndlWinResume = GetDlgItem(sHdlWinMain, IDC_EDIT_RESUME);	
 	
 	//verify handle to this module/executable was created correctly
 	if(vModHandle == NULL)
@@ -126,8 +128,11 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							EnableWindow(sHndlWinAccName, TRUE);
 							EnableWindow(sHndlWinObjName, TRUE);
 							EnableWindow(sHndlWinDispName, TRUE);
-							EnableWindow(sHndlWinPW, TRUE);							
-
+							EnableWindow(sHndlWinQyType, FALSE);
+							EnableWindow(sHndlWinState, FALSE);
+							EnableWindow(sHndlWinBuff, FALSE);
+							EnableWindow(sHndlWinResume, FALSE);
+							
 							switch(iComboIndex)
 							{
 								case 0:
@@ -175,6 +180,29 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 								case 3:
 									LoadString(vModHandle, IDS_COMMAND_QUERY, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHndlWinStart,  CB_SETCURSEL, 0, 0);
+									SendMessage(sHndlWinError,  CB_SETCURSEL, 0, 0);
+									SendMessage(sHndlWinPathBin,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHndlWinTag,  CB_SETCURSEL, 0, 0);
+									SendMessage(sHndlWinDepend,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHndlWinAccName,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHndlWinObjName,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHndlWinDispName,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHndlWinPW,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHndlWinStart, FALSE);
+									EnableWindow(sHndlWinError, FALSE);
+									EnableWindow(sHndlWinPathBin, FALSE);
+									EnableWindow(sHndlWinGroup, FALSE);
+									EnableWindow(sHndlWinTag, FALSE);
+									EnableWindow(sHndlWinDepend, FALSE);
+									EnableWindow(sHndlWinAccName, FALSE);
+									EnableWindow(sHndlWinObjName, FALSE);
+									EnableWindow(sHndlWinDispName, FALSE);
+									EnableWindow(sHndlWinPW, FALSE);
+									EnableWindow(sHndlWinQyType, TRUE);
+									EnableWindow(sHndlWinState, TRUE);
+									EnableWindow(sHndlWinBuff, TRUE);
+									EnableWindow(sHndlWinResume, TRUE);
 									return TRUE;
 									break;
 							}							
@@ -484,6 +512,88 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 						{
 							case EN_SETFOCUS:
 								LoadString(vModHandle, IDS_CMDLINE, cTempBuff, 399);
+								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+								return TRUE;
+								break;
+						}
+						break;
+
+					case IDC_COMBO_QYTYPE:
+						switch(HIWORD (wParam))
+						{
+							case CBN_SELCHANGE:
+								iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+								switch(iComboIndex)
+								{
+									case 0:
+										LoadString(vModHandle, IDS_QYTYPE_SERVICE, cTempBuff, 399);
+										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+										return TRUE;
+										break;
+
+									case 1:
+										LoadString(vModHandle, IDS_QYTYPE_DRIVER, cTempBuff, 399);
+										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+										return TRUE;
+										break;
+
+									case 2:
+										LoadString(vModHandle, IDS_QYTYPE_ALL, cTempBuff, 399);
+										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+										return TRUE;
+										break;
+
+								}							
+								break;
+						}
+						break;
+
+				case IDC_COMBO_STATE:
+						switch(HIWORD (wParam))
+						{
+							case CBN_SELCHANGE:
+								iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+								switch(iComboIndex)
+								{
+									case 0:
+										LoadString(vModHandle, IDS_STATE_ACTIVE, cTempBuff, 399);
+										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+										return TRUE;
+										break;
+
+									case 1:
+										LoadString(vModHandle, IDS_STATE_INACTIVE, cTempBuff, 399);
+										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+										return TRUE;
+										break;
+
+									case 2:
+										LoadString(vModHandle, IDS_STATE_ALL, cTempBuff, 399);
+										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+										return TRUE;
+										break;
+
+								}							
+								break;
+						}
+						break;
+
+				case IDC_EDIT_BUFF:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vModHandle, IDS_BUFF, cTempBuff, 399);
+								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+								return TRUE;
+								break;
+						}
+						break;
+
+				case IDC_EDIT_RESUME:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vModHandle, IDS_RESUME, cTempBuff, 399);
 								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 								return TRUE;
 								break;

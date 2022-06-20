@@ -49,7 +49,15 @@
 	#define IDS_DISPNAME 1431
 	#define IDS_PW 1432
 	#define IDS_CMDLINE 1433
-
+	#define IDS_QYTYPE_DRIVER 1434
+	#define IDS_QYTYPE_SERVICE 1435
+	#define IDS_QYTYPE_ALL 1436
+	#define IDS_STATE_ACTIVE 1437
+	#define IDS_STATE_INACTIVE 1438
+	#define IDS_STATE_ALL 1439
+	#define IDS_BUFF 1440
+	#define IDS_RESUME 1441
+	
 	//Dialog windows
 	#define IDD_ABOUT 500		
 
