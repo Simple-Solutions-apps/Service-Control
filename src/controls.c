@@ -835,7 +835,7 @@ int CreateControls(HWND sHdlWinMain)
 
 	SendMessage(sEditResume, WM_SETFONT, (WPARAM) sFontHandle, TRUE);
 
-	sEditDesc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "The description of each parameter will appear here.", WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+	sEditDesc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
 	548, 85, 300, 205, sHdlWinMain, (HMENU) IDC_EDIT_DESC, vModInstHandle, NULL);
 
 	if(sEditDesc == NULL)
@@ -906,6 +906,9 @@ int CreateControls(HWND sHdlWinMain)
 	}
 
 	SendMessage(sEditFile, WM_SETFONT, (WPARAM) sFontHandle, TRUE);
+
+	//attempt to preset controls
+	SendMessage(sHdlWinMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sComboCommand);
 
 	return 0;
 }

@@ -18,12 +18,28 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 {
 	//declarations
 	HMODULE vModHandle;
-	HFONT sFontMainWindow;	
+	//EDITBALLOONTIP sEitherOrTip;
 
 	int iComboIndex;
 	char *cTempBuff;
+	
+	//WCHAR cUniTitle[12];
+	//WCHAR cUniText[70];
 
 	//definitions
+	
+	/*
+	//define tooltip structure for account name and object name parameters.
+	sEitherOrTip.cbStruct = sizeof (EDITBALLOONTIP);
+	//strcpy(cTempBuff, "Information");
+	//MultiByteToWideChar(CP_ACP, 0, cTempBuff, -1, cUniTitle, 50);
+	sEitherOrTip.pszTitle = "Information";
+	//strcpy(cTempBuff, "Either account name or object name are allowed but not both");
+	//MultiByteToWideChar(CP_OEMCP, 0, cTempBuff, -1, cUniText, 100);
+	sEitherOrTip.pszText = "Either account name or object name are allowed but not both";
+	sEitherOrTip.ttiIcon = TTI_INFO;
+	*/
+
 	vModHandle = GetModuleHandle(NULL);
 	cTempBuff = (char *) malloc(400 * sizeof (char));
 
@@ -192,7 +208,6 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 									EnableWindow(sHndlWinStart, FALSE);
 									EnableWindow(sHndlWinError, FALSE);
 									EnableWindow(sHndlWinPathBin, FALSE);
-									EnableWindow(sHndlWinGroup, FALSE);
 									EnableWindow(sHndlWinTag, FALSE);
 									EnableWindow(sHndlWinDepend, FALSE);
 									EnableWindow(sHndlWinAccName, FALSE);
@@ -469,6 +484,19 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							case EN_SETFOCUS:
 								LoadString(vModHandle, IDS_ACCNAME, cTempBuff, 399);
 								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+								//SendMessage(sHndlWinAccName,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sEitherOrTip);
+								return TRUE;
+								break;
+							case EN_CHANGE:
+								if(SendMessage(sHndlWinAccName,  WM_GETTEXTLENGTH, 0, 0) > 0)
+								{
+									SendMessage(sHndlWinObjName,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHndlWinObjName, FALSE);
+								}
+								else
+								{
+									EnableWindow(sHndlWinObjName, TRUE);
+								}
 								return TRUE;
 								break;
 						}
@@ -480,6 +508,18 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							case EN_SETFOCUS:
 								LoadString(vModHandle, IDS_OBJNAME, cTempBuff, 399);
 								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+								return TRUE;
+								break;
+							case EN_CHANGE:
+								if(SendMessage(sHndlWinObjName,  WM_GETTEXTLENGTH, 0, 0) > 0)
+								{
+									SendMessage(sHndlWinAccName,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHndlWinAccName, FALSE);
+								}
+								else
+								{
+									EnableWindow(sHndlWinAccName, TRUE);
+								}
 								return TRUE;
 								break;
 						}
