@@ -6,6 +6,9 @@
 
 	//Controls
 
+	//tooltips
+	#define IDC_MAIN_TOOLTIP 1050
+
 	//tool bar
 	#define IDC_MAIN_TOOLBAR 1100
 	#define TB_BTN_COUNT 8

@@ -63,8 +63,8 @@ BEGIN
 	IDS_TAG_YES, "Specifies whether or not to obtain a TagID from the CreateService call. Tags are used only for boot-start and system-start drivers."
 	IDS_TAG_NO, "Specifies whether or not to obtain a TagID from the CreateService call. Tags are used only for boot-start and system-start drivers."
 	IDS_DEPEND, "Specifies the names of services or groups that must start before this service. The names are separated by forward slashes (/)."
-	IDS_ACCNAME, "Specifies a name of an account in which a service will run, or specifies a name of the Windows driver object in which the driver will run. The default setting is LocalSystem."
-	IDS_OBJNAME, "Specifies a name of an account in which a service will run, or specifies a name of the Windows driver object in which the driver will run. The default setting is LocalSystem."
+	IDS_ACCNAME, "Specifies a name of an account in which a service will run. The default setting is LocalSystem."
+	IDS_OBJNAME, "Specifies a name of the Windows driver object in which the driver will run. The default setting is LocalSystem."
 	IDS_DISPNAME, "Specifies a descriptive name for identifying the service in user interface programs. For example, the subkey name of one particular service is wuauserv, which has a more friendly display name of Automatic Updates."
 	IDS_PW, "Specifies a password. This is required if an account other than the LocalSystem account is used."
 	IDS_CMDLINE, "Specifies the entire command line to run"
@@ -76,4 +76,5 @@ BEGIN
 	IDS_STATE_ALL, "Specifies all services."
 	IDS_BUFF, "Specifies the size (in bytes) of the enumeration buffer. The default buffer size is 1,024 bytes. You should increase the size of the buffer when the display resulting from a query goes over 1,024 bytes."
 	IDS_RESUME, "Specifies the index number at which enumeration is to begin or resume. The default value is 0 (zero). If more information is returned than what the default buffer can display, use this parameter with the bufsize= parameter."
+	IDS_TOOLINFO, "An interact type is required"
 END

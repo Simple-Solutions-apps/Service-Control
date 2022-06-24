@@ -6,7 +6,6 @@
 //standard includes
 #include <windows.h>
 #include <commctrl.h>
-#include <fileapi.h>
 
 //custom includes
 #include "..\include\resource.h"
@@ -18,36 +17,31 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 {
 	//declarations
 	HMODULE vModHandle;
-	EDITBALLOONTIP sEitherOrTip;
+	EDITBALLOONTIP sTipAcc;
+	RECT sWinMainRect;
 
 	int iComboIndex;
 	char *cTempBuff;
+	char *cToolTipText;
 	
-	wchar_t *cUniTitle;
-	wchar_t *cUniText;
+	wchar_t *cUniTitleAcc;
+	wchar_t *cUniTextAcc;
+	wchar_t *cUniTextTooTip;
+
+	TOOLINFO sToolInfo = {0};
 	
 	//initializations	
 	cTempBuff = malloc(400 * sizeof (char));
-	cUniTitle = malloc(15 * sizeof (wchar_t));
-	cUniText = malloc(60 * sizeof (wchar_t));
+	cToolTipText = malloc(50 * sizeof (char));
+	cUniTitleAcc = malloc(23 * sizeof (wchar_t));
+	cUniTextAcc = malloc(60 * sizeof (wchar_t));
+	cUniTextTooTip = malloc(60 * sizeof (wchar_t));
+
 
 	//definitions
 
-	//define tooltip structure for account name and object name parameters.
-	sEitherOrTip.cbStruct = sizeof (EDITBALLOONTIP);
-
-	strcpy(cTempBuff, "Information");
-	MultiByteToWideChar(CP_ACP, 0, cTempBuff, -1, cUniTitle, 70);
-
-	sEitherOrTip.pszTitle = (LPCWSTR) cUniTitle;
-
-	strcpy(cTempBuff, "Either account name or object name is allowed but not both");
-	MultiByteToWideChar(CP_ACP, 0, cTempBuff, -1, cUniText, 70);
-
-	sEitherOrTip.pszText = (LPCWSTR) cUniText;
-	sEitherOrTip.ttiIcon = TTI_INFO;
-
 	//define control handles
+	HWND sHndlWinToolTip = GetDlgItem(sHdlWinMain, IDC_MAIN_TOOLTIP);
 	HWND sHndlWinDesc = GetDlgItem(sHdlWinMain, IDC_EDIT_DESC);
 	HWND sHndlWinSvrName = GetDlgItem(sHdlWinMain, IDC_EDIT_SVRNAME);
 	HWND sHndlWinSvcName = GetDlgItem(sHdlWinMain, IDC_EDIT_SVCNAME);
@@ -70,6 +64,41 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 
 	//define module/executable handle
 	vModHandle = GetModuleHandle(NULL);
+
+	//define tooltip structure for account name and object name parameters.
+	sTipAcc.cbStruct = sizeof (EDITBALLOONTIP);
+	strcpy(cTempBuff, "Account or object name");
+	MultiByteToWideChar(CP_ACP, 0, cTempBuff, -1, cUniTitleAcc, 23);
+	sTipAcc.pszTitle = (LPCWSTR) cUniTitleAcc;
+	strcpy(cTempBuff, "Either account name or object\nname is allowed but not both");
+	MultiByteToWideChar(CP_ACP, 0, cTempBuff, -1, cUniTextAcc, 60);
+	sTipAcc.pszText = (LPCWSTR) cUniTextAcc;
+	sTipAcc.ttiIcon = TTI_INFO;
+
+	//define tool information structure
+	sToolInfo.cbSize = (UINT) sizeof (TOOLINFO);
+	sToolInfo.uFlags = (UINT) TTF_IDISHWND;
+	//sToolInfo.hwnd = (HWND) sHdlWinMain;
+	sToolInfo.uId = (UINT_PTR) sHndlWinInteract;
+	GetClientRect(sHdlWinMain, &sWinMainRect);
+	//sToolInfo.rect = (RECT) sWinMainRect;
+	//sToolInfo.hinst = vModHandle;
+	strcpy(cToolTipText, "Interact");
+	MultiByteToWideChar(CP_ACP, 0, cToolTipText, -1, cUniTextTooTip, 60);
+	sToolInfo.lpszText = (LPTSTR) cToolTipText;
+	//sToolInfo.lParam = (LPARAM) 0;
+	//sToolInfo.lpReserved = NULL;
+
+	//SetWindowPos(sHndlWinToolTip, HWND_TOPMOST,0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+	SendMessage(sHndlWinToolTip, TTM_ACTIVATE, (WPARAM) TRUE, 0);
+	//attempt to set tooltip information 
+	SendMessage(sHndlWinToolTip, TTM_ADDTOOL, 0, (LPARAM) &sToolInfo);
+	SendMessage(sHndlWinToolTip, TTM_ACTIVATE, (WPARAM) TRUE, 0);
+	//attempt to set tooltip information 
+	//SendMessage(sHndlWinToolTip, TTM_UPDATETIPTEXT, 0, (LPARAM) (LPTOOLINFO) &sToolInfo);
+
+	//SetWindowPos(sHndlWinToolTip, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 	
 	//verify handle to this module/executable was created correctly
 	if(vModHandle == NULL)
@@ -141,7 +170,7 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							EnableWindow(sHndlWinSvrName, TRUE);
 							EnableWindow(sHndlWinSvcName, TRUE);
 							EnableWindow(sHndlWinType, TRUE);
-							EnableWindow(sHndlWinInteract, TRUE);
+							EnableWindow(sHndlWinInteract, FALSE);
 							EnableWindow(sHndlWinStart, TRUE);
 							EnableWindow(sHndlWinError, TRUE);
 							EnableWindow(sHndlWinPathBin, TRUE);
@@ -150,11 +179,14 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							EnableWindow(sHndlWinDepend, TRUE);
 							EnableWindow(sHndlWinAccName, TRUE);
 							EnableWindow(sHndlWinObjName, TRUE);
-							EnableWindow(sHndlWinDispName, TRUE);
+							EnableWindow(sHndlWinDispName, TRUE);							
 							EnableWindow(sHndlWinQyType, FALSE);
 							EnableWindow(sHndlWinState, FALSE);
 							EnableWindow(sHndlWinBuff, FALSE);
 							EnableWindow(sHndlWinResume, FALSE);
+							SendMessage(sHndlWinQyType, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+							SendMessage(sHndlWinState, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);							
+							//SendMessage(sHndlWinToolTip,  TTM_ACTIVATE, (WPARAM) FALSE, 0);
 							
 							switch(iComboIndex)
 							{
@@ -221,10 +253,13 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 									EnableWindow(sHndlWinObjName, FALSE);
 									EnableWindow(sHndlWinDispName, FALSE);
 									EnableWindow(sHndlWinPW, FALSE);
-									EnableWindow(sHndlWinQyType, TRUE);
-									EnableWindow(sHndlWinState, TRUE);
+									EnableWindow(sHndlWinQyType, TRUE);									
+									EnableWindow(sHndlWinState, TRUE);									
 									EnableWindow(sHndlWinBuff, TRUE);
 									EnableWindow(sHndlWinResume, TRUE);
+									SendMessage(sHndlWinQyType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+									SendMessage(sHndlWinState, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+
 									return TRUE;
 									break;
 							}							
@@ -263,42 +298,57 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							{
 								case 0:
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Type)");
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+									EnableWindow(sHndlWinInteract, FALSE);
 									return TRUE;
 									break;
 
 								case 1:
 									LoadString(vModHandle, IDS_TYPE_OWN, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+									EnableWindow(sHndlWinInteract, FALSE);
 									return TRUE;
 									break;
 
 								case 2:
 									LoadString(vModHandle, IDS_TYPE_SHARE, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+									EnableWindow(sHndlWinInteract, FALSE);
 									return TRUE;
 									break;
 
 								case 3:
 									LoadString(vModHandle, IDS_TYPE_KERNEL, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+									EnableWindow(sHndlWinInteract, FALSE);
 									return TRUE;
 									break;
 
 								case 4:
 									LoadString(vModHandle, IDS_TYPE_FILSYS, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+									EnableWindow(sHndlWinInteract, FALSE);
 									return TRUE;
 									break;
 
 								case 5:
 									LoadString(vModHandle, IDS_TYPE_REC, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+									EnableWindow(sHndlWinInteract, FALSE);
 									return TRUE;
 									break;
 
 								case 6:
 									LoadString(vModHandle, IDS_TYPE_INTERACT, cTempBuff, 399);
 									SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									EnableWindow(sHndlWinInteract, TRUE);
+									SendMessage(sHndlWinInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+									//SendMessage(sHndlWinToolTip,  TTM_ACTIVATE, (WPARAM) TRUE, 0);								
 									return TRUE;
 									break;
 							}							
@@ -314,17 +364,12 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 								switch(iComboIndex)
 								{
 									case 0:
-										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Interact)");
-										return TRUE;
-										break;
-
-									case 1:
 										LoadString(vModHandle, IDS_INTERACT_OWN, cTempBuff, 399);
 										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										return TRUE;
 										break;
 
-									case 2:
+									case 1:
 										LoadString(vModHandle, IDS_INTERACT_SHARE, cTempBuff, 399);
 										SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										return TRUE;
@@ -491,7 +536,7 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							case EN_SETFOCUS:
 								LoadString(vModHandle, IDS_ACCNAME, cTempBuff, 399);
 								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								SendMessage(sHndlWinAccName,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sEitherOrTip);
+								SendMessage(sHndlWinAccName,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sTipAcc);
 								return TRUE;
 								break;
 							case EN_CHANGE:
@@ -515,7 +560,7 @@ LRESULT CALLBACK WndProc(HWND sHdlWinMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 							case EN_SETFOCUS:
 								LoadString(vModHandle, IDS_OBJNAME, cTempBuff, 399);
 								SendMessage(sHndlWinDesc,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								SendMessage(sHndlWinObjName,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sEitherOrTip);
+								SendMessage(sHndlWinObjName,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sTipAcc);
 								return TRUE;
 								break;
 							case EN_CHANGE:

@@ -15,6 +15,7 @@ int CreateControls(HWND sHdlWinMain)
 {
 	//declaring controls
 	HWND sToolBar;
+	HWND sToolTipInteract;
 
 	HWND sGrpBoxParams;
 	HWND sGrpBoxCMDLine;
@@ -112,6 +113,18 @@ int CreateControls(HWND sHdlWinMain)
 	if(sFontHandle == NULL)
 	{
 		MessageBox(sHdlWinMain, "Could not create font.", "Error", MB_OK | MB_ICONINFORMATION);
+	}
+
+	//attempt to create tooltip
+	sToolTipInteract = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
+	WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP | TTS_BALLOON,
+	CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, sHdlWinMain, NULL, vModInstHandle, NULL);
+
+	//verify if tooltip was created correctly
+	if(sToolTipInteract == NULL)
+	{
+		MessageBox(sHdlWinMain, "Could not create Tool tip.", "Error", MB_OK | MB_ICONERROR);
+		return __LINE__;
 	}
 
 	//attempt to create toolbar 
@@ -541,7 +554,7 @@ int CreateControls(HWND sHdlWinMain)
 	strcpy(cComboOptions[3], "kernal");
 	strcpy(cComboOptions[4], "filesys");
 	strcpy(cComboOptions[5], "rec");
-	strcpy(cComboOptions[6], "interact type");
+	strcpy(cComboOptions[6], "interact");
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 
 	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
@@ -567,18 +580,17 @@ int CreateControls(HWND sHdlWinMain)
 	SendMessage(sComboInteract, WM_SETFONT, (WPARAM) sFontHandle, TRUE);
 
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy(cComboOptions[0], "");
-	strcpy(cComboOptions[1], "own");
-	strcpy(cComboOptions[2], "share");
+	strcpy(cComboOptions[0], "own");
+	strcpy(cComboOptions[1], "share");
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 
-	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
+	for(iLoopIndex = 0; iLoopIndex <= 1; iLoopIndex++)
 	{
 		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
 		SendMessage(sComboInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}	
  
-	SendMessage(sComboInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+	SendMessage(sComboInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 		
 	iPosCtrlY = iPosCtrlY + iIncCtrlY;
 	
@@ -787,7 +799,7 @@ int CreateControls(HWND sHdlWinMain)
 		SendMessage(sComboQyType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}	
 
-	SendMessage(sComboQyType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+	SendMessage(sComboQyType, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 
 	sComboState = CreateWindowEx(0, "ComboBox", NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
@@ -813,7 +825,7 @@ int CreateControls(HWND sHdlWinMain)
 		SendMessage(sComboState,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}	
 
-	SendMessage(sComboState, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+	SendMessage(sComboState, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 
 	sEditBuff = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_NUMBER,
 	390, 325, 150, 25, sHdlWinMain, (HMENU) IDC_EDIT_BUFF, vModInstHandle, NULL);

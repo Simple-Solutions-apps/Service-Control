@@ -57,6 +57,7 @@
 	#define IDS_STATE_ALL 1439
 	#define IDS_BUFF 1440
 	#define IDS_RESUME 1441
+	#define IDS_TOOLINFO 1442
 	
 	//Dialog windows
 	#define IDD_ABOUT 500		
