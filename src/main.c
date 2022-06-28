@@ -24,8 +24,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG sMsg;
 	RECT sRect;
 	HANDLE vModHandle;
-	INITCOMMONCONTROLSEX sInitCtrlEx;
-	//LRESULT iResult;		
+	INITCOMMONCONTROLSEX sInitCtrlEx;		
 
 	//definitions
 
@@ -86,7 +85,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//initiate common controls libary > V6.00 (commctrl32.dll)
 	//for modern visual styles, Should be located in ..\lib folder.
-	sInitCtrlEx.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	sInitCtrlEx.dwSize = sizeof (INITCOMMONCONTROLSEX);
 	sInitCtrlEx.dwICC = ICC_STANDARD_CLASSES;
 
 	//verify that common controls for modern visual styles were initiated correctly
