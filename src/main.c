@@ -23,13 +23,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	HWND sHdlWinMain;
 	MSG sMsg;
 	RECT sRect;
-	HANDLE vModHandle;
+	HANDLE vHmodInst;
 	INITCOMMONCONTROLSEX sInitCtrlEx;		
 
 	//definitions
 
 	//define handle to this module/executable
-	vModHandle = GetModuleHandle(NULL);
+	vHmodInst = GetModuleHandle(NULL);
 
 	//define window class name
 	const char cWindowClassName[] = "CommandAppGUI"; 
@@ -44,8 +44,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sWinClass.hCursor = (HCURSOR) LoadCursor(NULL, IDC_ARROW);
 	sWinClass.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
 	sWinClass.lpszClassName = cWindowClassName;
-	sWinClass.hIcon = (HICON) LoadIcon(vModHandle, MAKEINTRESOURCE(IDI_APPICON));
-	sWinClass.hIconSm = (HICON) LoadImage(vModHandle, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, 0);
+	sWinClass.hIcon = (HICON) LoadIcon(vHmodInst, MAKEINTRESOURCE(IDI_APPICON));
+	sWinClass.hIconSm = (HICON) LoadImage(vHmodInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, 0);
 	sWinClass.lpszMenuName = NULL;
 
 	//attempt to register main window class
@@ -58,28 +58,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//attempt to get desktop rectangle
 	if(GetClientRect(GetDesktopWindow(), &sRect) == FALSE)
 	{
-		MessageBox(NULL, "Could not center window.", "Error!", MB_ICONEXCLAMATION | MB_OK);
-
 		//attempt to create the main window with default positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control *Untitled", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "*Untitled - Service Control",
+		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}
 	else
 	{
-
 		//calculate window center
 		sRect.left = (sRect.right / 2) - (WIN_WIDTH / 2);
-		sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20; //-20 for task bar presumed to be at the bottom	
+		//sRect.top = (sRect.bottom / 2) - (WIN_HEIGHT / 2)  - 20; //-20 for task bar presumed to be at the bottom	
+		sRect.top = 10;
 
 		//attempt to create main window with centered positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control *Untitled", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "*Untitled - Service Control",
+		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		sRect.left, sRect.top, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}
 
 	//verify main window has been created correctly
 	if(sHdlWinMain == NULL)
 	{
-		MessageBox(NULL, "Window Creation Failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(NULL, "Main window creation failed", "Error", MB_ICONEXCLAMATION | MB_OK);
 		return __LINE__;
 	}
 

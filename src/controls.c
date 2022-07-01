@@ -407,6 +407,15 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlLblResm, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 
+	sHwndCtlLblCMDLine = CreateWindowEx(0, "STATIC", "Command line:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	10, 420, 105, 20, sHwndMain, (HMENU) IDC_LABEL_CMDLINE, vHmodInst, NULL);
+	if(sHwndCtlLblCMDLine == NULL)
+	{
+		MessageBox(sHwndMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
+
+	}
+	SendMessage(sHwndCtlLblCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+
 	//begin creating comboboxes
 
 	//attempt to create combo box (Typical going forward)
@@ -603,6 +612,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtSvr, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtSvr, EM_SETLIMITTEXT, (WPARAM) 16, TRUE);
 	
 	sHwndCtlEdtSvc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	120, 145, 150, 25, sHwndMain, (HMENU) IDC_EDIT_SVCNAME, vHmodInst, NULL);
@@ -611,6 +621,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtSvc, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtSvc, EM_SETLIMITTEXT, (WPARAM) 256, TRUE);
 	
 	sHwndCtlEdtBin = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	120, 295, 420, 25, sHwndMain, (HMENU) IDC_EDIT_PATHBIN, vHmodInst, NULL);
@@ -619,6 +630,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtBin, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtBin, EM_SETLIMITTEXT, (WPARAM) PATH_MAX, TRUE);
 
 	sHwndCtlEdtGrp = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 85, 150, 25, sHwndMain, (HMENU) IDC_EDIT_GROUP, vHmodInst, NULL);
@@ -627,6 +639,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtGrp, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtGrp, EM_SETLIMITTEXT, (WPARAM) 17, TRUE);
 	
 	sHwndCtlEdtDpd = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 145, 150, 25, sHwndMain, (HMENU) IDC_EDIT_DEPEND, vHmodInst, NULL);
@@ -635,6 +648,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtDpd, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtDpd, EM_SETLIMITTEXT, (WPARAM) 179, TRUE);
 	
 	sHwndCtlEdtAcc = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 175, 150, 25, sHwndMain, (HMENU) IDC_EDIT_ACCNAME, vHmodInst, NULL);
@@ -643,6 +657,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtAcc, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtAcc, EM_SETLIMITTEXT, (WPARAM) 256, TRUE);
 	
 	sHwndCtlEdtObj = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 205, 150, 25, sHwndMain, (HMENU) IDC_EDIT_OBJNAME, vHmodInst, NULL);
@@ -651,6 +666,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtObj, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtObj, EM_SETLIMITTEXT, (WPARAM) 256, TRUE);
 
 	sHwndCtlEdtDisp = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 235, 150, 25, sHwndMain, (HMENU) IDC_EDIT_DISPNAME, vHmodInst, NULL);
@@ -659,6 +675,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtDisp, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtDisp, EM_SETLIMITTEXT, (WPARAM) 256, TRUE);
 	
 	sHwndCtlEdtPw = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 265, 150, 25, sHwndMain, (HMENU) IDC_EDIT_PW, vHmodInst, NULL);
@@ -667,14 +684,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtPw, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-
-	sHwndCtlBtnBrowse = CreateWindowEx(0, "BUTTON", "Browse", WS_CHILD | WS_VISIBLE, //BS_DEFPUSHBUTTON "Enter button"
-	548, 295, 60, 25, sHwndMain, (HMENU) IDC_BTN_BROWSE, vHmodInst, NULL);
-	if(sHwndCtlBtnBrowse == NULL)
-	{
-		MessageBox(sHwndMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
-	}
-	SendMessage(sHwndCtlBtnBrowse, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtPw, EM_SETLIMITTEXT, (WPARAM) 16, TRUE);
 
 	sHwndCtlEdtBuf = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_NUMBER,
 	390, 325, 150, 25, sHwndMain, (HMENU) IDC_EDIT_BUFF, vHmodInst, NULL);
@@ -683,6 +693,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtBuf, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtBuf, EM_SETLIMITTEXT, (WPARAM) 4, TRUE);
 
 	sHwndCtlEdtResm = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_NUMBER,
 	390, 355, 150, 25, sHwndMain, (HMENU) IDC_EDIT_RESUME, vHmodInst, NULL);
@@ -691,6 +702,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtResm, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtResm, EM_SETLIMITTEXT, (WPARAM) 2, TRUE);
 
 	sHwndCtlEdtDes = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
 	548, 85, 300, 205, sHwndMain, (HMENU) IDC_EDIT_DESC, vHmodInst, NULL);
@@ -700,15 +712,6 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlEdtDes, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 
-	sHwndCtlLblCMDLine = CreateWindowEx(0, "STATIC", "Command line:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
-	10, 420, 105, 20, sHwndMain, (HMENU) IDC_LABEL_CMDLINE, vHmodInst, NULL);
-	if(sHwndCtlLblCMDLine == NULL)
-	{
-		MessageBox(sHwndMain, "Could not create Label.", "Error", MB_OK | MB_ICONERROR);
-
-	}
-	SendMessage(sHwndCtlLblCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-
 	sHwndCtlEdtCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
 	120, 415, 665, 25, sHwndMain, (HMENU) IDC_EDIT_CMDLINE, vHmodInst, NULL);
 	if(sHwndCtlEdtCMDLine == NULL)
@@ -716,14 +719,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-
-	sHwndCtlBtnRun = CreateWindowEx(0, "BUTTON", "Run", WS_CHILD | WS_VISIBLE,
-	790, 415, 60, 25, sHwndMain, (HMENU) IDC_BTN_CMDRUN, vHmodInst, NULL);
-	if(sHwndCtlBtnRun == NULL)
-	{
-		MessageBox(sHwndMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
-	}
-	SendMessage(sHwndCtlBtnRun, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtCMDLine, EM_SETLIMITTEXT, (WPARAM) 1499, TRUE);
 
 	sHwndCtlEdtFile = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
 	10, 490, 840, 170, sHwndMain, (HMENU) IDC_EDIT_FILE, vHmodInst, NULL);
@@ -732,6 +728,24 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtFile, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+
+	//begin creating buttons
+	
+	sHwndCtlBtnBrowse = CreateWindowEx(0, "BUTTON", "Browse", WS_CHILD | WS_VISIBLE, //BS_DEFPUSHBUTTON "Enter button"
+	548, 295, 60, 25, sHwndMain, (HMENU) IDC_BTN_BROWSE, vHmodInst, NULL);
+	if(sHwndCtlBtnBrowse == NULL)
+	{
+		MessageBox(sHwndMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
+	}
+	SendMessage(sHwndCtlBtnBrowse, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+
+	sHwndCtlBtnRun = CreateWindowEx(0, "BUTTON", "Run", WS_CHILD | WS_VISIBLE,
+	790, 415, 60, 25, sHwndMain, (HMENU) IDC_BTN_CMDRUN, vHmodInst, NULL);
+	if(sHwndCtlBtnRun == NULL)
+	{
+		MessageBox(sHwndMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);
+	}
+	SendMessage(sHwndCtlBtnRun, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);	
 
 	//begin creating tooltip
 
