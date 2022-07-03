@@ -507,7 +507,7 @@ int CreateControls(HWND sHwndMain)
 	strcpy(cComboOptions[5], "disabled");
 	strcpy(cComboOptions[6], "delayed-auto");
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
-	for(iLoopIndex = 0; iLoopIndex <= 5; iLoopIndex++)
+	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
 	{
 		strcpy(&cTempBuff[0], (TCHAR*) cComboOptions[iLoopIndex]);
 		SendMessage(sHwndCtlCmbStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 

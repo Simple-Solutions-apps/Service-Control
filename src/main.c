@@ -44,8 +44,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sWinClass.hCursor = (HCURSOR) LoadCursor(NULL, IDC_ARROW);
 	sWinClass.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
 	sWinClass.lpszClassName = cWindowClassName;
-	sWinClass.hIcon = (HICON) LoadIcon(vHmodInst, MAKEINTRESOURCE(IDI_APPICON));
-	sWinClass.hIconSm = (HICON) LoadImage(vHmodInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 16, 16, 0);
+	sWinClass.hIcon = (HICON) LoadImage(vHmodInst, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 256, 256, 0);
+	sWinClass.hIconSm = NULL;
 	sWinClass.lpszMenuName = NULL;
 
 	//attempt to register main window class

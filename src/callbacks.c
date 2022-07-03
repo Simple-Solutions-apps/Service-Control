@@ -18,7 +18,6 @@ HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
 int iComboIndex;
 int iTextLen;
-int iCMDLineLen;
 char *cTempBuff;	
 wchar_t *cUniTitleAcc;
 wchar_t *cUniTextAcc;
@@ -96,7 +95,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cSvc = calloc(257, sizeof (char));
 			cType = calloc(30, sizeof (char));
 			cInteract = calloc(20, sizeof (char));
-			cStart = calloc(20, sizeof (char));
+			cStart = calloc(22, sizeof (char));
 			cErr = calloc(20, sizeof (char));
 			cBin = calloc(PATH_MAX, sizeof (char)); //PATH_MAX = 260
 			cGrp = calloc(80, sizeof (char));
@@ -181,6 +180,10 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					switch(HIWORD (wParam))
 					{
 						case CBN_SELCHANGE:
+							SendMessage(sHwndCtlEdtBuf,  WM_SETTEXT, 0, (LPARAM) "");
+							SendMessage(sHwndCtlEdtResm,  WM_SETTEXT, 0, (LPARAM) "");
+							SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");
+							SendMessage(sHwndCtlCmbType, CB_DELETESTRING,(WPARAM) 7, 0);
 							EnableWindow(sHwndCtlEdtSvr, TRUE);
 							EnableWindow(sHwndCtlEdtSvr, TRUE);
 							EnableWindow(sHwndCtlCmbType, TRUE);
@@ -188,6 +191,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							EnableWindow(sHwndCtlCmbStart, TRUE);
 							EnableWindow(sHwndCtlCmbErr, TRUE);
 							EnableWindow(sHwndCtlEdtBin, TRUE);
+							EnableWindow(sHwndCtlBtnBrowse, TRUE);
 							EnableWindow(sHwndCtlEdtGrp, TRUE);
 							EnableWindow(sHwndCtlCmbTag, TRUE);
 							EnableWindow(sHwndCtlEdtDpd, TRUE);
@@ -199,43 +203,52 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							EnableWindow(sHwndCtlCmbState, FALSE);
 							EnableWindow(sHwndCtlEdtBuf, FALSE);
 							EnableWindow(sHwndCtlEdtResm, FALSE);
-							SendMessage(sHwndCtlCmbType, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+							EnableWindow(sHwndCtlEdtPw, FALSE);
+							SendMessage(sHwndCtlCmbType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
+							strcpy(cQyType, "");
+							strcpy(cState, "");
+							strcpy(cBuf, "");
+							strcpy(cResm, "");
+							strcpy(cType, "");
+							strcpy(cInteract, "");
+							strcpy(cPw, "");
+
 							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-							iCMDLineLen = 8;
 
 							switch(iComboIndex)
 							{
 								case 0:
 									LoadString(vHmodInst, IDS_COMMAND_CREATE, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									strcpy(cCommand, " create");									
+									strcpy(cCommand, " create");															
 									break;
 
 								case 1:
 									LoadString(vHmodInst, IDS_COMMAND_CONF, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									strcpy(cCommand, " config");
+									SendMessage(sHwndCtlCmbType, CB_ADDSTRING,(WPARAM) 0,(LPARAM) "adapt");
 									break;
 
 								case 2:
 									LoadString(vHmodInst, IDS_COMMAND_DELETE, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									strcpy(cCommand, " delete");
+									strcpy(cCommand, " delete");									
 									SendMessage(sHwndCtlCmbType,  CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlCmbInteract,  CB_SETCURSEL, -1, 0);
 									SendMessage(sHwndCtlCmbStart,  CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlCmbErr,  CB_SETCURSEL, 0, 0);
+									SendMessage(sHwndCtlCmbTag,  CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtGrp,  WM_SETTEXT, 0, (LPARAM) "");
-									SendMessage(sHwndCtlCmbTag,  CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlEdtDpd,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtAcc,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtObj,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtDisp,  WM_SETTEXT, 0, (LPARAM) "");
-									SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");																											
 									EnableWindow(sHwndCtlCmbType, FALSE);
 									EnableWindow(sHwndCtlCmbInteract, FALSE);
 									EnableWindow(sHwndCtlCmbStart, FALSE);
@@ -249,21 +262,33 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									EnableWindow(sHwndCtlEdtObj, FALSE);
 									EnableWindow(sHwndCtlEdtDisp, FALSE);
 									EnableWindow(sHwndCtlEdtPw, FALSE);
+									strcpy(cType, "");
+									strcpy(cInteract, "");
+									strcpy(cStart, "");
+									strcpy(cErr, "");
+									strcpy(cTag, "");
+									strcpy(cBin, "");
+									strcpy(cGrp, "");
+									strcpy(cDpd, "");
+									strcpy(cAcc, "");
+									strcpy(cDisp, "");
+									strcpy(cPw, "");
 									break;
 
 								case 3:
 									LoadString(vHmodInst, IDS_COMMAND_QUERY, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									strcpy(cCommand, " query");									
+									strcpy(cCommand, " query");
+									SendMessage(sHwndCtlCmbType, CB_ADDSTRING,(WPARAM) 0,(LPARAM) "adapt");									
 									SendMessage(sHwndCtlCmbStart,  CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlCmbErr,  CB_SETCURSEL, 0, 0);
-									SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlCmbTag,  CB_SETCURSEL, 0, 0);
+									SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) "");									
 									SendMessage(sHwndCtlEdtDpd,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtAcc,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtObj,  WM_SETTEXT, 0, (LPARAM) "");
 									SendMessage(sHwndCtlEdtDisp,  WM_SETTEXT, 0, (LPARAM) "");
-									SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");									
 									EnableWindow(sHwndCtlCmbStart, FALSE);
 									EnableWindow(sHwndCtlCmbErr, FALSE);
 									EnableWindow(sHwndCtlEdtBin, FALSE);
@@ -280,64 +305,22 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									EnableWindow(sHwndCtlEdtResm, TRUE);
 									SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 									SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+									strcpy(cStart, "");
+									strcpy(cErr, "");
+									strcpy(cTag, "");
+									strcpy(cBin, "");
+									strcpy(cDpd, "");
+									strcpy(cAcc, "");
+									strcpy(cDisp, "");
+									strcpy(cPw, "");
+									strcpy(cQyType, " type= service");
+									strcpy(cState, " state= active");
 									break;
 							}
-							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-							cSvr, cCommand, cSvc, cType, cInteract, cStart, cErr, cBin, cGrp, cTag, cDpd, cAcc, cDisp, cPw);						
-							break;
-					}
-					
-					SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
-					break;
-				
-				case IDC_EDIT_SVRNAME:
-					switch(HIWORD (wParam))
-					{
-						case EN_SETFOCUS:
-							LoadString(vHmodInst, IDS_SVRNAME, cTempBuff, 399);
-							SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-							break;
-
-						case  EN_CHANGE:
-							SendMessage(sHwndCtlEdtSvr, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
-							if(strcmp(cTempBuff, "") != 0)
-								{
-									strcpy(cSvr, " ");
-									strcat(cSvr, cTempBuff);									
-								}
-								else
-								{
-									strcpy(cSvr, "");
-								}
-							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-							cSvr, cCommand, cSvc, cType, cInteract, cStart, cErr, cBin, cGrp, cTag, cDpd, cAcc, cDisp, cPw);
-							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
-							break;
-					}
-					break;
-
-				case IDC_EDIT_SVCNAME:
-					switch(HIWORD (wParam))
-					{
-						case EN_SETFOCUS:
-							LoadString(vHmodInst, IDS_SVCNAME, cTempBuff, 399);
-							SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);							
-							break;
-
-						case  EN_CHANGE:
-							SendMessage(sHwndCtlEdtSvc, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
-							if(strcmp(cTempBuff, "") != 0)
-								{
-									strcpy(cSvc, " ");
-									strcat(cSvc, cTempBuff);									
-								}
-								else
-								{
-									strcpy(cSvc, "");
-								}
-							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-							cSvr, cCommand, cSvc, cType, cInteract, cStart, cErr, cBin, cGrp, cTag, cDpd, cAcc, cDisp, cPw);
-							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);						
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
 							break;
 					}
 					break;
@@ -390,8 +373,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 									strcpy(cType, " type= filesys");
 									strcpy(cInteract, "");
-									EnableWindow(sHwndCtlCmbInteract, FALSE);
-									
+									EnableWindow(sHwndCtlCmbInteract, FALSE);									
 									break;
 
 								case 5:
@@ -411,266 +393,187 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									EnableWindow(sHwndCtlCmbInteract, TRUE);
 									SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);									
 									break;
+
+								case 7:
+									LoadString(vHmodInst, IDS_TYPE_ADAPT, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cType, " type= adapt");
+									strcpy(cInteract, "");
+									EnableWindow(sHwndCtlCmbInteract, FALSE);
+									SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);									
+									break;
 							}
-							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-							cSvr, cCommand, cSvc, cType, cInteract, cStart, cErr, cBin, cGrp, cTag, cDpd, cAcc, cDisp, cPw);
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
 							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
 							break;
 					}
 					break;
 
-					case IDC_COMBO_INTERACT:
-						switch(HIWORD (wParam))
-						{
-							case CBN_SELCHANGE:
-								iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-								switch(iComboIndex)
-								{
-									case 0:
-										LoadString(vHmodInst, IDS_INTERACT_OWN, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);										
-										break;
+				case IDC_COMBO_INTERACT:
+					switch(HIWORD (wParam))
+					{
+						case CBN_SELCHANGE:
+							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+							switch(iComboIndex)
+							{
+								case 0:
+									LoadString(vHmodInst, IDS_INTERACT_OWN, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cInteract, " type= own");										
+									break;
 
-									case 1:
-										LoadString(vHmodInst, IDS_INTERACT_SHARE, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);										
-										break;
-								}							
-								break;
-						}
-						break;
+								case 1:
+									LoadString(vHmodInst, IDS_INTERACT_SHARE, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cInteract, " type= share");									
+									break;
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
+							break;
+					}
+					break;
 
-					case IDC_COMBO_START:
-						switch(HIWORD (wParam))
-						{
-							case CBN_SELCHANGE:
-								iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-								switch(iComboIndex)
-								{
-									case 0:
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Start)");
-										
-										break;
+				case IDC_COMBO_START:
+					switch(HIWORD (wParam))
+					{
+						case CBN_SELCHANGE:
+							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+							switch(iComboIndex)
+							{
+								case 0:
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Start)");
+									strcpy(cStart, "");
+									break;
 
-									case 1:
-										LoadString(vHmodInst, IDS_START_BOOT, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 1:
+									LoadString(vHmodInst, IDS_START_BOOT, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cStart, " start= boot");
+									break;
 
-									case 2:
-										LoadString(vHmodInst, IDS_START_SYSTEM, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 2:
+									LoadString(vHmodInst, IDS_START_SYSTEM, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cStart, " start= system");
+									break;
 
-									case 3:
-										LoadString(vHmodInst, IDS_START_AUTO, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 3:
+									LoadString(vHmodInst, IDS_START_AUTO, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cStart, " start= auto");
+									break;
 
-									case 4:
-										LoadString(vHmodInst, IDS_START_DEMAND, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 4:
+									LoadString(vHmodInst, IDS_START_DEMAND, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cStart, " start= demand");
+									break;
 
-									case 5:
-										LoadString(vHmodInst, IDS_START_DISABLED, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 5:
+									LoadString(vHmodInst, IDS_START_DISABLED, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cStart, " start= disabled");
+									break;
 
-								}							
-								break;
-						}
-						break;
+								case 6:
+									LoadString(vHmodInst, IDS_START_DELAYED, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cStart, " start= delayed-auto");
+									break;
 
-					case IDC_COMBO_ERROR:
-						switch(HIWORD (wParam))
-						{
-							case CBN_SELCHANGE:
-								iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-								switch(iComboIndex)
-								{
-									case 0:
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Error)");
-										
-										break;
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
+							break;
+					}
+					break;
 
-									case 1:
-										LoadString(vHmodInst, IDS_ERROR_NORMAL, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+				case IDC_COMBO_ERROR:
+					switch(HIWORD (wParam))
+					{
+						case CBN_SELCHANGE:
+							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+							switch(iComboIndex)
+							{
+								case 0:
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Error)");
+									strcpy(cErr, "");
+									break;
 
-									case 2:
-										LoadString(vHmodInst, IDS_ERROR_SEVERE, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 1:
+									LoadString(vHmodInst, IDS_ERROR_NORMAL, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cErr, " error= normal");
+									break;
 
-									case 3:
-										LoadString(vHmodInst, IDS_ERROR_CRITICAL, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 2:
+									LoadString(vHmodInst, IDS_ERROR_SEVERE, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cErr, " error= severe");
+									break;
 
-									case 4:
-										LoadString(vHmodInst, IDS_ERROR_IGNORE, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 3:
+									LoadString(vHmodInst, IDS_ERROR_CRITICAL, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cErr, " error= critical");
+									break;
 
-								}							
-								break;
-						}
-						break;
+								case 4:
+									LoadString(vHmodInst, IDS_ERROR_IGNORE, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cErr, " error= ignore");
+									break;
 
-					case IDC_EDIT_PATHBIN:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_PATHBIN, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
-								break;
-						}
-						break;
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
+							break;
+					}
+					break;
 
-					case IDC_EDIT_GROUP:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_GROUP, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
-								break;
-						}
-						break;
+				case IDC_COMBO_TAG:
+					switch(HIWORD (wParam))
+					{
+						case CBN_SELCHANGE:
+							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+							switch(iComboIndex)
+							{
+								case 0:
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Tag)");
+									strcpy(cTag, "");
+									break;
 
-					case IDC_COMBO_TAG:
-						switch(HIWORD (wParam))
-						{
-							case CBN_SELCHANGE:
-								iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-								switch(iComboIndex)
-								{
-									case 0:
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) "Exclude this paramater (Tag)");
-										
-										break;
+								case 1:
+									LoadString(vHmodInst, IDS_TAG_YES, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cTag, " tag= yes");
+									break;
 
-									case 1:
-										LoadString(vHmodInst, IDS_TAG_YES, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+								case 2:
+									LoadString(vHmodInst, IDS_TAG_NO, cTempBuff, 399);
+									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									strcpy(cTag, " tag= no");
+									break;
 
-									case 2:
-										LoadString(vHmodInst, IDS_TAG_NO, cTempBuff, 399);
-										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
-										break;
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
+							break;
+					}
+					break;
 
-								}							
-								break;
-						}
-						break;
-
-					case IDC_EDIT_DEPEND:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_DEPEND, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
-								break;
-						}
-						break;
-
-					case IDC_EDIT_ACCNAME:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_ACCNAME, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								SendMessage(sHwndCtlEdtAcc,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sTipAcc);
-								
-								break;
-							case EN_CHANGE:
-								if(SendMessage(sHwndCtlEdtAcc,  WM_GETTEXTLENGTH, 0, 0) > 0)
-								{
-									SendMessage(sHwndCtlEdtObj,  WM_SETTEXT, 0, (LPARAM) "");
-									EnableWindow(sHwndCtlEdtObj, FALSE);
-								}
-								else
-								{
-									EnableWindow(sHwndCtlEdtObj, TRUE);
-								}
-								
-								break;
-						}
-						break;
-
-					case IDC_EDIT_OBJNAME:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_OBJNAME, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								SendMessage(sHwndCtlEdtObj,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sTipAcc);
-								
-								break;
-							case EN_CHANGE:
-								if(SendMessage(sHwndCtlEdtObj,  WM_GETTEXTLENGTH, 0, 0) > 0)
-								{
-									SendMessage(sHwndCtlEdtAcc,  WM_SETTEXT, 0, (LPARAM) "");
-									EnableWindow(sHwndCtlEdtAcc, FALSE);
-								}
-								else
-								{
-									EnableWindow(sHwndCtlEdtAcc, TRUE);
-								}
-								
-								break;
-						}
-						break;
-
-					case IDC_EDIT_DISPNAME:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_DISPNAME, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
-								break;
-						}
-						break;
-
-					case IDC_EDIT_PW:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_PW, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
-								break;
-						}
-						break;
-
-					case IDC_EDIT_CMDLINE:
-						switch(HIWORD (wParam))
-						{
-							case EN_SETFOCUS:
-								LoadString(vHmodInst, IDS_CMDLINE, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
-								break;
-						}
-						break;
-
-					case IDC_COMBO_QYTYPE:
+				case IDC_COMBO_QYTYPE:
 						switch(HIWORD (wParam))
 						{
 							case CBN_SELCHANGE:
@@ -680,22 +583,25 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									case 0:
 										LoadString(vHmodInst, IDS_QYTYPE_SERVICE, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
+										strcpy(cQyType, " type= service");
 										break;
 
 									case 1:
 										LoadString(vHmodInst, IDS_QYTYPE_DRIVER, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
+										strcpy(cQyType, " type= driver");
 										break;
 
 									case 2:
 										LoadString(vHmodInst, IDS_QYTYPE_ALL, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
+										strcpy(cQyType, " type= all");
 										break;
-
-								}							
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
 								break;
 						}
 						break;
@@ -710,22 +616,339 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									case 0:
 										LoadString(vHmodInst, IDS_STATE_ACTIVE, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
+										strcpy(cState, " state= active");
 										break;
 
 									case 1:
 										LoadString(vHmodInst, IDS_STATE_INACTIVE, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
+										strcpy(cState, " state= inactive");
 										break;
 
 									case 2:
 										LoadString(vHmodInst, IDS_STATE_ALL, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										
+										strcpy(cState, " state= all");
 										break;
 
-								}							
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);							
+								break;
+						}
+						break;
+				
+				case IDC_EDIT_SVRNAME:
+					switch(HIWORD (wParam))
+					{
+						case EN_SETFOCUS:
+							LoadString(vHmodInst, IDS_SVRNAME, cTempBuff, 399);
+							SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+							break;
+
+						case EN_CHANGE:
+							SendMessage(sHwndCtlEdtSvr, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+							if(strcmp(cTempBuff, "") != 0)
+							{
+								strcpy(cSvr, " ");
+								strcat(cSvr, cTempBuff);									
+							}
+							else
+							{
+								strcpy(cSvr, "");
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
+							break;
+					}
+					break;
+
+				case IDC_EDIT_SVCNAME:
+					switch(HIWORD (wParam))
+					{
+						case EN_SETFOCUS:
+							LoadString(vHmodInst, IDS_SVCNAME, cTempBuff, 399);
+							SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);							
+							break;
+
+						case EN_CHANGE:
+							SendMessage(sHwndCtlEdtSvc, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+							if(strcmp(cTempBuff, "") != 0)
+							{
+								strcpy(cSvc, " ");
+								strcat(cSvc, cTempBuff);									
+							}
+							else
+							{
+								strcpy(cSvc, "");
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
+							break;
+					}
+					break;				
+
+					case IDC_EDIT_PATHBIN:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_PATHBIN, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+
+							case  EN_CHANGE:
+							SendMessage(sHwndCtlEdtBin , WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+							if(strcmp(cTempBuff, "") != 0)
+							{
+								strcpy(cBin, " binpath= \"");
+								strcat(cBin, cTempBuff);
+								strcat(cBin, "\"");								
+							}
+							else
+							{
+								strcpy(cBin, "");
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
+							break;							
+						}
+						break;
+
+					case IDC_EDIT_GROUP:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_GROUP, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+							
+							case  EN_CHANGE:
+							SendMessage(sHwndCtlEdtGrp, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+							if(strcmp(cTempBuff, "") != 0)
+							{
+								strcpy(cGrp, " group= ");
+								strcat(cGrp, cTempBuff);									
+							}
+							else
+							{
+								strcpy(cGrp, "");
+							}
+							sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+							cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+							cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+							SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
+							break;
+						}
+						break;
+
+					case IDC_EDIT_DEPEND:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_DEPEND, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+
+							case  EN_CHANGE:
+								SendMessage(sHwndCtlEdtDpd, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cDpd, " depend= ");
+									strcat(cDpd, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cDpd, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;
+						}
+						break;
+
+					case IDC_EDIT_ACCNAME:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_ACCNAME, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+								SendMessage(sHwndCtlEdtAcc,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sTipAcc);								
+								break;
+
+							case EN_CHANGE:
+								if(SendMessage(sHwndCtlEdtAcc,  WM_GETTEXTLENGTH, 0, 0) > 0)
+								{
+									SendMessage(sHwndCtlEdtObj,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHwndCtlEdtObj, FALSE);
+									EnableWindow(sHwndCtlEdtPw, TRUE);
+								}
+								else
+								{
+									EnableWindow(sHwndCtlEdtObj, TRUE);
+									EnableWindow(sHwndCtlEdtPw, FALSE);
+								}
+								SendMessage(sHwndCtlEdtAcc, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cAcc, " obj= ");
+									strcat(cAcc, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cAcc, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);								
+								break;
+
+							case EN_KILLFOCUS:
+								if(SendMessage(sHwndCtlEdtAcc,  WM_GETTEXTLENGTH, 0, 0) <= 0)
+								{
+									SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHwndCtlEdtPw, FALSE);
+									strcpy(cPw, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;
+
+						}
+						break;
+
+					case IDC_EDIT_OBJNAME:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_OBJNAME, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+								SendMessage(sHwndCtlEdtObj,  EM_SHOWBALLOONTIP, 0, (LPARAM) &sTipAcc);								
+								break;
+
+							case EN_CHANGE:
+								if(SendMessage(sHwndCtlEdtObj,  WM_GETTEXTLENGTH, 0, 0) > 0)
+								{
+									SendMessage(sHwndCtlEdtAcc,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHwndCtlEdtAcc, FALSE);
+									EnableWindow(sHwndCtlEdtPw, TRUE);
+								}
+								else
+								{
+									EnableWindow(sHwndCtlEdtAcc, TRUE);
+									EnableWindow(sHwndCtlEdtPw, FALSE);
+								}
+								SendMessage(sHwndCtlEdtObj, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cAcc, " obj= ");
+									strcat(cAcc, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cAcc, "");
+								}								
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;
+
+							case EN_KILLFOCUS:
+								if(SendMessage(sHwndCtlEdtObj,  WM_GETTEXTLENGTH, 0, 0) <= 0)
+								{
+									SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) "");
+									EnableWindow(sHwndCtlEdtPw, FALSE);
+									strcpy(cPw, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;
+						}
+						break;
+
+					case IDC_EDIT_DISPNAME:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_DISPNAME, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+
+							case EN_CHANGE:
+								SendMessage(sHwndCtlEdtDisp, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cDisp, " displayname= ");
+									strcat(cDisp, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cDisp, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;
+						}
+						break;
+
+					case IDC_EDIT_PW:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_PW, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+
+							case EN_CHANGE:
+								SendMessage(sHwndCtlEdtPw, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cPw, " password= ");
+									strcat(cPw, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cPw, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;
+						}
+						break;
+
+					case IDC_EDIT_CMDLINE:
+						switch(HIWORD (wParam))
+						{
+							case EN_SETFOCUS:
+								LoadString(vHmodInst, IDS_CMDLINE, cTempBuff, 399);
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+
+							case EN_CHANGE:
+								SendMessage(sHwndCtlEdtCMDLine, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cCMDLine, cTempBuff);									
+								}
 								break;
 						}
 						break;
@@ -735,8 +958,24 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						{
 							case EN_SETFOCUS:
 								LoadString(vHmodInst, IDS_BUFF, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
+								break;
+
+							case EN_CHANGE:
+								SendMessage(sHwndCtlEdtBuf, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cBuf, " bufsize= ");
+									strcat(cBuf, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cBuf, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
 								break;
 						}
 						break;
@@ -746,12 +985,27 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						{
 							case EN_SETFOCUS:
 								LoadString(vHmodInst, IDS_RESUME, cTempBuff, 399);
-								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-								
+								SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);								
 								break;
-						}
-						break;					
 
+							case EN_CHANGE:
+								SendMessage(sHwndCtlEdtResm, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+								if(strcmp(cTempBuff, "") != 0)
+								{
+									strcpy(cResm, " ri= ");
+									strcat(cResm, cTempBuff);									
+								}
+								else
+								{
+									strcpy(cResm, "");
+								}
+								sprintf(cCMDLine, "sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+								cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
+								cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
+								SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
+								break;							
+						}
+						break;
 			}
 
 		default:
