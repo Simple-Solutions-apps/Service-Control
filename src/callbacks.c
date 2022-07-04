@@ -58,6 +58,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 	//definitions
 	HWND sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
+	HWND sHwndCtlEdtReq = GetDlgItem(sHwndMain, IDC_EDIT_REQ);
 	HWND sHwndCtlEdtSvr = GetDlgItem(sHwndMain, IDC_EDIT_SVRNAME);
 	HWND sHwndCtlEdtSvc = GetDlgItem(sHwndMain, IDC_EDIT_SVCNAME);
 	HWND sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
@@ -223,12 +224,14 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 								case 0:
 									LoadString(vHmodInst, IDS_COMMAND_CREATE, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) "Required parameters:\r\n Service name, Binary Path.");
 									strcpy(cCommand, " create");															
 									break;
 
 								case 1:
 									LoadString(vHmodInst, IDS_COMMAND_CONF, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) "Required parameters:\r\n Service name, one other parameter to modify.");
 									strcpy(cCommand, " config");
 									SendMessage(sHwndCtlCmbType, CB_ADDSTRING,(WPARAM) 0,(LPARAM) "adapt");
 									break;
@@ -236,6 +239,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 								case 2:
 									LoadString(vHmodInst, IDS_COMMAND_DELETE, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) "Required parameters:\r\n Service name.");
 									strcpy(cCommand, " delete");									
 									SendMessage(sHwndCtlCmbType,  CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlCmbInteract,  CB_SETCURSEL, -1, 0);
@@ -278,6 +282,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 								case 3:
 									LoadString(vHmodInst, IDS_COMMAND_QUERY, cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
+									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) "Required parameters:\r\n Service name.");
 									strcpy(cCommand, " query");
 									SendMessage(sHwndCtlCmbType, CB_ADDSTRING,(WPARAM) 0,(LPARAM) "adapt");									
 									SendMessage(sHwndCtlCmbStart,  CB_SETCURSEL, 0, 0);

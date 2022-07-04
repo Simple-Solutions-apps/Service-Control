@@ -57,6 +57,7 @@ int CreateControls(HWND sHwndMain)
 	HWND sHwndCtlEdtDisp;
 	HWND sHwndCtlEdtPw;
 	HWND sHwndCtlEdtDes;
+	HWND sHwndCtlEdtReq;
 	HWND sHwndCtlEdtSvr;
 	HWND sHwndCtlEdtSvc;
 	HWND sHwndCtlEdtBin;
@@ -705,12 +706,20 @@ int CreateControls(HWND sHwndMain)
 	SendMessage(sHwndCtlEdtResm, EM_SETLIMITTEXT, (WPARAM) 2, TRUE);
 
 	sHwndCtlEdtDes = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-	548, 85, 300, 205, sHwndMain, (HMENU) IDC_EDIT_DESC, vHmodInst, NULL);
+	548, 85, 300, 105, sHwndMain, (HMENU) IDC_EDIT_DESC, vHmodInst, NULL);
 	if(sHwndCtlEdtDes == NULL)
 	{
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtDes, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+
+	sHwndCtlEdtReq = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+	548, 195, 300, 95, sHwndMain, (HMENU) IDC_EDIT_REQ, vHmodInst, NULL);
+	if(sHwndCtlEdtReq == NULL)
+	{
+		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);
+	}
+	SendMessage(sHwndCtlEdtReq, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 
 	sHwndCtlEdtCMDLine = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
 	120, 415, 665, 25, sHwndMain, (HMENU) IDC_EDIT_CMDLINE, vHmodInst, NULL);

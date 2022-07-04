@@ -78,6 +78,7 @@
 	#define IDC_EDIT_FILE 1040
 	#define IDC_EDIT_BUFF 1048
 	#define IDC_EDIT_RESUME 1049
+	#define IDC_EDIT_REQ 1050
 
 	//prototypes
 	int CreateControls(HWND sHdlWinMain);
