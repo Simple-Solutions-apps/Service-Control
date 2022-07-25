@@ -149,20 +149,20 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, "Could not add bitmap to image list.", "Error", MB_OK | MB_ICONERROR);
 		return __LINE__;
 	}
-	
+
 	//define functionality for buttons
 	ZeroMemory(sButtonsToAdd, sizeof(sButtonsToAdd));
 
     sButtonsToAdd[0].iBitmap = MAKELONG(0, 0);
     sButtonsToAdd[0].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[0].idCommand = IDC_MAIN_TOOLBAR_FILE_NEW;
+    sButtonsToAdd[0].idCommand = IDC_BTN_TBNEW;
 	sButtonsToAdd[0].iString = (INT_PTR) "New file";
 
     sButtonsToAdd[1].iBitmap = MAKELONG(1, 0);
     sButtonsToAdd[1].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[1].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[1].idCommand = IDC_MAIN_TOOLBAR_FILE_OPEN;
+    sButtonsToAdd[1].idCommand = IDC_BTN_TBOPEN;
 	sButtonsToAdd[1].iString = (INT_PTR) "Open file";
 
 	sButtonsToAdd[2].iBitmap = 0;
@@ -173,13 +173,13 @@ int CreateControls(HWND sHwndMain)
     sButtonsToAdd[3].iBitmap = MAKELONG(2, 0);
     sButtonsToAdd[3].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[3].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[3].idCommand = IDC_MAIN_TOOLBAR_FILE_SAVETXT;
+    sButtonsToAdd[3].idCommand = IDC_BTN_TBTEXT;
 	sButtonsToAdd[3].iString = (INT_PTR) "Save as text";
 
     sButtonsToAdd[4].iBitmap = MAKELONG(3, 0);
     sButtonsToAdd[4].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[4].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[4].idCommand = IDC_MAIN_TOOLBAR_FILE_SAVEBAT;
+    sButtonsToAdd[4].idCommand = IDC_BTN_TBBAT;
 	sButtonsToAdd[4].iString = (INT_PTR) "Save as batch";
 
 	sButtonsToAdd[5].iBitmap = 0;
@@ -190,13 +190,13 @@ int CreateControls(HWND sHwndMain)
 	sButtonsToAdd[6].iBitmap = MAKELONG(4, 0);
     sButtonsToAdd[6].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[6].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[6].idCommand = IDC_MAIN_TOOLBAR_SVC_OPEN;
+    sButtonsToAdd[6].idCommand = IDC_BTN_TBSVC;
 	sButtonsToAdd[6].iString = (INT_PTR) "Open Services";
 
 	sButtonsToAdd[7].iBitmap = MAKELONG(5, 0);
     sButtonsToAdd[7].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[7].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[7].idCommand = IDC_MAIN_TOOLBAR_ABOUT;
+    sButtonsToAdd[7].idCommand = IDC_BTN_TBABOUT;
 	sButtonsToAdd[7].iString = (INT_PTR) "About";
 
 	//send messages to toolbar (apply definitions)
@@ -749,7 +749,7 @@ int CreateControls(HWND sHwndMain)
 	SendMessage(sHwndCtlBtnBrowse, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 
 	sHwndCtlBtnRun = CreateWindowEx(0, "BUTTON", "Run", WS_CHILD | WS_VISIBLE,
-	790, 415, 60, 25, sHwndMain, (HMENU) IDC_BTN_CMDRUN, vHmodInst, NULL);
+	790, 415, 60, 25, sHwndMain, (HMENU) IDC_BTN_RUN, vHmodInst, NULL);
 	if(sHwndCtlBtnRun == NULL)
 	{
 		MessageBox(sHwndMain, "Could not create button.", "Error", MB_OK | MB_ICONERROR);

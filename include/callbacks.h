@@ -9,8 +9,8 @@
 
 	LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
-	BOOL CALLBACK ToolDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
-	BOOL CALLBACK AuthDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);	
+	LRESULT SetTextCMDLine(HWND sHwndCtlEdtCMDLine);
+	VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd);	
 
 //end wrapper
 #endif

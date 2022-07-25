@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if(GetClientRect(GetDesktopWindow(), &sRect) == FALSE)
 	{
 		//attempt to create the main window with default positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "*Untitled - Service Control",
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control",
 		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}

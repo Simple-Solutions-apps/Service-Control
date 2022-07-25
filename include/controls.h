@@ -7,7 +7,7 @@
 	//Controls
 
 	//tooltips
-	#define IDC_MAIN_TOOLTIP 1050
+	#define IDC_MAIN_TOOLTIP 1051
 
 	//tool bar
 	#define IDC_MAIN_TOOLBAR 1100
@@ -51,7 +51,15 @@
 
 	//buttons
 	#define IDC_BTN_BROWSE 1016
-	#define IDC_BTN_CMDRUN 1038
+	#define IDC_BTN_RUN 1058
+
+	//Toolbar buttons
+	#define IDC_BTN_TBNEW 1052
+	#define IDC_BTN_TBOPEN 1053
+	#define IDC_BTN_TBTEXT 1054
+	#define IDC_BTN_TBBAT 1055
+	#define IDC_BTN_TBSVC 1056
+	#define IDC_BTN_TBABOUT 1057
 
 	//combo boxes
 	#define IDC_COMBO_COMMAND 1017
