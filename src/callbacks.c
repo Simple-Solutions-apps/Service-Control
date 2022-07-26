@@ -239,6 +239,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							EnableWindow(sHwndCtlEdtBuf, FALSE);
 							EnableWindow(sHwndCtlEdtResm, FALSE);
 							EnableWindow(sHwndCtlEdtPw, FALSE);
+							EnableWindow(sHwndCtlBtnRun, FALSE);
 							SendMessage(sHwndCtlCmbType, CB_SETCURSEL, 0, 0);
 							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) -1, 0);
 							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) -1, 0);
@@ -1048,37 +1049,57 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 	switch(iComboIndex)
 	{
 		case 0:
-			EnableWindow(sHwndCtlBtnRun, TRUE);
+			if(strcmp(cSvc, "") != 0 && strcmp(cBin, "") != 0)
+			{
+				EnableWindow(sHwndCtlBtnRun, TRUE);
+			}
+			else
+			{
+				EnableWindow(sHwndCtlBtnRun, FALSE);
+			}				
 			break;
 
 		case 1:
-			EnableWindow(sHwndCtlBtnRun, FALSE);
+			if(strcmp(cSvc, "") != 0 &&
+			(strcmp(cBin, "") != 0 ||
+			strcmp(cType, "") != 0 ||
+			strcmp(cStart, "") != 0 ||
+			strcmp(cErr, "") != 0 ||
+			strcmp(cGrp, "") != 0 ||
+			strcmp(cTag, "") != 0 ||
+			strcmp(cDpd, "") != 0 ||
+			strcmp(cAcc, "") != 0 ||
+			strcmp(cDisp, "") != 0))
+			{
+				EnableWindow(sHwndCtlBtnRun, TRUE);
+			}
+			else
+			{
+				EnableWindow(sHwndCtlBtnRun, FALSE);
+			}
 			break;
 
 		case 2:
-
+			if(strcmp(cSvc, "") != 0 )
+			{
+				EnableWindow(sHwndCtlBtnRun, TRUE);
+			}
+			else
+			{
+				EnableWindow(sHwndCtlBtnRun, FALSE);
+			}
 			break;
 
 		case 3:
-
-			break;
-
-		case 4:
-
-			break;
-
-		case 5:
-
-			break;
-
-		case 6:
-
-			break;
-
-		case 7:
-
-			break;
-			
+			if(strcmp(cSvc, "") != 0)
+			{
+				EnableWindow(sHwndCtlBtnRun, TRUE);
+			}
+			else
+			{
+				EnableWindow(sHwndCtlBtnRun, FALSE);
+			}
+			break;			
 	}
 }
 
