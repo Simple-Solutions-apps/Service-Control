@@ -14,16 +14,19 @@
 #include "..\include\callbacks.h"
 
 //declarations
+wchar_t *cUniTitleAcc;
+wchar_t *cUniTextAcc;
 HMODULE vHmodInst;		
 EDITBALLOONTIP sTipAcc;
+OPENFILENAME sOpenFileName;
+HANDLE hFileToOpen;
+char cPathFileToOpen[MAX_PATH];
 int iComboIndex;
 int iTextLen;
 int iFileModified;
 char *cTempBuff;
 char *cFileName;
-char *cWinTitle;	
-wchar_t *cUniTitleAcc;
-wchar_t *cUniTextAcc;
+char *cWinTitle;
 
 char *cCMDLine;
 char *cCommand;
@@ -74,7 +77,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	HWND sHwndCtlEdtBuf = GetDlgItem(sHwndMain, IDC_EDIT_BUFF);
 	HWND sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
 	HWND sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
-	HWND sHwndCtlEdtFile = GetDlgItem(sHwndMain, IDC_EDIT_FILE);
+	HWND sHwndCtlEdtContents = GetDlgItem(sHwndMain, IDC_EDIT_FILE);
 
 	HWND sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
 	HWND sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
@@ -114,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cInteract = calloc(20, sizeof (char));
 			cStart = calloc(22, sizeof (char));
 			cErr = calloc(20, sizeof (char));
-			cBin = calloc(PATH_MAX, sizeof (char)); //PATH_MAX = 260
+			cBin = calloc(_MAX_PATH, sizeof (char));
 			cGrp = calloc(80, sizeof (char));
 			cTag = calloc(5, sizeof (char));
 			cDpd = calloc(190, sizeof (char));
@@ -180,17 +183,41 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			{	
 				//begin toolbar messages
 
-				case IDC_BTN_TBNEW:
-					/*
-					SendMessage(sHwndCtlEdtFile , WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
-					if(strcmp(cTempBuff, "") != 0 && iFileModified == 1)
+				case IDC_BTN_TBNEW:					
+					iTextLen = SendMessage(sHwndCtlEdtContents, WM_GETTEXTLENGTH, 0, 0);
+					//realloc(cTempBuff, iTextLen * sizeof (char));
+					//SendMessage(sHwndCtlEdtContents, WM_GETTEXT, (WPARAM) iTextLen,(LPARAM) cTempBuff);
+					if(iTextLen == 0)
 					{
-						if(MessageBox(sHwndMain, "Save changes to this file?", "Save File", MB_YESNO|MB_ICONQUESTION) == IDYES)
-						{
-							OPENFILENAME s
-						}
+						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
+						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
+					}
+					
+					/*
+					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
+					sOpenFileName.lStructSize = sizeof (sOpenFileName);
+					sOpenFileName.hwndOwner = sHwndMain;
+					sOpenFileName.lpstrFile = cPathFileToOpen;
+					sOpenFileName.lpstrFile[0] = '\0';
+					sOpenFileName.nMaxFile = _MAX_PATH;
+					sOpenFileName.lpstrFilter = "Executable Files (*.exe)\0*.exe\0";					
+					sOpenFileName.nFilterIndex = 1;
+					sOpenFileName.lpstrFileTitle = "Open executable";
+					sOpenFileName.nMaxFileTitle = 0;
+					sOpenFileName.lpstrInitialDir = "C:\\Windows\\System32";
+					sOpenFileName.lpstrDefExt = "exe";
+					//For opening a file
+					sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
+					//For saving a file
+					//sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; 					
+					if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
+					//if(GetSaveFileName(&sOpenFileName) > 0) //for saving a file
+					{
+						SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) cPathFileToOpen);
 					}
 					*/
+
 					break;
 
 				case IDC_BTN_TBOPEN:
@@ -1011,15 +1038,15 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					switch(HIWORD (wParam))
 					{
 						case EN_SETFOCUS:							
-							SendMessage(sHwndCtlEdtFile,  WM_SETTEXT, 0, (LPARAM) "File contents.");								
+							//SendMessage(sHwndCtlEdtContents,  WM_SETTEXT, 0, (LPARAM) "File contents.");								
 							break;
 
 						case EN_CHANGE:
-							SendMessage(sHwndCtlEdtFile, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+							SendMessage(sHwndCtlEdtContents, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
 							if(strcmp(cTempBuff, "") != 0)
 							{
 								iFileModified = 0;
-								SendMessage(sHwndCtlEdtFile, WM_SETTEXT, 0,(LPARAM) cTempBuff);									
+								//SendMessage(sHwndCtlEdtContents, WM_SETTEXT, 0,(LPARAM) cTempBuff);									
 							}
 							else
 							{
@@ -1027,6 +1054,37 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							}
 							break;
 					}
+					break;
+
+				//begin button messages
+
+				case IDC_BTN_BROWSE:
+					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
+					sOpenFileName.lStructSize = sizeof (sOpenFileName);
+					sOpenFileName.hwndOwner = sHwndMain;
+					sOpenFileName.lpstrFile = cPathFileToOpen;
+					sOpenFileName.lpstrFile[0] = '\0';
+					sOpenFileName.nMaxFile = _MAX_PATH;
+					sOpenFileName.lpstrFilter = "Executable Files (*.exe)\0*.exe\0";					
+					sOpenFileName.nFilterIndex = 1;
+					sOpenFileName.lpstrFileTitle = "Open executable";
+					sOpenFileName.nMaxFileTitle = 0;
+					sOpenFileName.lpstrInitialDir = "C:\\Windows\\System32";
+					sOpenFileName.lpstrDefExt = "exe";
+					//For opening a file
+					sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
+					//For saving a file
+					//sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; 					
+					if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
+					//if(GetSaveFileName(&sOpenFileName) > 0) //for saving a file
+					{
+						SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) cPathFileToOpen);
+					}
+					break;
+
+				case IDC_BTN_RUN:
+					
+					break;
 			}
 
 		default:
