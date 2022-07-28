@@ -192,31 +192,41 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
 						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
+						break;
+					}
+
+					if(MessageBox(sHwndMain, "Do you want to save changes to current file?", "Service Control", MB_YESNO|MB_ICONQUESTION) == IDNO)
+					{
+						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
+						SendMessage(sHwndCtlEdtContents, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
+						break;
 					}
 					
-					/*
 					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
 					sOpenFileName.lStructSize = sizeof (sOpenFileName);
 					sOpenFileName.hwndOwner = sHwndMain;
 					sOpenFileName.lpstrFile = cPathFileToOpen;
 					sOpenFileName.lpstrFile[0] = '\0';
 					sOpenFileName.nMaxFile = _MAX_PATH;
-					sOpenFileName.lpstrFilter = "Executable Files (*.exe)\0*.exe\0";					
+					sOpenFileName.lpstrFilter = "Batch Files (*.bat)\0*.bat\0Text Files (*.txt)\0*.txt\0\0";					
 					sOpenFileName.nFilterIndex = 1;
-					sOpenFileName.lpstrFileTitle = "Open executable";
+					sOpenFileName.lpstrFile = cFileName;
+					sOpenFileName.lpstrFileTitle = "Save file";
 					sOpenFileName.nMaxFileTitle = 0;
-					sOpenFileName.lpstrInitialDir = "C:\\Windows\\System32";
+					sOpenFileName.lpstrInitialDir = "%userprofile%\\Documents";
 					sOpenFileName.lpstrDefExt = "exe";
 					//For opening a file
-					sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
+					//sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
 					//For saving a file
-					//sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; 					
-					if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
-					//if(GetSaveFileName(&sOpenFileName) > 0) //for saving a file
+					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; 					
+					//if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
+					if(GetSaveFileName(&sOpenFileName) =! 0) //for saving a file
 					{
-						SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) cPathFileToOpen);
+						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) "Blaaa"); //cPathFileToOpen);
 					}
-					*/
+					
 
 					break;
 
