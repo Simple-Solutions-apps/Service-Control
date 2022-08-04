@@ -54,8 +54,7 @@ char *cFile;
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
 {	
 	//define module/executable handle
-	vHmodInst = GetModuleHandle(NULL);
-	
+	vHmodInst = GetModuleHandle(NULL);	
 
 	//verify if module instance handle was created correctly
 	if(vHmodInst == NULL)
