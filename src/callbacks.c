@@ -222,7 +222,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					//For saving a file
 					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; 					
 					//if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
-					if(GetSaveFileName(&sOpenFileName) =! 0) //for saving a file
+					if(GetSaveFileName(&sOpenFileName) != 0) //for saving a file
 					{
 						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) "Blaaa"); //cPathFileToOpen);
 					}

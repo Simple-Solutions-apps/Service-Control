@@ -1,6 +1,9 @@
 [
-	{"key": "ctrl+f8", "command": "workbench.action.tasks.runTask", "args": "Run with make"},
-	{"key": "ctrl+f9", "command": "workbench.action.tasks.runTask", "args": "Build with make"},
+	{
+		"key": "ctrl+f9",
+		"command": "workbench.action.tasks.runTask",
+		"args": "Build with make"
+	},
 	{"key": "ctrl+f10", "command": "workbench.action.tasks.runTask", "args": "Rebuild with make"},
 	{"key": "ctrl+f11", "command": "workbench.action.tasks.runTask", "args": "Clean with make"},
 	{"key": "ctrl+f12", "command": "workbench.action.tasks.runTask", "args": "Commit with make"}
