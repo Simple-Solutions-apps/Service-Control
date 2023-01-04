@@ -46,8 +46,6 @@ rebuild:
 	make clean
 	make build
 commit:
-	copy /Y C:\Bak\Projects\VSCodeWorkspace\.vscode\tasks.json .\VSCode\tasks.json
-	copy /Y %AppData%\code\user\keybindings.json .\VSCode\keybindings.json
 	git add .
 	git commit -a -m "Automated commit(s)"
 	git push

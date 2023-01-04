@@ -1,29 +1,4 @@
 {
-	/*"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "cppbuild",
-			"label": "C/C++: gcc.exe build active file",
-			"command": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-win32-seh-rt_v6-rev0\\mingw64\\bin\\gcc.exe",
-			"args": [
-				"-fdiagnostics-color=always",
-				"-g",
-				"${file}",
-				"-o",
-				"${fileDirname}\\${fileBasenameNoExtension}.exe"
-			],
-			"options": {
-				"cwd": "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-win32-seh-rt_v6-rev0\\mingw64\\bin"
-			},
-			"problemMatcher": [
-				"$gcc"
-			],
-			"group": "build",
-			"detail": "compiler: \"C:\\Program Files\\mingw-w64\\x86_64-8.1.0-win32-seh-rt_v6-rev0\\mingw64\\bin\\gcc.exe\""
-		}
-	]
-}*/
-{
 	// See https://go.microsoft.com/fwlink/?LinkId=733558
 	// for the documentation about the tasks.json format
 
@@ -37,13 +12,11 @@
 			"windows": {
 			"command": "make.exe"
 			},
-			"args": ["run"],
-			"options":{"cwd": "${fileWorkspaceFolder}"},
+			"args": ["run"],			
 			"group": "build",
 			"presentation": {
-			"reveal": "silent",
-			"focus": true,
-			"clear": true,
+			"reveal": "never",
+			"panel": "new"
 			}
 		},
 		{
@@ -52,13 +25,11 @@
 			"windows": {
 			"command": "make.exe"
 			},
-			"args": ["build"],
-			"options":{"cwd": "${fileWorkspaceFolder}"},
+			"args": ["build"],			
 			"group": "build",
 			"presentation": {
-			"reveal": "silent",
-			"focus": true,
-			"clear": true,
+			"reveal": "never",
+			"panel": "new"
 			}
 		},
 		{
@@ -67,13 +38,11 @@
 			"windows": {
 			"command": "make.exe"
 			},
-			"args": ["rebuild"],
-			"options":{"cwd": "${fileWorkspaceFolder}"},
+			"args": ["rebuild"],			
 			"group": "build",
 			"presentation": {
-			"reveal": "silent",
-			"focus": true,
-			"clear": true,
+			"reveal": "never",
+			"panel": "new"
 			}
 		},
 		{
@@ -82,13 +51,11 @@
 			"windows": {
 			"command": "make.exe"
 			},
-			"args": ["clean"],
-			"options":{"cwd": "${fileWorkspaceFolder}"},
+			"args": ["clean"],			
 			"group": "build",
 			"presentation": {
-			"reveal": "silent",
-			"focus": true,
-			"clear": true,
+			"reveal": "never",
+			"panel": "new"
 			}
 		},
 		{
@@ -97,13 +64,11 @@
 			"windows": {
 			"command": "make.exe"
 			},
-			"args": ["commit"],
-			"options":{"cwd": "${fileWorkspaceFolder}"},
+			"args": ["commit"],			
 			"group": "build",
 			"presentation": {
-			"reveal": "silent",
-			"focus": true,
-			"clear": true,
+			"reveal": "never",
+			"panel": "new"
 			}
 		}
 	]
