@@ -7,7 +7,9 @@ DirRes = .\res
 DirBin = .\bin
 DirLib = .\lib
 
-APP = $(DirBin)\ServiceControl.exe
+APPBase = ServiceControl
+APPName = $(APPBase).exe
+APPPath = $(DirBin)\$(APPName)
 
 srcMain = $(DirSrc)\main.c
 srcMsgBoxes = $(DirSrc)\MsgBoxes.c
@@ -37,11 +39,11 @@ $(objResources): $(srcResources)
 	windres.exe $(srcResources) -o $(objResources)
 
 build: $(objs)
-	$(CC) -o $(APP) $(objs) $(dllCommCtrls) -s -mwindows
+	$(CC) -o $(APPPath) $(objs) $(dllCommCtrls) -s -mwindows
 clean:
 	del $(DirObj)\*.o $(DirBin)\*.exe
 run:
-	$(APP)
+	$(APPPath)
 rebuild:
 	make clean
 	make build

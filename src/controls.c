@@ -1,6 +1,6 @@
 /*-------------------------------------------
-  Copyright Simple Solutions, 2022
-  Revised: 2022/05/30 14:09
+  Copyright Simple Solutions, 2023
+  Revised: 2023/01/05 20:32
 -------------------------------------------*/
 
 //standard includes
@@ -156,48 +156,42 @@ int CreateControls(HWND sHwndMain)
     sButtonsToAdd[0].iBitmap = MAKELONG(0, 0);
     sButtonsToAdd[0].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[0].idCommand = IDC_BTN_TBNEW;
-	sButtonsToAdd[0].iString = (INT_PTR) "New file";
+    sButtonsToAdd[0].idCommand = IDC_BTN_TBCLEAR;
+	sButtonsToAdd[0].iString = (INT_PTR) "Clear";
 
-    sButtonsToAdd[1].iBitmap = MAKELONG(1, 0);
+	sButtonsToAdd[1].iBitmap = 0;
     sButtonsToAdd[1].fsState = TBSTATE_ENABLED;
-    sButtonsToAdd[1].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[1].idCommand = IDC_BTN_TBOPEN;
-	sButtonsToAdd[1].iString = (INT_PTR) "Open file";
+    sButtonsToAdd[1].fsStyle = TBSTYLE_SEP;
+    sButtonsToAdd[1].idCommand = 0;
 
-	sButtonsToAdd[2].iBitmap = 0;
+    sButtonsToAdd[2].iBitmap = MAKELONG(1, 0);
     sButtonsToAdd[2].fsState = TBSTATE_ENABLED;
-    sButtonsToAdd[2].fsStyle = TBSTYLE_SEP;
-    sButtonsToAdd[2].idCommand =0;
+    sButtonsToAdd[2].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[2].idCommand = IDC_BTN_TBTEXT;
+	sButtonsToAdd[2].iString = (INT_PTR) "Save as text";
 
     sButtonsToAdd[3].iBitmap = MAKELONG(2, 0);
     sButtonsToAdd[3].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[3].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[3].idCommand = IDC_BTN_TBTEXT;
-	sButtonsToAdd[3].iString = (INT_PTR) "Save as text";
+    sButtonsToAdd[3].idCommand = IDC_BTN_TBBAT;
+	sButtonsToAdd[3].iString = (INT_PTR) "Save as batch";
 
-    sButtonsToAdd[4].iBitmap = MAKELONG(3, 0);
+	sButtonsToAdd[4].iBitmap = 0;
     sButtonsToAdd[4].fsState = TBSTATE_ENABLED;
-    sButtonsToAdd[4].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[4].idCommand = IDC_BTN_TBBAT;
-	sButtonsToAdd[4].iString = (INT_PTR) "Save as batch";
+    sButtonsToAdd[4].fsStyle = TBSTYLE_SEP;
+    sButtonsToAdd[4].idCommand = 0;
 
-	sButtonsToAdd[5].iBitmap = 0;
+	sButtonsToAdd[5].iBitmap = MAKELONG(3, 0);
     sButtonsToAdd[5].fsState = TBSTATE_ENABLED;
-    sButtonsToAdd[5].fsStyle = TBSTYLE_SEP;
-    sButtonsToAdd[5].idCommand =0;
+    sButtonsToAdd[5].fsStyle = TBSTYLE_BUTTON;
+    sButtonsToAdd[5].idCommand = IDC_BTN_TBSVC;
+	sButtonsToAdd[5].iString = (INT_PTR) "Open Services";
 
 	sButtonsToAdd[6].iBitmap = MAKELONG(4, 0);
     sButtonsToAdd[6].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[6].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[6].idCommand = IDC_BTN_TBSVC;
-	sButtonsToAdd[6].iString = (INT_PTR) "Open Services";
-
-	sButtonsToAdd[7].iBitmap = MAKELONG(5, 0);
-    sButtonsToAdd[7].fsState = TBSTATE_ENABLED;
-    sButtonsToAdd[7].fsStyle = TBSTYLE_BUTTON;
-    sButtonsToAdd[7].idCommand = IDC_BTN_TBABOUT;
-	sButtonsToAdd[7].iString = (INT_PTR) "About";
+    sButtonsToAdd[6].idCommand = IDC_BTN_TBABOUT;
+	sButtonsToAdd[6].iString = (INT_PTR) "About";
 
 	//send messages to toolbar (apply definitions)
 	SendMessage(sHwndCtlToolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0); //Send the TB_BUTTONSTRUCTSIZE message (for backward compatibility)
@@ -227,7 +221,7 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlGrpCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 
-	sHwndCtlGrpFile = CreateWindowEx(0, "BUTTON", "File contents", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+	sHwndCtlGrpFile = CreateWindowEx(0, "BUTTON", "Command result", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
 	5, 465, 850, 200, sHwndMain, (HMENU) IDC_GRPBOX_PARAMS, vHmodInst, NULL);
 	if(sHwndCtlGrpFile == NULL)
 	{
@@ -264,7 +258,7 @@ int CreateControls(HWND sHwndMain)
 	} 
 	SendMessage(sHwndCtlLblSvc, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	
-	sHwndCtlLblType = CreateWindowEx(0, "STATIC", "Type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sHwndCtlLblType = CreateWindowEx(0, "STATIC", "Service type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	10, 180, 105, 20, sHwndMain, (HMENU) IDC_LABEL_TYPE, vHmodInst, NULL);
 	if(sHwndCtlLblType == NULL)
 	{
@@ -282,7 +276,7 @@ int CreateControls(HWND sHwndMain)
 	} 
 	SendMessage(sHwndCtlLblInteract, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	
-	sHwndCtlLblStart = CreateWindowEx(0, "STATIC", "Start Type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
+	sHwndCtlLblStart = CreateWindowEx(0, "STATIC", "Start type:", WS_CHILD | WS_VISIBLE | SS_RIGHT,
 	10, 240, 105, 20, sHwndMain, (HMENU) IDC_LABEL_START, vHmodInst, NULL);
 	if(sHwndCtlLblStart == NULL)
 	{
@@ -731,7 +725,7 @@ int CreateControls(HWND sHwndMain)
 	SendMessage(sHwndCtlEdtCMDLine, EM_SETLIMITTEXT, (WPARAM) 1499, TRUE);
 
 	sHwndCtlEdtFile = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
-	10, 490, 840, 170, sHwndMain, (HMENU) IDC_EDIT_FILE, vHmodInst, NULL);
+	10, 490, 840, 170, sHwndMain, (HMENU) IDC_EDIT_RSLT, vHmodInst, NULL);
 	if(sHwndCtlEdtFile == NULL)
 	{
 		MessageBox(sHwndMain, "Could not create edit box.", "Error", MB_OK | MB_ICONERROR);

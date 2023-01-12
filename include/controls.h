@@ -1,6 +1,6 @@
-//File containing contol reladed definitions and function prototypes
+//File containing control related definitions and function prototypes
 
-//conditional header guard wrapper to avoid proccesing more than once
+//conditional header guard wrapper to avoid processing more than once
 #ifndef CONTROLLS_H
 	#define CONTROLLS_H
 
@@ -11,9 +11,9 @@
 
 	//tool bar
 	#define IDC_MAIN_TOOLBAR 1100
-	#define TB_BTN_COUNT 8
+	#define TB_BTN_COUNT 7
 	#define TB_BTN_BITMAP_H 24
-	#define TB_BTN_BITMAP_W 144
+	#define TB_BTN_BITMAP_W 120
 
 	//Command IDs for toolbar
 	#define IDC_MAIN_TOOLBAR_FILE_NEW 1101
@@ -54,7 +54,7 @@
 	#define IDC_BTN_RUN 1058
 
 	//Toolbar buttons
-	#define IDC_BTN_TBNEW 1052
+	#define IDC_BTN_TBCLEAR 1052
 	#define IDC_BTN_TBOPEN 1053
 	#define IDC_BTN_TBTEXT 1054
 	#define IDC_BTN_TBBAT 1055
@@ -83,7 +83,7 @@
 	#define IDC_EDIT_PW 1031
 	#define IDC_EDIT_DESC 1041
 	#define IDC_EDIT_CMDLINE 1039
-	#define IDC_EDIT_FILE 1040
+	#define IDC_EDIT_RSLT 1040
 	#define IDC_EDIT_BUFF 1048
 	#define IDC_EDIT_RESUME 1049
 	#define IDC_EDIT_REQ 1050

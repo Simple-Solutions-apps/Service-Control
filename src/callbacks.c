@@ -25,7 +25,7 @@ int iComboIndex;
 int iTextLen;
 int iFileModified;
 char *cTempBuff;
-char *cFileName;
+char *cRsltName;
 char *cWinTitle;
 
 char *cCMDLine;
@@ -48,7 +48,7 @@ char *cQyType;
 char *cState;
 char *cBuf;
 char *cResm;
-char *cFile;
+char *cRslt;
 	
 //main window callback procedure
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
@@ -78,7 +78,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	HWND sHwndCtlEdtBuf = GetDlgItem(sHwndMain, IDC_EDIT_BUFF);
 	HWND sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
 	HWND sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
-	HWND sHwndCtlEdtContents = GetDlgItem(sHwndMain, IDC_EDIT_FILE);
+	HWND sHwndCtlEdtRslt = GetDlgItem(sHwndMain, IDC_EDIT_RSLT);
 
 	HWND sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
 	HWND sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
@@ -91,14 +91,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 	HWND sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
 	HWND sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);
-	/*
-	HWND sHwndTbNew = GetDlgItem(sHwndMain, IDC_BTN_TBNEW);
-	HWND sHwndTbOpen = GetDlgItem(sHwndMain, IDC_BTN_TBOPEN);
-	HWND sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
-	HWND sHwndTbBat = GetDlgItem(sHwndMain, IDC_BTN_TBBAT);
-	HWND sHwndTbSvc = GetDlgItem(sHwndMain, IDC_BTN_TBSVC);
-	HWND sHwndTbAbout = GetDlgItem(sHwndMain, IDC_BTN_TBABOUT);
-	*/
+	
 	switch(sMsg)
 	{
 
@@ -130,11 +123,11 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cState = calloc(20, sizeof (char));
 			cBuf = calloc(25, sizeof (char));
 			cResm = calloc(8, sizeof (char));
-			cFile = calloc(1, sizeof (char));
-			cFileName = calloc(35, sizeof (char));
+			cRslt = calloc(1, sizeof (char));
+			cRsltName = calloc(35, sizeof (char));
 
 			//define default file name
-			strcpy(cFileName, "Untitled.bat");
+			strcpy(cRsltName, "Untitled.bat");
 
 			//define edit box tooltip structure for account name and object name parameters.
 			sTipAcc.cbStruct = sizeof (EDITBALLOONTIP);
@@ -184,22 +177,61 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			{	
 				//begin toolbar messages
 
-				case IDC_BTN_TBNEW:					
-					iTextLen = SendMessage(sHwndCtlEdtContents, WM_GETTEXTLENGTH, 0, 0);
+				case IDC_BTN_TBCLEAR:
+					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+					SendMessage(sHwndCtlEdtSvr, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtSvc, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlCmbType, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);					
+					SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlCmbErr, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlEdtBin, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlEdtGrp, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlCmbTag, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlEdtDpd, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtAcc, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtObj, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtDisp, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtPw, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtBuf, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtResm, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+					strcpy(cCommand, "");
+					strcpy(cSvr, "");
+					strcpy(cSvc, "");
+					strcpy(cType, "");
+					strcpy(cInteract, "");
+					strcpy(cStart, "");
+					strcpy(cErr, "");
+					strcpy(cBin, "");
+					strcpy(cQyType, "");
+					strcpy(cState, "");
+					strcpy(cGrp, "");
+					strcpy(cTag, "");
+					strcpy(cDpd, "");
+					strcpy(cAcc, "");
+					strcpy(cObj, "");
+					strcpy(cDisp, "");
+					strcpy(cPw, "");
+					strcpy(cBuf, "");
+					strcpy(cRslt, "");
+					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
+
+					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
 					//realloc(cTempBuff, iTextLen * sizeof (char));
-					//SendMessage(sHwndCtlEdtContents, WM_GETTEXT, (WPARAM) iTextLen,(LPARAM) cTempBuff);
+					//SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen,(LPARAM) cTempBuff);	
+
 					if(iTextLen == 0)
-					{
-						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
-						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
-						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
+					{						
 						break;
 					}
 
-					if(MessageBox(sHwndMain, "Do you want to save changes to current file?", "Service Control", MB_YESNO|MB_ICONQUESTION) == IDNO)
+					if(MessageBox(sHwndMain, "Save results to current file?", "Service Control", MB_YESNO|MB_ICONQUESTION) == IDNO)
 					{
 						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
-						SendMessage(sHwndCtlEdtContents, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+						SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
 						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 						break;
@@ -213,7 +245,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					sOpenFileName.nMaxFile = _MAX_PATH;
 					sOpenFileName.lpstrFilter = "Batch Files (*.bat)\0*.bat\0Text Files (*.txt)\0*.txt\0\0";					
 					sOpenFileName.nFilterIndex = 1;
-					sOpenFileName.lpstrFile = cFileName;
+					sOpenFileName.lpstrFile = cRsltName;
 					sOpenFileName.lpstrFileTitle = "Save file";
 					sOpenFileName.nMaxFileTitle = 0;
 					sOpenFileName.lpstrInitialDir = "%userprofile%\\Documents";
@@ -227,8 +259,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					{
 						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) "Blaaa"); //cPathFileToOpen);
 					}
-					
-
 					break;
 
 				case IDC_BTN_TBOPEN:
@@ -288,7 +318,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							strcpy(cResm, "");
 							strcpy(cType, "");
 							strcpy(cInteract, "");
-							strcpy(cPw, "");
 
 							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
 
@@ -1045,19 +1074,19 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						}
 						break;
 
-				case IDC_EDIT_FILE:
+				case IDC_EDIT_RSLT:
 					switch(HIWORD (wParam))
 					{
 						case EN_SETFOCUS:							
-							//SendMessage(sHwndCtlEdtContents,  WM_SETTEXT, 0, (LPARAM) "File contents.");								
+							//SendMessage(sHwndCtlEdtRslt,  WM_SETTEXT, 0, (LPARAM) "File contents.");								
 							break;
 
 						case EN_CHANGE:
-							SendMessage(sHwndCtlEdtContents, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
+							SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
 							if(strcmp(cTempBuff, "") != 0)
 							{
 								iFileModified = 0;
-								//SendMessage(sHwndCtlEdtContents, WM_SETTEXT, 0,(LPARAM) cTempBuff);									
+								//SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, 0,(LPARAM) cTempBuff);									
 							}
 							else
 							{

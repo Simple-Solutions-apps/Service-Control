@@ -15,7 +15,7 @@
 IDI_APPICON ICON "..\\assets\\images\\mainicon.ico"
 
 //Toolbar custom bitmap
-IDB_TBBITMAP_LARGE_COLOR BITMAP "..\\assets\\images\\TB_BTNSET_CLRSTD.bmp"
+IDB_TBBITMAP_LARGE_COLOR BITMAP "..\\assets\\images\\TB_BTNSET1.bmp"
 
 //manifest file
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\\Manifest\\ServiceControl.exe.manifest"
