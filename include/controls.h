@@ -55,7 +55,6 @@
 
 	//Toolbar buttons
 	#define IDC_BTN_TBCLEAR 1052
-	#define IDC_BTN_TBOPEN 1053
 	#define IDC_BTN_TBTEXT 1054
 	#define IDC_BTN_TBBAT 1055
 	#define IDC_BTN_TBSVC 1056

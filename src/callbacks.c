@@ -20,14 +20,11 @@ HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
 OPENFILENAME sOpenFileName;
 HANDLE hFileToOpen;
-char cPathFileToOpen[MAX_PATH];
 int iComboIndex;
 int iTextLen;
 int iFileModified;
 char *cTempBuff;
-char *cRsltName;
 char *cWinTitle;
-
 char *cCMDLine;
 char *cCommand;
 char *cSvr;
@@ -49,6 +46,8 @@ char *cState;
 char *cBuf;
 char *cResm;
 char *cRslt;
+char *cPathFileSaveText;
+char *cPathFileSaveBat;
 	
 //main window callback procedure
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
@@ -91,6 +90,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 	HWND sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
 	HWND sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);
+
+	
 	
 	switch(sMsg)
 	{
@@ -124,10 +125,12 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cBuf = calloc(25, sizeof (char));
 			cResm = calloc(8, sizeof (char));
 			cRslt = calloc(1, sizeof (char));
-			cRsltName = calloc(35, sizeof (char));
+			cPathFileSaveBat = calloc(25, sizeof (char));
+			cPathFileSaveBat = calloc(12, sizeof (char));
 
-			//define default file name
-			strcpy(cRsltName, "Untitled.bat");
+			//define path defaults
+			strcpy(cPathFileSaveText, "%userprofile%\\Documents\\results.txt");
+			strcpy(cPathFileSaveBat, "%userprofile%\\Documents\\results.bat");
 
 			//define edit box tooltip structure for account name and object name parameters.
 			sTipAcc.cbStruct = sizeof (EDITBALLOONTIP);
@@ -219,15 +222,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					strcpy(cRslt, "");
 					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 
-					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
-					//realloc(cTempBuff, iTextLen * sizeof (char));
-					//SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen,(LPARAM) cTempBuff);	
-
-					if(iTextLen == 0)
-					{						
-						break;
-					}
-
 					if(MessageBox(sHwndMain, "Save results to current file?", "Service Control", MB_YESNO|MB_ICONQUESTION) == IDNO)
 					{
 						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
@@ -235,36 +229,51 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 						break;
-					}
-					
-					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
-					sOpenFileName.lStructSize = sizeof (sOpenFileName);
-					sOpenFileName.hwndOwner = sHwndMain;
-					sOpenFileName.lpstrFile = cPathFileToOpen;
-					sOpenFileName.lpstrFile[0] = '\0';
-					sOpenFileName.nMaxFile = _MAX_PATH;
-					sOpenFileName.lpstrFilter = "Batch Files (*.bat)\0*.bat\0Text Files (*.txt)\0*.txt\0\0";					
-					sOpenFileName.nFilterIndex = 1;
-					sOpenFileName.lpstrFile = cRsltName;
-					sOpenFileName.lpstrFileTitle = "Save file";
-					sOpenFileName.nMaxFileTitle = 0;
-					sOpenFileName.lpstrInitialDir = "%userprofile%\\Documents";
-					sOpenFileName.lpstrDefExt = "exe";
-					//For opening a file
-					//sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
-					//For saving a file
-					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; 					
-					//if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
-					if(GetSaveFileName(&sOpenFileName) != 0) //for saving a file
-					{
-						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) "Blaaa"); //cPathFileToOpen);
-					}
-					break;
-
-				case IDC_BTN_TBOPEN:
+					}					
 					break;
 
 				case IDC_BTN_TBTEXT:
+					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
+					
+					if(iTextLen == 0)
+					{	
+						MessageBox(sHwndMain, "There are no results to save.", "Save results as text", MB_OK | MB_ICONINFORMATION);					
+						break;
+					}				
+
+					//realloc(cTempBuff, iTextLen * sizeof (char));
+					//SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen,(LPARAM) cTempBuff);
+
+					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
+					sOpenFileName.lStructSize = sizeof (sOpenFileName);
+					sOpenFileName.hwndOwner = sHwndMain;
+					sOpenFileName.hInstance = NULL;
+					sOpenFileName.lpstrFilter = "Text Files (*.txt)\0*.txt\0\0";
+					sOpenFileName.lpstrCustomFilter = NULL;
+					sOpenFileName.nMaxCustFilter = 0;
+					sOpenFileName.nFilterIndex = 1;
+					sOpenFileName.lpstrFile = cPathFileSaveText;
+					sOpenFileName.nMaxFile = MAX_PATH;
+					sOpenFileName.lpstrFileTitle = NULL;
+					sOpenFileName.nMaxFileTitle = 0;
+					sOpenFileName.lpstrInitialDir = NULL;
+					sOpenFileName.lpstrTitle = "Save as text file";
+					//sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY; //For opening a file				
+					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file					
+					sOpenFileName.nFileOffset = 0;
+					sOpenFileName.nFileExtension = 0;
+					sOpenFileName.lpstrDefExt = "txt";
+					sOpenFileName.lCustData = 0;
+					sOpenFileName.lpfnHook = NULL;
+					sOpenFileName.lpTemplateName = NULL;
+					//sOpenFileName.lpEditInfo = NULL; //applicable only to Motorola 68K Macintosh computers, and not to Windows client operating systems.
+					//sOpenFileName.lpstrPrompt = NULL; //"
+
+					//if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
+					if(GetSaveFileName(&sOpenFileName) != 0) //for saving a file
+					{
+						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) cPathFileSaveText);
+					}
 					break;
 
 				case IDC_BTN_TBBAT:
@@ -1102,7 +1111,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
 					sOpenFileName.lStructSize = sizeof (sOpenFileName);
 					sOpenFileName.hwndOwner = sHwndMain;
-					sOpenFileName.lpstrFile = cPathFileToOpen;
+					sOpenFileName.lpstrFile = NULL;
 					sOpenFileName.lpstrFile[0] = '\0';
 					sOpenFileName.nMaxFile = _MAX_PATH;
 					sOpenFileName.lpstrFilter = "Executable Files (*.exe)\0*.exe\0";					
@@ -1118,7 +1127,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
 					//if(GetSaveFileName(&sOpenFileName) > 0) //for saving a file
 					{
-						SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) cPathFileToOpen);
+						SendMessage(sHwndCtlEdtBin,  WM_SETTEXT, 0, (LPARAM) "cPathFileToOpen");
 					}
 					break;
 
