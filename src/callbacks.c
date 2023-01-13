@@ -6,7 +6,7 @@
 //standard includes
 #include <windows.h>
 #include <commctrl.h>
-#include <Knownfolders.h>
+#include <libgen.h>
 #include <Shlobj.h>
 #include <stdio.h>
 
@@ -53,6 +53,7 @@ char *cPathFileSaveText;
 char *cPathFileSaveBat;
 char *cPathFolderUserProfile;
 char *cPathFolderPersonal;
+char *cFileName;
 	
 //main window callback procedure
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
@@ -129,7 +130,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cRslt = calloc(1, sizeof (char));
 			cPathFileSaveText = calloc(40, sizeof (char));
 			cPathFileSaveBat = calloc(40, sizeof (char));
-			cPathFolderPersonal = calloc(MAX_PATH, sizeof (char));			
+			cPathFolderPersonal = calloc(MAX_PATH, sizeof (char));
+			cFileName = calloc(50, sizeof (char));			
 
 			//define path defaults
 			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT, cPathFolderPersonal);
@@ -142,9 +144,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			strcpy(cPathFileSaveText, cPathFolderPersonal);
 			strcat(cPathFileSaveText, "\\results.txt");
 			strcpy(cPathFileSaveBat, cPathFolderPersonal);
-			strcat(cPathFileSaveBat, "\\results.txt");
-			free(cPathFolderPersonal);		
-			
+			strcat(cPathFileSaveBat, "\\results.txt");			
 
 			//define edit box tooltip structure for account name and object name parameters.
 			sTipAcc.cbStruct = sizeof (EDITBALLOONTIP);
@@ -284,7 +284,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					//if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
 					if(GetSaveFileName(&sOpenFileName) != 0) //for saving a file
 					{
-						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) cPathFileSaveText);
+						strcpy(cFileName, basename(cPathFileSaveText));
+						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) strcat(cFileName, " - Sevice Control"));
 					}
 					break;
 
