@@ -6,6 +6,8 @@
 //standard includes
 #include <windows.h>
 #include <commctrl.h>
+#include <Knownfolders.h>
+#include <Shlobj.h>
 #include <stdio.h>
 
 //custom includes
@@ -20,6 +22,7 @@ HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
 OPENFILENAME sOpenFileName;
 HANDLE hFileToOpen;
+HRESULT hResult;
 int iComboIndex;
 int iTextLen;
 int iFileModified;
@@ -48,6 +51,8 @@ char *cResm;
 char *cRslt;
 char *cPathFileSaveText;
 char *cPathFileSaveBat;
+char *cPathFolderUserProfile;
+char *cPathFolderPersonal;
 	
 //main window callback procedure
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
@@ -78,7 +83,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	HWND sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
 	HWND sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
 	HWND sHwndCtlEdtRslt = GetDlgItem(sHwndMain, IDC_EDIT_RSLT);
-
 	HWND sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
 	HWND sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
 	HWND sHwndCtlCmbInteract = GetDlgItem(sHwndMain, IDC_COMBO_INTERACT);
@@ -87,7 +91,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	HWND sHwndCtlCmbTag = GetDlgItem(sHwndMain, IDC_COMBO_TAG);	
 	HWND sHwndCtlCmbQyType = GetDlgItem(sHwndMain, IDC_COMBO_QYTYPE);
 	HWND sHwndCtlCmbState = GetDlgItem(sHwndMain, IDC_COMBO_STATE);
-
 	HWND sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
 	HWND sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);
 
@@ -103,7 +106,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cTempBuff = malloc(400 * sizeof (char));
 			cUniTitleAcc = malloc(23 * sizeof (wchar_t));
 			cUniTextAcc = malloc(60 * sizeof (wchar_t));
-
 			cCMDLine = calloc(1500, sizeof (char)); //The maximum command line length for the CreateProcess function is 32767 characters.
 			cCommand = calloc(10, sizeof (char));			
 			cSvr = calloc(17, sizeof (char));
@@ -125,12 +127,24 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cBuf = calloc(25, sizeof (char));
 			cResm = calloc(8, sizeof (char));
 			cRslt = calloc(1, sizeof (char));
-			cPathFileSaveBat = calloc(25, sizeof (char));
-			cPathFileSaveBat = calloc(12, sizeof (char));
+			cPathFileSaveText = calloc(40, sizeof (char));
+			cPathFileSaveBat = calloc(40, sizeof (char));
+			cPathFolderPersonal = calloc(MAX_PATH, sizeof (char));			
 
 			//define path defaults
-			strcpy(cPathFileSaveText, "%userprofile%\\Documents\\results.txt");
-			strcpy(cPathFileSaveBat, "%userprofile%\\Documents\\results.bat");
+			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT, cPathFolderPersonal);
+			if(hResult != S_OK)
+			{
+				MessageBox(sHwndMain, "Could not find user profile folder", "Error", MB_OK | MB_ICONERROR);
+				return FALSE;
+			}
+			cPathFileSaveText = realloc(cPathFileSaveText, (strlen(cPathFolderPersonal) +  15) * sizeof(char));
+			strcpy(cPathFileSaveText, cPathFolderPersonal);
+			strcat(cPathFileSaveText, "\\results.txt");
+			strcpy(cPathFileSaveBat, cPathFolderPersonal);
+			strcat(cPathFileSaveBat, "\\results.txt");
+			free(cPathFolderPersonal);		
+			
 
 			//define edit box tooltip structure for account name and object name parameters.
 			sTipAcc.cbStruct = sizeof (EDITBALLOONTIP);
@@ -224,8 +238,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 					if(MessageBox(sHwndMain, "Save results to current file?", "Service Control", MB_YESNO|MB_ICONQUESTION) == IDNO)
 					{
-						SendMessage(sHwndMain, WM_SETTEXT, (WPARAM) 0, (LPARAM) "Untitled - Service Control");
-						SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
 						SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 						break;
