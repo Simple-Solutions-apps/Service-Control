@@ -224,23 +224,23 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					strcpy_s(cStart, 22, "");
 					strcpy_s(cErr, 20, "");
 					strcpy_s(cBin, MAX_PATH, "");
-					strcpy_s(cQyType, 20, "");
+					strcpy_s(cQyType, 20,  20, "");
 					strcpy_s(cState, 20, "");
-					strcpy_s(cGrp, "");
-					strcpy_s(cTag, "");
-					strcpy_s(cDpd, "");
-					strcpy_s(cAcc, "");
-					strcpy_s(cObj, "");
-					strcpy_s(cDisp, "");
-					strcpy_s(cPw, "");
-					strcpy_s(cBuf, "");					
+					strcpy_s(cGrp, 80, "");
+					strcpy_s(cTag, 5, "");
+					strcpy_s(cDpd, 190, "");
+					strcpy_s(cAcc, 257, "");
+					strcpy_s(cObj, 267, "");
+					strcpy_s(cDisp, 287, "");
+					strcpy_s(cPw, 27, "");
+					strcpy_s(cBuf, 25, "");					
 					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
 					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save results to current file?"), TEXT("Save file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
 					{						
 						
 					}
 					SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					strcpy_s(cRslt, "");
+					strcpy_s(cRslt, 1, "");
 					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);					
 					break;
@@ -353,7 +353,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) -1, 0);
 							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) -1, 0);
 							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
-							strcpy_s(cQyType, "");
+							strcpy_s(cQyType, 20,  "");
 							strcpy_s(cState, "");
 							strcpy_s(cBuf, "");
 							strcpy_s(cResm, "");
@@ -461,7 +461,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									strcpy_s(cAcc, "");
 									strcpy_s(cDisp, "");
 									strcpy_s(cPw, "");
-									strcpy_s(cQyType, " type= service");
+									strcpy_s(cQyType, 20,  " type= service");
 									strcpy_s(cState, " state= active");
 									break;
 							}
@@ -719,19 +719,19 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									case 0:
 										LoadString(vHmodInst, IDS_QYTYPE_SERVICE, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										strcpy_s(cQyType, " type= service");
+										strcpy_s(cQyType, 20,  " type= service");
 										break;
 
 									case 1:
 										LoadString(vHmodInst, IDS_QYTYPE_DRIVER, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										strcpy_s(cQyType, " type= driver");
+										strcpy_s(cQyType, 20,  " type= driver");
 										break;
 
 									case 2:
 										LoadString(vHmodInst, IDS_QYTYPE_ALL, cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-										strcpy_s(cQyType, " type= all");
+										strcpy_s(cQyType, 20,  " type= all");
 										break;
 								}
 								SetTextCMDLine(sHwndCtlEdtCMDLine);
