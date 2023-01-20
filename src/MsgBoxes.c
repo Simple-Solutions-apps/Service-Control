@@ -5,64 +5,71 @@
 
 //Standard includes
 #include <windows.h>
+#include <strsafe.h>
 #include <stddef.h>
 #include <stdio.h>
 
 //custom includes
 #include "..\include\MsgBoxes.h"
 
-void InfoBox(char* FormatText, char* Var)
+void InfoBox(STRSAFE_LPCWSTR FormatText, char *Var)
 {
-	char *cDisplayPrompt;
-	size_t iDisplayPromptLen = strlen(FormatText) + strlen(Var) + 1;
+	LPTSTR cDisplayPrompt;
+	HRESULT hResult;
+	size_t iDisplayPromptLen = lstrlen(FormatText) + strlen(Var) + 1;
 
-	cDisplayPrompt = calloc(iDisplayPromptLen, sizeof (char));
+	cDisplayPrompt = calloc(iDisplayPromptLen, sizeof (LPTSTR));
+	hResult = StringCchPrintf(cDisplayPrompt, iDisplayPromptLen, FormatText, Var);
 
-	if(cDisplayPrompt != NULL && sprintf(cDisplayPrompt, FormatText, Var) > 0)
+	if(cDisplayPrompt != NULL && hResult == S_OK)
 	{
-		MessageBox(NULL, cDisplayPrompt, "Information", MB_ICONINFORMATION | MB_OK | MB_TOPMOST);
+		MessageBox(NULL, cDisplayPrompt,  TEXT("Information"), MB_ICONINFORMATION | MB_OK | MB_TOPMOST);
 	}
 	else
 	{
-		MessageBox(NULL, "Unable to create information box", "Error", MB_ICONERROR | MB_OK | MB_TOPMOST);
+		MessageBox(NULL,  TEXT("Unable to create information box"),  TEXT("Error"), MB_ICONERROR | MB_OK | MB_TOPMOST);
 	}
 
 	free(cDisplayPrompt);
 
 }
-void ErrorBox(char* FormatText, char * Var)
+void ErrorBox(STRSAFE_LPCWSTR FormatText, char *Var)
 {
-	char *cDisplayPrompt;
-	size_t iDisplayPromptLen = strlen(FormatText) + strlen(Var) + 1;
+	LPTSTR cDisplayPrompt;
+	HRESULT hResult;
+	size_t iDisplayPromptLen = lstrlen(FormatText) + strlen(Var) + 1;
 
-	cDisplayPrompt = calloc(iDisplayPromptLen, sizeof (char));
+	cDisplayPrompt = calloc(iDisplayPromptLen, sizeof (LPCWSTR));
+	hResult = StringCchPrintf(cDisplayPrompt, iDisplayPromptLen, FormatText, Var);
 
-	if(cDisplayPrompt != NULL && sprintf(cDisplayPrompt, FormatText, Var) > 0)
+	if(cDisplayPrompt != NULL && hResult == S_OK)
 	{
-		MessageBox(NULL, cDisplayPrompt, "Error", MB_ICONERROR | MB_OK | MB_TOPMOST);
+		MessageBox(NULL, cDisplayPrompt, TEXT("Error"), MB_ICONERROR | MB_OK | MB_TOPMOST);
 	}
 	else
 	{
-		MessageBox(NULL, "Unable to create error box", "Error", MB_ICONERROR | MB_OK | MB_TOPMOST);
+		MessageBox(NULL, TEXT("Unable to create error box"), TEXT("Error"), MB_ICONERROR | MB_OK | MB_TOPMOST);
 	}
 
 	free(cDisplayPrompt);
 
 }
-void NumBox(char* FormatText, int Var)
+void NumBox(STRSAFE_LPCWSTR FormatText, int Var)
 {
-	char *cDisplayPrompt;
-	size_t iDisplayPromptLen = strlen(FormatText) + sizeof (Var) + 1;
+	LPTSTR cDisplayPrompt;
+	HRESULT hResult;
+	size_t iDisplayPromptLen = lstrlen(FormatText) + 9;
 
-	cDisplayPrompt = calloc(iDisplayPromptLen, sizeof (char));
+	cDisplayPrompt = calloc(iDisplayPromptLen, sizeof (LPCWSTR));
+	hResult = StringCchPrintf(cDisplayPrompt, iDisplayPromptLen, FormatText, Var);
 
-	if(cDisplayPrompt != NULL && sprintf(cDisplayPrompt, FormatText, Var) > 0)
+	if(cDisplayPrompt != NULL && hResult == S_OK)
 	{
-		MessageBox(NULL, cDisplayPrompt, "Information", MB_ICONINFORMATION | MB_OK | MB_TOPMOST);
+		MessageBox(NULL, cDisplayPrompt, TEXT("Information"), MB_ICONINFORMATION | MB_OK | MB_TOPMOST);
 	}
 	else
 	{
-		MessageBox(NULL, "Unable to number box", "Error", MB_ICONERROR | MB_OK | MB_TOPMOST);
+		MessageBox(NULL, TEXT("Unable to number box"), TEXT("Error"), MB_ICONERROR | MB_OK | MB_TOPMOST);
 	}
 
 	free(cDisplayPrompt);

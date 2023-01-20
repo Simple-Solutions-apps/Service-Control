@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	vHmodInst = GetModuleHandle(NULL);
 
 	//define window class name
-	const char cWindowClassName[] = "CommandAppGUI"; 
+	LPCWSTR cWindowClassName = TEXT("CommandAppGUI"); 
 
 	//assign window class structure
 	sWinClass.cbSize = sizeof (WNDCLASSEX);
@@ -51,7 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//attempt to register main window class
 	if(!RegisterClassEx(&sWinClass))
 	{
-		MessageBox(NULL, "Main window Registration Failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(NULL, TEXT("Main window Registration Failed!"),  TEXT("Error!"), MB_ICONEXCLAMATION | MB_OK);
 		return __LINE__;
 	}
 
@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if(GetClientRect(GetDesktopWindow(), &sRect) == FALSE)
 	{
 		//attempt to create the main window with default positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control",
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName,  TEXT("Service Control"),
 		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}
@@ -71,7 +71,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		sRect.top = 10;
 
 		//attempt to create main window with centered positioning coordinates
-		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName, "Service Control",
+		sHdlWinMain = CreateWindowEx(WS_EX_CLIENTEDGE, cWindowClassName,  TEXT("Service Control"),
 		WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU,
 		sRect.left, sRect.top, WIN_WIDTH, WIN_HEIGHT, NULL, NULL, hInstance, NULL);
 	}
@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//verify main window has been created correctly
 	if(sHdlWinMain == NULL)
 	{
-		MessageBox(NULL, "Main window creation failed", "Error", MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(NULL,  TEXT("Main window creation failed"),  TEXT("Error"), MB_ICONEXCLAMATION | MB_OK);
 		return __LINE__;
 	}
 
@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//verify that common controls for modern visual styles were initiated correctly
 	if(InitCommonControlsEx(&sInitCtrlEx) == FALSE)
 	{
-		MessageBox(sHdlWinMain, "Standard classes Not been loaded", "Common controls", MB_ICONINFORMATION | MB_OK);
+		MessageBox(sHdlWinMain,  TEXT("Standard classes Not been loaded"),  TEXT("Common controls"), MB_ICONINFORMATION | MB_OK);
 	}
 
 	ShowWindow(sHdlWinMain, nCmdShow);

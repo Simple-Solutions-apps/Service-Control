@@ -4,8 +4,8 @@
 	#define MSGBOXES_H
 
 	//prototypes
-	void InfoBox(char *FormatText, char *var);
-	void ErrorBox(char *FormatText, char *var);
-	void NumBox(char *FormatText, int var);
+	void InfoBox(STRSAFE_LPCWSTR FormatText, char *var);
+	void ErrorBox(STRSAFE_LPCWSTR FormatText, char *var);
+	void NumBox(STRSAFE_LPCWSTR FormatText, int var);
 
 #endif // MSGBOXES_H

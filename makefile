@@ -1,5 +1,5 @@
 CC = x86_64-w64-mingw32-gcc.exe
-CFlags = -Wall -O2 -Werror
+CFlags = -Wall -O2 -D UNICODE -D _UNICODE
 
 DirSrc = .\src
 DirObj= .\obj
