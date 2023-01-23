@@ -80,8 +80,8 @@ int CreateControls(HWND sHwndMain)
 	int iBitmapIndex;
 
 	//declare variables for combo boxes 
-	char cComboOptions[7][15];
-	char cTempBuff[16];
+	wchar_t cComboOptions[7][15];
+	wchar_t cTempBuff[16];
 	int  iLoopIndex = 0;
 
 	//declare this module/executable instance handle
@@ -157,7 +157,7 @@ int CreateControls(HWND sHwndMain)
     sButtonsToAdd[0].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
     sButtonsToAdd[0].idCommand = IDC_BTN_TBCLEAR;
-	sButtonsToAdd[0].iString = (INT_PTR) "Clear";
+	sButtonsToAdd[0].iString = (INT_PTR) TEXT("Clear");
 
 	sButtonsToAdd[1].iBitmap = 0;
     sButtonsToAdd[1].fsState = TBSTATE_ENABLED;
@@ -168,13 +168,13 @@ int CreateControls(HWND sHwndMain)
     sButtonsToAdd[2].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[2].fsStyle = TBSTYLE_BUTTON;
     sButtonsToAdd[2].idCommand = IDC_BTN_TBTEXT;
-	sButtonsToAdd[2].iString = (INT_PTR) "Save as text";
+	sButtonsToAdd[2].iString = (INT_PTR) TEXT("Save as text");
 
     sButtonsToAdd[3].iBitmap = MAKELONG(2, 0);
     sButtonsToAdd[3].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[3].fsStyle = TBSTYLE_BUTTON;
     sButtonsToAdd[3].idCommand = IDC_BTN_TBBAT;
-	sButtonsToAdd[3].iString = (INT_PTR) "Save as batch";
+	sButtonsToAdd[3].iString = (INT_PTR) TEXT("Save as batch");
 
 	sButtonsToAdd[4].iBitmap = 0;
     sButtonsToAdd[4].fsState = TBSTATE_ENABLED;
@@ -185,13 +185,13 @@ int CreateControls(HWND sHwndMain)
     sButtonsToAdd[5].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[5].fsStyle = TBSTYLE_BUTTON;
     sButtonsToAdd[5].idCommand = IDC_BTN_TBSVC;
-	sButtonsToAdd[5].iString = (INT_PTR) "Open Services";
+	sButtonsToAdd[5].iString = (INT_PTR) TEXT("Open Services");
 
 	sButtonsToAdd[6].iBitmap = MAKELONG(4, 0);
     sButtonsToAdd[6].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[6].fsStyle = TBSTYLE_BUTTON;
     sButtonsToAdd[6].idCommand = IDC_BTN_TBABOUT;
-	sButtonsToAdd[6].iString = (INT_PTR) "About";
+	sButtonsToAdd[6].iString = (INT_PTR) TEXT("About");
 
 	//send messages to toolbar (apply definitions)
 	SendMessage(sHwndCtlToolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0); //Send the TB_BUTTONSTRUCTSIZE message (for backward compatibility)
@@ -426,15 +426,15 @@ int CreateControls(HWND sHwndMain)
 	SendMessage(sHwndCtlCmbCmd, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	//define combo box list options text
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "create");
-	strcpy_s(cComboOptions[1], 15, "config");
-	strcpy_s(cComboOptions[2], 15, "delete");
-	strcpy_s(cComboOptions[3], 15, "query");
+	wcscpy_s(cComboOptions[0], 15, TEXT("create"));
+	wcscpy_s(cComboOptions[1], 15, TEXT("config"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("delete"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("query"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff)); 
 	//send message to add each list option text (Typical going forward)   
 	for(iLoopIndex = 0; iLoopIndex <= 3; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 15, (char *) cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 15, cComboOptions[iLoopIndex]);
 
 		SendMessage(sHwndCtlCmbCmd,(UINT) CB_ADDSTRING,(WPARAM) 0, (LPARAM) cTempBuff); 
 	}
@@ -450,17 +450,17 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbType, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "");
-	strcpy_s(cComboOptions[1], 15, "own");
-	strcpy_s(cComboOptions[2], 15, "share");
-	strcpy_s(cComboOptions[3], 15, "kernal");
-	strcpy_s(cComboOptions[4], 15, "filesys");
-	strcpy_s(cComboOptions[5], 15, "rec");
-	strcpy_s(cComboOptions[6], 15, "interact");
+	wcscpy_s(cComboOptions[0], 15, TEXT(""));
+	wcscpy_s(cComboOptions[1], 15, TEXT("own"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("share"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("kernal"));
+	wcscpy_s(cComboOptions[4], 15, TEXT("filesys"));
+	wcscpy_s(cComboOptions[5], 15, TEXT("rec"));
+	wcscpy_s(cComboOptions[6], 15, TEXT("interact"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 
 		SendMessage(sHwndCtlCmbType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}
@@ -475,12 +475,12 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbInteract, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "own");
-	strcpy_s(cComboOptions[1], 15, "share");
+	wcscpy_s(cComboOptions[0], 15, TEXT("own"));
+	wcscpy_s(cComboOptions[1], 15, TEXT("share"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 1; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 		SendMessage(sHwndCtlCmbInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	} 
 	SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
@@ -494,17 +494,17 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbStart, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "");
-	strcpy_s(cComboOptions[1], 15, "boot");
-	strcpy_s(cComboOptions[2], 15, "system");
-	strcpy_s(cComboOptions[3], 15, "auto");
-	strcpy_s(cComboOptions[4], 15, "demand");
-	strcpy_s(cComboOptions[5], 15, "disabled");
-	strcpy_s(cComboOptions[6], 15, "delayed-auto");
+	wcscpy_s(cComboOptions[0], 15, TEXT(""));
+	wcscpy_s(cComboOptions[1], 15, TEXT("boot"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("system"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("auto"));
+	wcscpy_s(cComboOptions[4], 15, TEXT("demand"));
+	wcscpy_s(cComboOptions[5], 15, TEXT("disabled"));
+	wcscpy_s(cComboOptions[6], 15, TEXT("delayed-auto"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 		SendMessage(sHwndCtlCmbStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}
 	SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
@@ -518,15 +518,15 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbErr, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "");
-	strcpy_s(cComboOptions[1], 15, "normal");
-	strcpy_s(cComboOptions[2], 15, "severe");
-	strcpy_s(cComboOptions[3], 15, "critical");
-	strcpy_s(cComboOptions[4], 15, "ignore");
+	wcscpy_s(cComboOptions[0], 15, TEXT(""));
+	wcscpy_s(cComboOptions[1], 15, TEXT("normal"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("severe"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("critical"));
+	wcscpy_s(cComboOptions[4], 15, TEXT("ignore"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 4; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 
 		SendMessage(sHwndCtlCmbErr,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	} 
@@ -541,13 +541,13 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbTag, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "");
-	strcpy_s(cComboOptions[1], 15, "yes");
-	strcpy_s(cComboOptions[2], 15, "no");
+	wcscpy_s(cComboOptions[0], 15, TEXT(""));
+	wcscpy_s(cComboOptions[1], 15, TEXT("yes"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("no"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 
 		SendMessage(sHwndCtlCmbTag,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}
@@ -562,13 +562,13 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbQyType, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "service");
-	strcpy_s(cComboOptions[1], 15, "driver");
-	strcpy_s(cComboOptions[2], 15, "all");
+	wcscpy_s(cComboOptions[0], 15, TEXT("service"));
+	wcscpy_s(cComboOptions[1], 15, TEXT("driver"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("all"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 
 		SendMessage(sHwndCtlCmbQyType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}
@@ -584,13 +584,13 @@ int CreateControls(HWND sHwndMain)
 
 	SendMessage(sHwndCtlCmbState, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof(cComboOptions));
-	strcpy_s(cComboOptions[0], 15, "active");
-	strcpy_s(cComboOptions[1], 15, "inactive");
-	strcpy_s(cComboOptions[2], 15, "all");
+	wcscpy_s(cComboOptions[0], 15, TEXT("active"));
+	wcscpy_s(cComboOptions[1], 15, TEXT("inactive"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("all"));
 	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		strcpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
+		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
 
 		SendMessage(sHwndCtlCmbState,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
 	}
@@ -771,9 +771,6 @@ int CreateControls(HWND sHwndMain)
 	//send tool tip messages (apply definitions)
 	SendMessage(sHwndCtlTipInteract, TTM_ADDTOOL, 0, (LPARAM) &sTi);
 	SendMessage(sHwndCtlTipInteract,  TTM_SETMAXTIPWIDTH, 0, (LPARAM) 140);
-
-	//attempt to preset controls
-	SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 
 	return 0;
 }
