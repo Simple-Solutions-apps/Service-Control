@@ -1130,7 +1130,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					}
 					break;
 
-				//begin button messages
+				//begin button messages 
 
 				case IDC_BTN_BROWSE:
 					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
