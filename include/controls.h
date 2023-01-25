@@ -7,7 +7,8 @@
 	//Controls
 
 	//tooltips
-	#define IDC_MAIN_TOOLTIP 1051
+	#define IDC_MAIN_TIPACC 1051
+	#define IDC_MAIN_TIPINTERACTIVE 1053
 
 	//tool bar
 	#define IDC_MAIN_TOOLBAR 1100

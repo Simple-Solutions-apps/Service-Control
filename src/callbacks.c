@@ -16,7 +16,7 @@
 #include "..\include\callbacks.h"
 
 //declarations
-HMODULE vHmodInst;		
+HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
 OPENFILENAME sOpenFileName;
 LPCWSTR cPathFileSaveText;
@@ -70,6 +70,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	}
 
 	//definitions
+	//HWND sHwndCtlTipInteract  = GetDlgItem(sHwndMain, IDC_MAIN_TIPINTERACTIVE);
 	HWND sHwndTbClear = GetDlgItem(sHwndMain, IDC_BTN_TBCLEAR);
 	HWND sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
 	HWND sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
@@ -100,7 +101,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	
 	switch(sMsg)
 	{
-
 		//begin window messages
 
 		case WM_CREATE:
@@ -150,14 +150,14 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			sTipAcc.pszTitle =  TEXT("Account or object name");
 			sTipAcc.pszText = TEXT("Either account name or object\nname is allowed but not both");
 			sTipAcc.ttiIcon = TTI_INFO;
-			//cPathFileSaveText = realloc((void *) cPathFileSaveText, (strlen((char *) cPathFolderMyDocs) + 15) * sizeof(char));
+			//atempt to create controls
 			if(CreateControls(sHwndMain) != 0) //function to create all controls. Review controls.h and controls.c
 			{
 				MessageBox(sHwndMain, TEXT("Could not create controls"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return FALSE;
 			}
 			//attempt to preset controls
-			SendMessage(sHwndMain, WM_COMMAND, (WPARAM)  IDC_BTN_TBCLEAR, (LPARAM) sHwndTbClear);					
+			SendMessage(sHwndMain, WM_COMMAND, (WPARAM)  IDC_BTN_TBCLEAR, (LPARAM) sHwndTbClear);				
 			break;
 
 		case WM_CLOSE:
@@ -330,7 +330,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							SendMessage(sHwndCtlCmbType, CB_SETCURSEL, 0, 0);
 							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 1, 0);
 							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 1, 0);
-							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 1, 0);
+							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
 							wcscpy_s((wchar_t *) cQyType, 20,  TEXT(""));
 							wcscpy_s((wchar_t *) cState, 20, TEXT(""));
 							wcscpy_s((wchar_t *) cBuf, 25, TEXT(""));

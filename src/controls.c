@@ -13,7 +13,7 @@
 
 int CreateControls(HWND sHwndMain)
 {
-	//declarinations
+	//declarinations	
 	HWND sHwndCtlToolBar;
 	HWND sHwndCtlTipInteract;
 	HWND sHwndCtlGrpParams;
@@ -40,7 +40,7 @@ int CreateControls(HWND sHwndMain)
 	HWND sHwndCtlLblBuf;
 	HWND sHwndCtlLblResm;
 	HWND sHwndCtlCmbCmd;
-	HWND sHwndCtlCmbType;
+	HWND sHwndCtlCmbSvcType;
 	HWND sHwndCtlCmbInteract;
 	HWND sHwndCtlCmbStart;
 	HWND sHwndCtlCmbErr;
@@ -64,16 +64,16 @@ int CreateControls(HWND sHwndMain)
 	HWND sHwndCtlEdtResm;
 	HWND sHwndCtlBtnBrowse;
 	HWND sHwndCtlBtnRun;
+	TOOLINFO sTipInteractive;
 	HFONT sHfontGbl;
 	TBBUTTON sButtonsToAdd[TB_BTN_COUNT]; //Container for toolbar buttons
 	HIMAGELIST sHImageListToolBar; //custom image list for toolbar
 	HBITMAP sHbitmapToolBar;
-	int iBitmapIndex;
-	wchar_t cComboOptions[7][15];
-	wchar_t cTempBuff[16];
+	wchar_t cComboOptions[8][16];
 	int  iLoopIndex = 0;
+	int iBitmapIndex;
 	HMODULE vHmodInst;
-	TOOLINFO sTipInteractive;
+
 	//attempt to create global font to use
 	sHfontGbl = CreateFont(16, 0, 0, 0, FW_LIGHT, FALSE, 0, 0, 0, 0, 0, 0, 0, TEXT("Arial"));
 	//verify that font to use was created correctly
@@ -81,6 +81,7 @@ int CreateControls(HWND sHwndMain)
 	{
 		MessageBox(sHwndMain, TEXT("Could not create font."), TEXT("Error"), MB_OK | MB_ICONINFORMATION);
 	}
+
 	//attempt to create this module instance handle
 	vHmodInst = GetModuleHandle(NULL);
 
@@ -122,8 +123,8 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not add bitmap to image list."), TEXT("Error"), MB_OK | MB_ICONERROR);
 		return __LINE__;
 	}
-	//define functionality for buttons
-	ZeroMemory(sButtonsToAdd, sizeof(sButtonsToAdd));
+	//define toolbar functionality for buttons
+	ZeroMemory(sButtonsToAdd, sizeof (sButtonsToAdd));
     sButtonsToAdd[0].iBitmap = MAKELONG(0, 0);
     sButtonsToAdd[0].fsState = TBSTATE_ENABLED;
     sButtonsToAdd[0].fsStyle = TBSTYLE_BUTTON;
@@ -158,7 +159,7 @@ int CreateControls(HWND sHwndMain)
     sButtonsToAdd[6].idCommand = IDC_BTN_TBABOUT;
 	sButtonsToAdd[6].iString = (INT_PTR) TEXT("About");
 	//send messages to toolbar (apply definitions)
-	SendMessage(sHwndCtlToolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0); //Send the TB_BUTTONSTRUCTSIZE message (for backward compatibility)
+	SendMessage(sHwndCtlToolBar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof (TBBUTTON), 0); //Send the TB_BUTTONSTRUCTSIZE message (for backward compatibility)
 	SendMessage(sHwndCtlToolBar, TB_SETIMAGELIST, 0, (LPARAM) sHImageListToolBar); //add bitmap to toolbar
 	SendMessage(sHwndCtlToolBar, TB_ADDBUTTONS, TB_BTN_COUNT, (LPARAM) &sButtonsToAdd); //add buttons to toolbar
 	SendMessage(sHwndCtlToolBar, TB_AUTOSIZE, 0, 0); //resize buttons on toolbar
@@ -368,30 +369,27 @@ int CreateControls(HWND sHwndMain)
 	//attempt to set the default font for combo box  (Typical going forward)
 	SendMessage(sHwndCtlCmbCmd, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	//define combo box list options text
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT("create"));
 	wcscpy_s(cComboOptions[1], 15, TEXT("config"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("delete"));
 	wcscpy_s(cComboOptions[3], 15, TEXT("query"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff)); 
 	//send message to add each list option text (Typical going forward)   
 	for(iLoopIndex = 0; iLoopIndex <= 3; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 15, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbCmd,(UINT) CB_ADDSTRING,(WPARAM) 0, (LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbCmd,(UINT) CB_ADDSTRING,(WPARAM) 0, (LPARAM) cComboOptions[iLoopIndex]); 
 	}
 	//send message to select default option (Typical going forward)
 	SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
-
-	sHwndCtlCmbType = CreateWindowEx(0, TEXT("ComboBox"), NULL,
+	sHwndCtlCmbSvcType = CreateWindowEx(0, TEXT("ComboBox"), NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	120, 175, 150, 25, sHwndMain, (HMENU) IDC_COMBO_TYPE, vHmodInst, NULL);
-	if(sHwndCtlCmbType == NULL)
+	if(sHwndCtlCmbSvcType == NULL)
 	{
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
-	SendMessage(sHwndCtlCmbType, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	SendMessage(sHwndCtlCmbSvcType, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT(""));
 	wcscpy_s(cComboOptions[1], 15, TEXT("own"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("share"));
@@ -399,13 +397,12 @@ int CreateControls(HWND sHwndMain)
 	wcscpy_s(cComboOptions[4], 15, TEXT("filesys"));
 	wcscpy_s(cComboOptions[5], 15, TEXT("rec"));
 	wcscpy_s(cComboOptions[6], 15, TEXT("interact"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
-	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
+	wcscpy_s(cComboOptions[7], 15, TEXT("adapt"));
+	for(iLoopIndex = 0; iLoopIndex <= 7; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbSvcType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]);
 	}
-	SendMessage(sHwndCtlCmbType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);	
+	SendMessage(sHwndCtlCmbSvcType, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);	
 	sHwndCtlCmbInteract = CreateWindowEx(0, TEXT("ComboBox"), NULL,
 	CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	120, 205, 150, 25, sHwndMain, (HMENU) IDC_COMBO_INTERACT, vHmodInst, NULL);
@@ -414,14 +411,12 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlCmbInteract, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT("own"));
 	wcscpy_s(cComboOptions[1], 15, TEXT("share"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 1; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbInteract,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	} 
 	SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 	sHwndCtlCmbStart = CreateWindowEx(0, TEXT("ComboBox"), NULL,
@@ -432,7 +427,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlCmbStart, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT(""));
 	wcscpy_s(cComboOptions[1], 15, TEXT("boot"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("system"));
@@ -440,11 +435,9 @@ int CreateControls(HWND sHwndMain)
 	wcscpy_s(cComboOptions[4], 15, TEXT("demand"));
 	wcscpy_s(cComboOptions[5], 15, TEXT("disabled"));
 	wcscpy_s(cComboOptions[6], 15, TEXT("delayed-auto"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbStart,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	}
 	SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);	
 	sHwndCtlCmbErr = CreateWindowEx(0, TEXT("ComboBox"), NULL,
@@ -455,17 +448,15 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlCmbErr, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT(""));
 	wcscpy_s(cComboOptions[1], 15, TEXT("normal"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("severe"));
 	wcscpy_s(cComboOptions[3], 15, TEXT("critical"));
 	wcscpy_s(cComboOptions[4], 15, TEXT("ignore"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 4; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbErr,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbErr,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	} 
 	SendMessage(sHwndCtlCmbErr, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 
@@ -477,16 +468,13 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlCmbTag, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT(""));
 	wcscpy_s(cComboOptions[1], 15, TEXT("yes"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("no"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-
-		SendMessage(sHwndCtlCmbTag,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbTag,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	}
 	SendMessage(sHwndCtlCmbTag, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
 	sHwndCtlCmbQyType = CreateWindowEx(0, TEXT("ComboBox"), NULL,
@@ -497,15 +485,13 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlCmbQyType, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT("service"));
 	wcscpy_s(cComboOptions[1], 15, TEXT("driver"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("all"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbQyType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbQyType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	}
 	SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 	sHwndCtlCmbState = CreateWindowEx(0, TEXT("ComboBox"), NULL,
@@ -516,15 +502,13 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create combo box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlCmbState, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	memset(&cComboOptions, 0, sizeof(cComboOptions));
+	memset(&cComboOptions, 0, sizeof (cComboOptions));
 	wcscpy_s(cComboOptions[0], 15, TEXT("active"));
 	wcscpy_s(cComboOptions[1], 15, TEXT("inactive"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("all"));
-	memset(&cTempBuff, 0, sizeof (cTempBuff));
 	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
 	{
-		wcscpy_s(cTempBuff, 16, cComboOptions[iLoopIndex]);
-		SendMessage(sHwndCtlCmbState,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cTempBuff); 
+		SendMessage(sHwndCtlCmbState,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	}
 	SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) -1, (LPARAM)0);
 
@@ -668,7 +652,7 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlBtnRun, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 
-	//begin creating tooltip
+	//begin creating combobox tool tip
 
 	//attempt to create tooltip
 	sHwndCtlTipInteract = CreateWindowEx(0, TOOLTIPS_CLASS, NULL,
@@ -681,7 +665,7 @@ int CreateControls(HWND sHwndMain)
 		return __LINE__;
 	}	
 	//define tool information structure
-	ZeroMemory(&sTipInteractive, sizeof(sTipInteractive));
+	ZeroMemory(&sTipInteractive, sizeof (sTipInteractive));
 	sTipInteractive.cbSize = (UINT) sizeof (sTipInteractive);
 	sTipInteractive.uFlags = (UINT) TTF_IDISHWND | TTF_SUBCLASS;
 	sTipInteractive.hwnd = (HWND) sHwndMain;
@@ -689,7 +673,6 @@ int CreateControls(HWND sHwndMain)
 	sTipInteractive.lpszText = (LPTSTR) TEXT("Required parameter when interact type is selected\r");
 	//send tool tip messages (apply definitions)
 	SendMessage(sHwndCtlTipInteract, TTM_ADDTOOL, 0, (LPARAM) &sTipInteractive);
-	SendMessage(sHwndCtlTipInteract,  TTM_SETMAXTIPWIDTH, 0, (LPARAM) 145);
-
+	SendMessage(sHwndCtlTipInteract,  TTM_SETMAXTIPWIDTH, 0, (LPARAM) 145);	
 	return 0;
 }
