@@ -69,7 +69,7 @@ int CreateControls(HWND sHwndMain)
 	TBBUTTON sButtonsToAdd[TB_BTN_COUNT]; //Container for toolbar buttons
 	HIMAGELIST sHImageListToolBar; //custom image list for toolbar
 	HBITMAP sHbitmapToolBar;
-	wchar_t cComboOptions[8][16];
+	wchar_t cComboOptions[10][16];
 	int  iLoopIndex = 0;
 	int iBitmapIndex;
 	HMODULE vHmodInst;
