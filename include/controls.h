@@ -15,13 +15,12 @@
 	#define TB_BTN_BITMAP_H 24
 	#define TB_BTN_BITMAP_W 120
 
-	//Command IDs for toolbar
-	#define IDC_MAIN_TOOLBAR_FILE_NEW 1101
-	#define IDC_MAIN_TOOLBAR_FILE_OPEN 1102
-	#define IDC_MAIN_TOOLBAR_FILE_SAVETXT 1103
-	#define IDC_MAIN_TOOLBAR_FILE_SAVEBAT 1104
-	#define IDC_MAIN_TOOLBAR_SVC_OPEN 1105
-	#define IDC_MAIN_TOOLBAR_ABOUT 1106
+	//Toolbar buttons
+	#define IDC_BTN_TBCLEAR 1052
+	#define IDC_BTN_TBTEXT 1054
+	#define IDC_BTN_TBBAT 1055
+	#define IDC_BTN_TBSVC 1056
+	#define IDC_BTN_TBABOUT 1057
 
 	//group boxes
 	#define IDC_GRPBOX_PARAMS 1036
@@ -53,13 +52,6 @@
 	#define IDC_BTN_BROWSE 1016
 	#define IDC_BTN_RUN 1058
 
-	//Toolbar buttons
-	#define IDC_BTN_TBCLEAR 1052
-	#define IDC_BTN_TBTEXT 1054
-	#define IDC_BTN_TBBAT 1055
-	#define IDC_BTN_TBSVC 1056
-	#define IDC_BTN_TBABOUT 1057
-
 	//combo boxes
 	#define IDC_COMBO_COMMAND 1017
 	#define IDC_COMBO_TYPE 1018
@@ -87,7 +79,7 @@
 	#define IDC_EDIT_RESUME 1049
 	#define IDC_EDIT_REQ 1050
 
-	//prototypes
+	//prototypes/functions
 	int CreateControls(HWND sHdlWinMain);
 
 //end of wrapper

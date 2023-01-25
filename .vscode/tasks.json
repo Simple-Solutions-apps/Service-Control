@@ -9,19 +9,43 @@
 		{
 			"label": "Run with make",
 			"type": "shell",
+			"problemMatcher": {
+				"owner": "c",
+				"pattern": {
+				"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+				"file": 1,
+				"line": 2,
+				"column": 3,
+				"severity": 4,
+				"message": 5
+				}
+			},
 			"windows": {
-			"command": "make.exe"
+			"command": "make.exe"			
 			},
 			"args": ["run"],			
 			"group": "build",
 			"presentation": {
 			"reveal": "never",
-			"panel": "new"
+			"revealProblems": "onProblem",
+			"clear": true,
+			"panel": "shared"
 			}
 		},
 		{
 			"label": "Build with make",
 			"type": "shell",
+			"problemMatcher": {
+			"owner": "c",
+			"pattern": {
+			"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+			"file": 1,
+			"line": 2,
+			"column": 3,
+			"severity": 4,
+			"message": 5
+			}
+			},
 			"windows": {
 			"command": "make.exe"
 			},
@@ -29,12 +53,25 @@
 			"group": "build",
 			"presentation": {
 			"reveal": "never",
+			"revealProblems": "onProblem",
+			"clear": true,
 			"panel": "new"
 			}
 		},
 		{
 			"label": "Rebuild with make",
 			"type": "shell",
+			"problemMatcher": {
+			"owner": "c",
+			"pattern": {
+			"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+			"file": 1,
+			"line": 2,
+			"column": 3,
+			"severity": 4,
+			"message": 5
+			}
+			},
 			"windows": {
 			"command": "make.exe"
 			},
@@ -42,12 +79,25 @@
 			"group": "build",
 			"presentation": {
 			"reveal": "never",
-			"panel": "new"
+			"revealProblems": "onProblem",
+			"clear": true,
+			"panel": "shared"
 			}
 		},
 		{
 			"label": "Clean with make",
 			"type": "shell",
+			"problemMatcher": {
+			"owner": "c",
+			"pattern": {
+			"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+			"file": 1,
+			"line": 2,
+			"column": 3,
+			"severity": 4,
+			"message": 5
+			}
+			},
 			"windows": {
 			"command": "make.exe"
 			},
@@ -55,12 +105,25 @@
 			"group": "build",
 			"presentation": {
 			"reveal": "never",
-			"panel": "new"
+			"revealProblems": "onProblem",
+			"clear": true,
+			"panel": "shared"
 			}
 		},
 		{
 			"label": "Commit with make",
 			"type": "shell",
+			"problemMatcher": {
+			"owner": "c",
+			"pattern": {
+			"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+			"file": 1,
+			"line": 2,
+			"column": 3,
+			"severity": 4,
+			"message": 5
+			}
+			},
 			"windows": {
 			"command": "make.exe"
 			},
@@ -68,7 +131,9 @@
 			"group": "build",
 			"presentation": {
 			"reveal": "never",
-			"panel": "new"
+			"revealProblems": "onProblem",
+			"clear": true,
+			"panel": "shared"
 			}
 		}
 	]

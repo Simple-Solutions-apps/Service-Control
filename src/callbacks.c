@@ -21,11 +21,11 @@ EDITBALLOONTIP sTipAcc;
 OPENFILENAME sOpenFileName;
 LPCWSTR cPathFileSaveText;
 LPCWSTR cTempBuff;
+LPCWSTR cPathFolderMyDocs;
 HANDLE hFileToOpen;
 HANDLE hFileToSave;
 HRESULT hResult;
 BOOL bResult;
-LPWSTR cPathFolderPersonal;
 int iComboIndex;
 int iTextLen;
 int iFileModified;
@@ -70,6 +70,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	}
 
 	//definitions
+	HWND sHwndTbClear = GetDlgItem(sHwndMain, IDC_BTN_TBCLEAR);
+	HWND sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
 	HWND sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
 	HWND sHwndCtlEdtReq = GetDlgItem(sHwndMain, IDC_EDIT_REQ);
 	HWND sHwndCtlEdtSvr = GetDlgItem(sHwndMain, IDC_EDIT_SVRNAME);
@@ -116,7 +118,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cErr = calloc(20, sizeof (LPCWSTR));
 			cBin = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cGrp = calloc(80, sizeof (LPCWSTR));
-			cTag = calloc(5, sizeof (LPCWSTR));
+			cTag = calloc(15, sizeof (LPCWSTR));
 			cDpd = calloc(190, sizeof (LPCWSTR));
 			cAcc = calloc(257, sizeof (LPCWSTR));
 			cObj = calloc(267, sizeof (LPCWSTR));
@@ -127,35 +129,35 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cBuf = calloc(25, sizeof (LPCWSTR));
 			cResm = calloc(8, sizeof (LPCWSTR));
 			cRslt = calloc(1, sizeof (LPCWSTR));
-			cPathFileSaveText = calloc(40, sizeof (LPCWSTR));
-			cPathFileSaveBat = calloc(40, sizeof (LPCWSTR));
-			cPathFolderPersonal = calloc(MAX_PATH, sizeof (LPCWSTR));
+			cPathFileSaveText = calloc(MAX_PATH, sizeof (LPCWSTR));
+			cPathFileSaveBat = calloc(MAX_PATH, sizeof (LPCWSTR));
+			cPathFolderMyDocs = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cFileName = calloc(50, sizeof (LPCWSTR));
 			cContentsResult = calloc(128, sizeof (LPCWSTR));
 			//define path defaults
-			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT, cPathFolderPersonal);
+			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT,(LPWSTR) cPathFolderMyDocs);
 			if(hResult != S_OK)
 			{
 				MessageBox(sHwndMain, TEXT("Could not find user profile folder"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return FALSE;
 			}						
-			wcscpy_s((wchar_t *) cPathFileSaveText, 40, cPathFolderPersonal);
-			wcsncat((wchar_t *) cPathFileSaveText, TEXT("\\results.txt"), 12);
-			wcscpy_s((wchar_t *) cPathFileSaveBat, 40, cPathFolderPersonal);
-			wcsncat((wchar_t *) cPathFileSaveBat, TEXT("\\results.txt"), 12);
+			wcscpy_s((wchar_t *) cPathFileSaveText, MAX_PATH, (wchar_t *) cPathFolderMyDocs);
+			wcsncat((wchar_t *) cPathFileSaveText, TEXT("\\results.txt"), 15);
+			wcscpy_s((wchar_t *) cPathFileSaveBat, MAX_PATH, cPathFolderMyDocs);
+			wcsncat((wchar_t *) cPathFileSaveBat, TEXT("\\results.bat"), 15);
 			//define edit box tooltip structure.
 			sTipAcc.cbStruct = sizeof (EDITBALLOONTIP);
 			sTipAcc.pszTitle =  TEXT("Account or object name");
 			sTipAcc.pszText = TEXT("Either account name or object\nname is allowed but not both");
 			sTipAcc.ttiIcon = TTI_INFO;
-			cPathFileSaveText = realloc((void *) cPathFileSaveText, (strlen((char *) cPathFolderPersonal) + 15) * sizeof(char));
+			//cPathFileSaveText = realloc((void *) cPathFileSaveText, (strlen((char *) cPathFolderMyDocs) + 15) * sizeof(char));
 			if(CreateControls(sHwndMain) != 0) //function to create all controls. Review controls.h and controls.c
 			{
 				MessageBox(sHwndMain, TEXT("Could not create controls"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return FALSE;
 			}
 			//attempt to preset controls
-			SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);					
+			SendMessage(sHwndMain, WM_COMMAND, (WPARAM)  IDC_BTN_TBCLEAR, (LPARAM) sHwndTbClear);					
 			break;
 
 		case WM_CLOSE:
@@ -220,7 +222,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					wcscpy_s((wchar_t *) cQyType, 20, TEXT(""));
 					wcscpy_s((wchar_t *) cState, 20, TEXT(""));
 					wcscpy_s((wchar_t *) cGrp, 80, TEXT(""));
-					wcscpy_s((wchar_t *) cTag, 5, TEXT(""));
+					wcscpy_s((wchar_t *) cTag, 15, TEXT(""));
 					wcscpy_s((wchar_t *) cDpd, 190, TEXT(""));
 					wcscpy_s((wchar_t *) cAcc, 257, TEXT(""));
 					wcscpy_s((wchar_t *) cObj, 267, TEXT(""));
@@ -228,56 +230,38 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					wcscpy_s((wchar_t *) cPw, 27, TEXT(""));
 					wcscpy_s((wchar_t *) cBuf, 25, TEXT(""));					
 					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
-					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save results to current file?"), TEXT("Save file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
+					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save command results to text file?"), TEXT("Save text file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
 					{						
-						
-					}
+						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) IDC_BTN_TBTEXT, (LPARAM) sHwndTbText);
+					}					
 					SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
 					wcscpy_s((wchar_t *) cRslt, 1, TEXT(""));
-					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
+					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
 					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);					
 					break;
 
 				case IDC_BTN_TBTEXT:
-					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
-					
+					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);					
 					if(iTextLen == 0)
 					{	
 						MessageBox(sHwndMain, TEXT("There are no results to save."), TEXT("Save results as text"), MB_OK | MB_ICONINFORMATION);					
 						break;
-					}				
-
-					//realloc(cTempBuff, iTextLen * sizeof (char));
-					//SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen,(LPARAM) cTempBuff);
-
-					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
+					}
+					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));					
 					sOpenFileName.lStructSize = sizeof (sOpenFileName);
 					sOpenFileName.hwndOwner = sHwndMain;
-					sOpenFileName.hInstance = NULL;
 					sOpenFileName.lpstrFilter = TEXT("Text Files (*.txt)\0*.txt\0\0");
-					sOpenFileName.lpstrCustomFilter = NULL;
-					sOpenFileName.nMaxCustFilter = 0;
 					sOpenFileName.nFilterIndex = 1;
 					sOpenFileName.lpstrFile = (LPWSTR) cPathFileSaveText;
 					sOpenFileName.nMaxFile = MAX_PATH;
-					sOpenFileName.lpstrFileTitle = NULL;
-					sOpenFileName.nMaxFileTitle = 0;
-					sOpenFileName.lpstrInitialDir = NULL;
-					sOpenFileName.lpstrTitle = TEXT("Save as text file");
-					//sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY; //For opening a file				
-					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file					
-					sOpenFileName.nFileOffset = 0;
-					sOpenFileName.nFileExtension = 0;
+					sOpenFileName.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
+					sOpenFileName.lpstrTitle = TEXT("Save command results as text file");					
+					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
 					sOpenFileName.lpstrDefExt = TEXT("txt");
-					sOpenFileName.lCustData = 0;
-					sOpenFileName.lpfnHook = NULL;
-					sOpenFileName.lpTemplateName = NULL;
-					//sOpenFileName.lpEditInfo = NULL; //applicable only to Motorola 68K Macintosh computers, and not to Windows client operating systems.
-					//sOpenFileName.lpstrPrompt = NULL; //"
-
-					//if(GetOpenFileName(&sOpenFileName) != 0) //for opening a file
-					if(GetSaveFileName(&sOpenFileName) != 0) //for saving a file
+									
+					if(GetSaveFileName(&sOpenFileName) == TRUE) //for saving a file
 					{
+						/*
 						//wcscpy_s((wchar_t *) cFileName, basename(cPathFileSaveText));
 						HANDLE hFileToSave;
 						hFileToSave = CreateFile(cPathFileSaveText, GENERIC_WRITE, 0, NULL,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -298,6 +282,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						}
 						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) strcat(cFileName, " - Service Control"));				
 						CloseHandle(hFileToSave);
+						*/
 					}
 					break;
 
@@ -343,18 +328,16 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							EnableWindow(sHwndCtlEdtPw, FALSE);
 							EnableWindow(sHwndCtlBtnRun, FALSE);
 							SendMessage(sHwndCtlCmbType, CB_SETCURSEL, 0, 0);
-							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) -1, 0);
-							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) -1, 0);
-							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
+							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 1, 0);
+							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 1, 0);
+							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 1, 0);
 							wcscpy_s((wchar_t *) cQyType, 20,  TEXT(""));
 							wcscpy_s((wchar_t *) cState, 20, TEXT(""));
 							wcscpy_s((wchar_t *) cBuf, 25, TEXT(""));
 							wcscpy_s((wchar_t *) cResm, 8, TEXT(""));
 							wcscpy_s((wchar_t *) cType, 30, TEXT(""));
 							wcscpy_s((wchar_t *) cInteract, 20, TEXT(""));
-
 							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-
 							switch(iComboIndex)
 							{
 								case 0:
@@ -406,7 +389,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									wcscpy_s((wchar_t *) cInteract, 20, TEXT(""));
 									wcscpy_s((wchar_t *) cStart, 22, TEXT(""));
 									wcscpy_s((wchar_t *) cErr, 20, TEXT(""));
-									wcscpy_s((wchar_t *) cTag, 5, TEXT(""));
+									wcscpy_s((wchar_t *) cTag, 15, TEXT(""));
 									wcscpy_s((wchar_t *) cBin,  MAX_PATH, TEXT(""));
 									wcscpy_s((wchar_t *) cGrp, 80, TEXT(""));
 									wcscpy_s((wchar_t *) cDpd, 190, TEXT(""));
@@ -448,7 +431,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									SendMessage(sHwndCtlCmbState, CB_SETCURSEL, 0, 0);
 									wcscpy_s((wchar_t *) cStart, 22, TEXT(""));
 									wcscpy_s((wchar_t *) cErr, 20, TEXT(""));
-									wcscpy_s((wchar_t *) cTag, 5, TEXT(""));
+									wcscpy_s((wchar_t *) cTag, 15, TEXT(""));
 									wcscpy_s((wchar_t *) cBin,  MAX_PATH, TEXT(""));
 									wcscpy_s((wchar_t *) cDpd, 190, TEXT(""));
 									wcscpy_s((wchar_t *) cAcc, 257, TEXT(""));
@@ -680,19 +663,19 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							{
 								case 0:
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) TEXT("Exclude this paramater (Tag)"));
-									wcscpy_s((wchar_t *) cTag, 5, TEXT(""));
+									wcscpy_s((wchar_t *) cTag, 2, TEXT(""));
 									break;
 
 								case 1:
 									LoadString(vHmodInst, IDS_TAG_YES, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									wcscpy_s((wchar_t *) cTag, 5, TEXT(" tag= yes"));
+									wcscpy_s((wchar_t *) cTag, 10, TEXT(" tag= yes"));
 									break;
 
 								case 2:
 									LoadString(vHmodInst, IDS_TAG_NO, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									wcscpy_s((wchar_t *) cTag, 5, TEXT(" tag= no"));
+									wcscpy_s((wchar_t *) cTag, 9, TEXT(" tag= no"));
 									break;
 
 							}
