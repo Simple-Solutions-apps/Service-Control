@@ -397,8 +397,7 @@ int CreateControls(HWND sHwndMain)
 	wcscpy_s(cComboOptions[4], 15, TEXT("filesys"));
 	wcscpy_s(cComboOptions[5], 15, TEXT("rec"));
 	wcscpy_s(cComboOptions[6], 15, TEXT("interact"));
-	wcscpy_s(cComboOptions[8], 15, TEXT("adapt"));
-	for(iLoopIndex = 0; iLoopIndex <= 8; iLoopIndex++)
+	for(iLoopIndex = 0; iLoopIndex <= 6; iLoopIndex++)
 	{
 		SendMessage(sHwndCtlCmbSvcType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]);
 	}

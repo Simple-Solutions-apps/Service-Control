@@ -55,59 +55,54 @@ char *cPathFileSaveBat;
 char *cPathFolderUserProfile;
 char *cFileName;
 char *cContentsResult;
+HWND sHwndTbText;
+HWND sHwndCtlEdtDes;
+HWND sHwndCtlEdtReq;
+HWND sHwndCtlEdtSvr;
+HWND sHwndCtlEdtSvc;
+HWND sHwndCtlEdtGrp;
+HWND sHwndCtlEdtBin;
+HWND sHwndCtlEdtDpd;
+HWND sHwndCtlEdtAcc;
+HWND sHwndCtlEdtObj;
+HWND sHwndCtlEdtDisp;
+HWND sHwndCtlEdtPw;
+HWND sHwndCtlEdtBuf;
+HWND sHwndCtlEdtResm;
+HWND sHwndCtlEdtCMDLine;
+HWND sHwndCtlEdtRslt;
+HWND sHwndCtlCmbCmd;
+HWND sHwndCtlCmbType;
+HWND sHwndCtlCmbInteract;
+HWND sHwndCtlCmbStart;
+HWND sHwndCtlCmbErr;	
+HWND sHwndCtlCmbTag;	
+HWND sHwndCtlCmbQyType;
+HWND sHwndCtlCmbState;
+HWND sHwndCtlBtnBrowse;
+HWND sHwndCtlBtnRun;
 	
 //main window callback procedure
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
 {	
-	//define module/executable handle
-	vHmodInst = GetModuleHandle(NULL);	
-
-	//verify if module instance handle was created correctly
-	if(vHmodInst == NULL)
-	{
-		MessageBox(sHwndMain, TEXT("Could not create module instance handle."), TEXT("Error"), MB_OK | MB_ICONERROR);
-		return FALSE;
-	}
-
-	//definitions
-	//HWND sHwndCtlTipInteract  = GetDlgItem(sHwndMain, IDC_MAIN_TIPINTERACTIVE);
-	HWND sHwndTbClear = GetDlgItem(sHwndMain, IDC_BTN_TBCLEAR);
-	HWND sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
-	HWND sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
-	HWND sHwndCtlEdtReq = GetDlgItem(sHwndMain, IDC_EDIT_REQ);
-	HWND sHwndCtlEdtSvr = GetDlgItem(sHwndMain, IDC_EDIT_SVRNAME);
-	HWND sHwndCtlEdtSvc = GetDlgItem(sHwndMain, IDC_EDIT_SVCNAME);
-	HWND sHwndCtlEdtGrp = GetDlgItem(sHwndMain, IDC_EDIT_GROUP);
-	HWND sHwndCtlEdtBin = GetDlgItem(sHwndMain, IDC_EDIT_PATHBIN);
-	HWND sHwndCtlEdtDpd = GetDlgItem(sHwndMain, IDC_EDIT_DEPEND);
-	HWND sHwndCtlEdtAcc = GetDlgItem(sHwndMain, IDC_EDIT_ACCNAME);
-	HWND sHwndCtlEdtObj = GetDlgItem(sHwndMain, IDC_EDIT_OBJNAME);
-	HWND sHwndCtlEdtDisp = GetDlgItem(sHwndMain, IDC_EDIT_DISPNAME);
-	HWND sHwndCtlEdtPw = GetDlgItem(sHwndMain, IDC_EDIT_PW);
-	HWND sHwndCtlEdtBuf = GetDlgItem(sHwndMain, IDC_EDIT_BUFF);
-	HWND sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
-	HWND sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
-	HWND sHwndCtlEdtRslt = GetDlgItem(sHwndMain, IDC_EDIT_RSLT);
-	HWND sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
-	HWND sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
-	HWND sHwndCtlCmbInteract = GetDlgItem(sHwndMain, IDC_COMBO_INTERACT);
-	HWND sHwndCtlCmbStart = GetDlgItem(sHwndMain, IDC_COMBO_START);
-	HWND sHwndCtlCmbErr = GetDlgItem(sHwndMain, IDC_COMBO_ERROR);	
-	HWND sHwndCtlCmbTag = GetDlgItem(sHwndMain, IDC_COMBO_TAG);	
-	HWND sHwndCtlCmbQyType = GetDlgItem(sHwndMain, IDC_COMBO_QYTYPE);
-	HWND sHwndCtlCmbState = GetDlgItem(sHwndMain, IDC_COMBO_STATE);
-	HWND sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
-	HWND sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);	
-	
 	switch(sMsg)
 	{
 		//begin window messages
 
 		case WM_CREATE:
+
+			//define module/executable handle
+			vHmodInst = GetModuleHandle(NULL);	
+
+			//verify if module instance handle was created correctly
+			if(vHmodInst == NULL)
+			{
+				MessageBox(sHwndMain, TEXT("Could not create module instance handle."), TEXT("Error"), MB_OK | MB_ICONERROR);
+				return FALSE;
+			}
+			
 			//initializations	
 			cTempBuff = malloc(400 * sizeof (LPCWSTR));
-			//cUniTitleAcc = malloc(23 * sizeof (LPCWSTR));
-			//cUniTextAcc = malloc(60 * sizeof (LPCWSTR));
 			cCMDLine = calloc(1500, sizeof (LPCWSTR)); //The maximum command line length for the CreateProcess function is 32767 characters.
 			cCommand = calloc(10, sizeof (LPCWSTR));
 			cSvr = calloc(17, sizeof (LPCWSTR));
@@ -134,6 +129,35 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cPathFolderMyDocs = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cFileName = calloc(50, sizeof (LPCWSTR));
 			cContentsResult = calloc(128, sizeof (LPCWSTR));
+
+			//definitions
+			sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
+			sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
+			sHwndCtlEdtReq = GetDlgItem(sHwndMain, IDC_EDIT_REQ);
+			sHwndCtlEdtSvr = GetDlgItem(sHwndMain, IDC_EDIT_SVRNAME);
+			sHwndCtlEdtSvc = GetDlgItem(sHwndMain, IDC_EDIT_SVCNAME);
+			sHwndCtlEdtGrp = GetDlgItem(sHwndMain, IDC_EDIT_GROUP);
+			sHwndCtlEdtBin = GetDlgItem(sHwndMain, IDC_EDIT_PATHBIN);
+			sHwndCtlEdtDpd = GetDlgItem(sHwndMain, IDC_EDIT_DEPEND);
+			sHwndCtlEdtAcc = GetDlgItem(sHwndMain, IDC_EDIT_ACCNAME);
+			sHwndCtlEdtObj = GetDlgItem(sHwndMain, IDC_EDIT_OBJNAME);
+			sHwndCtlEdtDisp = GetDlgItem(sHwndMain, IDC_EDIT_DISPNAME);
+			sHwndCtlEdtPw = GetDlgItem(sHwndMain, IDC_EDIT_PW);
+			sHwndCtlEdtBuf = GetDlgItem(sHwndMain, IDC_EDIT_BUFF);
+			sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
+			sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
+			sHwndCtlEdtRslt = GetDlgItem(sHwndMain, IDC_EDIT_RSLT);
+			sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
+			sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
+			sHwndCtlCmbInteract = GetDlgItem(sHwndMain, IDC_COMBO_INTERACT);
+			sHwndCtlCmbStart = GetDlgItem(sHwndMain, IDC_COMBO_START);
+			sHwndCtlCmbErr = GetDlgItem(sHwndMain, IDC_COMBO_ERROR);	
+			sHwndCtlCmbTag = GetDlgItem(sHwndMain, IDC_COMBO_TAG);	
+			sHwndCtlCmbQyType = GetDlgItem(sHwndMain, IDC_COMBO_QYTYPE);
+			sHwndCtlCmbState = GetDlgItem(sHwndMain, IDC_COMBO_STATE);
+			sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
+			sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);
+
 			//define path defaults
 			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT,(LPWSTR) cPathFolderMyDocs);
 			if(hResult != S_OK)
@@ -156,8 +180,10 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 				MessageBox(sHwndMain, TEXT("Could not create controls"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return FALSE;
 			}
-			//attempt to preset controls
-			SendMessage(sHwndMain, WM_COMMAND, (WPARAM)  IDC_BTN_TBCLEAR, (LPARAM) sHwndTbClear);				
+			//attempt to preset controls			
+			//SendMessage(sHwndMain, WM_COMMAND, (WPARAM) WIPE_CONTROLS, 0);
+			//SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+			//SendMessage(sHwndCtlCmbCmd, CBN_SELCHANGE, (WPARAM) 0, (LPARAM) 0);
 			break;
 
 		case WM_CLOSE:
@@ -192,52 +218,15 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 				//begin toolbar messages
 
 				case IDC_BTN_TBCLEAR:
-					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM)0);
-					SendMessage(sHwndCtlEdtSvr, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtSvc, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlCmbType, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);					
-					SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndCtlCmbErr, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndCtlEdtBin, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndCtlEdtGrp, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlCmbTag, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndCtlEdtDpd, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtAcc, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtObj, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtDisp, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtPw, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtBuf, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					SendMessage(sHwndCtlEdtResm, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");					
-					wcscpy_s((wchar_t *) cCommand, 10, TEXT(""));
-					wcscpy_s((wchar_t *) cSvr, 17, TEXT(""));
-					wcscpy_s((wchar_t *) cSvc, 257, TEXT(""));
-					wcscpy_s((wchar_t *) cType, 30, TEXT(""));
-					wcscpy_s((wchar_t *) cInteract, 20, TEXT(""));
-					wcscpy_s((wchar_t *) cStart, 22, TEXT(""));
-					wcscpy_s((wchar_t *) cErr, 20, TEXT(""));
-					wcscpy_s((wchar_t *) cBin, MAX_PATH, TEXT(""));
-					wcscpy_s((wchar_t *) cQyType, 20, TEXT(""));
-					wcscpy_s((wchar_t *) cState, 20, TEXT(""));
-					wcscpy_s((wchar_t *) cGrp, 80, TEXT(""));
-					wcscpy_s((wchar_t *) cTag, 15, TEXT(""));
-					wcscpy_s((wchar_t *) cDpd, 190, TEXT(""));
-					wcscpy_s((wchar_t *) cAcc, 257, TEXT(""));
-					wcscpy_s((wchar_t *) cObj, 267, TEXT(""));
-					wcscpy_s((wchar_t *) cDisp, 287, TEXT(""));
-					wcscpy_s((wchar_t *) cPw, 27, TEXT(""));
-					wcscpy_s((wchar_t *) cBuf, 25, TEXT(""));					
+					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) WIPE_CONTROLS, 0);				
 					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
 					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save command results to text file?"), TEXT("Save text file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
 					{						
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) IDC_BTN_TBTEXT, (LPARAM) sHwndTbText);
-					}					
-					SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
-					wcscpy_s((wchar_t *) cRslt, 1, TEXT(""));
-					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);					
+					}
+					//SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					//SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);					
+					//MessageBox(sHwndMain, TEXT("Controls cleared"), TEXT("Error"), MB_OK | MB_ICONERROR);
 					break;
 
 				case IDC_BTN_TBTEXT:
@@ -301,49 +290,43 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 				case IDC_COMBO_COMMAND:
 					switch(HIWORD (wParam))
 					{
-						case CBN_SELCHANGE:
-							SendMessage(sHwndCtlEdtBuf,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
-							SendMessage(sHwndCtlEdtResm,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
-							SendMessage(sHwndCtlEdtPw,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
-							SendMessage(sHwndCtlCmbType, CB_DELETESTRING,(WPARAM) 7, 0);
-							EnableWindow(sHwndCtlEdtSvr, TRUE);
-							EnableWindow(sHwndCtlEdtSvr, TRUE);
-							EnableWindow(sHwndCtlCmbType, TRUE);
-							EnableWindow(sHwndCtlCmbInteract, FALSE);
-							EnableWindow(sHwndCtlCmbStart, TRUE);
-							EnableWindow(sHwndCtlCmbErr, TRUE);
-							EnableWindow(sHwndCtlEdtBin, TRUE);
-							EnableWindow(sHwndCtlBtnBrowse, TRUE);
-							EnableWindow(sHwndCtlEdtGrp, TRUE);
-							EnableWindow(sHwndCtlCmbTag, TRUE);
-							EnableWindow(sHwndCtlEdtDpd, TRUE);
-							EnableWindow(sHwndCtlEdtAcc, TRUE);
-							EnableWindow(sHwndCtlEdtObj, TRUE);
-							EnableWindow(sHwndCtlEdtDisp, TRUE);
-							EnableWindow(sHwndCtlEdtPw, TRUE);						
-							EnableWindow(sHwndCtlCmbQyType, FALSE);
-							EnableWindow(sHwndCtlCmbState, FALSE);
-							EnableWindow(sHwndCtlEdtBuf, FALSE);
-							EnableWindow(sHwndCtlEdtResm, FALSE);
-							EnableWindow(sHwndCtlEdtPw, FALSE);
-							EnableWindow(sHwndCtlBtnRun, FALSE);
-							SendMessage(sHwndCtlCmbType, CB_SETCURSEL, 0, 0);
-							SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 1, 0);
-							SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 1, 0);
-							SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
-							wcscpy_s((wchar_t *) cQyType, 20,  TEXT(""));
-							wcscpy_s((wchar_t *) cState, 20, TEXT(""));
-							wcscpy_s((wchar_t *) cBuf, 25, TEXT(""));
-							wcscpy_s((wchar_t *) cResm, 8, TEXT(""));
-							wcscpy_s((wchar_t *) cType, 30, TEXT(""));
-							wcscpy_s((wchar_t *) cInteract, 20, TEXT(""));
+						case CBN_SELCHANGE:							
 							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
 							switch(iComboIndex)
 							{
-								case 0:
+								case 0:							
 									LoadString(vHmodInst, IDS_COMMAND_CREATE, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name, Binary Path."));
+									SendMessage(sHwndCtlEdtSvr, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtSvc, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlCmbType, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);					
+									SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+									SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+									SendMessage(sHwndCtlCmbErr, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+									SendMessage(sHwndCtlEdtBin, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtGrp, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlCmbTag, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+									SendMessage(sHwndCtlEdtDpd, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtAcc, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtObj, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtDisp, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									SendMessage(sHwndCtlEdtPw, WM_SETTEXT, (WPARAM) 0, (LPARAM) "");
+									EnableWindow(sHwndCtlEdtSvr, TRUE);
+									EnableWindow(sHwndCtlEdtSvc, TRUE);
+									EnableWindow(sHwndCtlCmbType, TRUE);
+									EnableWindow(sHwndCtlCmbInteract, TRUE);
+									EnableWindow(sHwndCtlCmbStart, TRUE);
+									EnableWindow(sHwndCtlCmbErr, TRUE);
+									EnableWindow(sHwndCtlEdtBin, TRUE);
+									EnableWindow(sHwndCtlEdtGrp, TRUE);
+									EnableWindow(sHwndCtlCmbTag, TRUE);
+									EnableWindow(sHwndCtlEdtDpd, TRUE);
+									EnableWindow(sHwndCtlEdtAcc, TRUE);
+									EnableWindow(sHwndCtlEdtObj, TRUE);
+									EnableWindow(sHwndCtlEdtDisp, TRUE);
+									EnableWindow(sHwndCtlEdtPw, TRUE);
+									EnableWindow(sHwndCtlBtnBrowse, TRUE);														
 									wcscpy_s((wchar_t *) cCommand, 10, TEXT(" create"));
 									break;
 
@@ -352,10 +335,11 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name, one other parameter to modify."));
 									wcscpy_s((wchar_t *) cCommand, 10, TEXT(" config"));
-									SendMessage(sHwndCtlCmbType, CB_ADDSTRING,0,(LPARAM) TEXT("adapt"));
+									SendMessage(sHwndCtlCmbType, CB_ADDSTRING,7,(LPARAM) TEXT("adapt"));
 									break;
 
 								case 2:
+									/*
 									LoadString(vHmodInst, IDS_COMMAND_DELETE, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name."));
@@ -396,6 +380,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									wcscpy_s((wchar_t *) cAcc, 257, TEXT(""));
 									wcscpy_s((wchar_t *) cDisp, 287, TEXT(""));
 									wcscpy_s((wchar_t *) cPw, 27, TEXT(""));
+									*/
 									break;
 
 								case 3:
@@ -1145,13 +1130,12 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					
 					break;
 			}
-
 		default:
 			return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 	}
 	return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 }
-
+//custom functions
 LRESULT SetTextCMDLine(HWND sHwndCtlEdtCMDLine)
 {
 	swprintf_s((wchar_t *) cCMDLine, 1500, TEXT("sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s"),
@@ -1217,7 +1201,7 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 				EnableWindow(sHwndCtlBtnRun, FALSE);
 			}
 			break;			
-	}
+	};
 }
 
 BOOL CALLBACK AboutDlgProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
