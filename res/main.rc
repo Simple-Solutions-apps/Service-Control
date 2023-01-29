@@ -26,7 +26,7 @@ STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 10, "Arial"
 BEGIN
-	GROUPBOX "About this program",IDC_STATIC,7,7,225,75
+	GROUPBOX "About this program", IDC_STATIC,7,7,225,75
 	CTEXT "©2022 Simple Solutions\r\n\r\nA graphical user interface (GUI) for the windows sc.exe\r\n(Service control) command line interface program\r\n\r\nPlease consider supporting...",IDC_STATIC, 16, 18, 210, 60
 END
 

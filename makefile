@@ -36,7 +36,7 @@ $(objControls): $(srcControls)
 $(objMsgBoxes): $(srcMsgBoxes)
 	$(CC) $(CFlags) -c $(srcMsgBoxes) -o $(objMsgBoxes)
 $(objResources): $(srcResources)
-	windres.exe $(srcResources) -o $(objResources)
+	windres.exe --codepage=65001 $(srcResources) -o $(objResources)
 
 build: $(objs)
 	$(CC) -o $(APPPath) $(objs) $(dllCommCtrls) -s -mwindows

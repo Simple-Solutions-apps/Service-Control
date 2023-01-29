@@ -6,7 +6,7 @@
 //conditional header guard wrapper to avoid proccesing more than once
 #ifndef CALLBACKS_H
 	#define CALLBACKS_H
-	#define WIPE_CONTROLS 9000
+	#define WMU_WIPE_CONTROLS (WM_USER + 0x0001)
 
 	LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
