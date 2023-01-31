@@ -185,7 +185,7 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlGrpCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	sHwndCtlGrpFile = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Command result"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-	5, 465, 850, 200, sHwndMain, (HMENU) IDC_GRPBOX_PARAMS, vHmodInst, NULL);
+	5, 465, 850, 200, sHwndMain, (HMENU) IDC_GRPBOX_RESULT, vHmodInst, NULL);
 	if(sHwndCtlGrpFile == NULL)
 	{
 		MessageBox(sHwndMain, TEXT("Could not group box."), TEXT("Error"), MB_OK | MB_ICONERROR);
@@ -538,7 +538,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create edit box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtBin, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	SendMessage(sHwndCtlEdtBin, EM_SETLIMITTEXT, (WPARAM) PATH_MAX, TRUE);
+	SendMessage(sHwndCtlEdtBin, EM_SETLIMITTEXT, (WPARAM) MAX_PATH, TRUE);
 	sHwndCtlEdtGrp = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("EDIT"), NULL, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL ,
 	390, 85, 150, 25, sHwndMain, (HMENU) IDC_EDIT_GROUP, vHmodInst, NULL);
 	if(sHwndCtlEdtGrp == NULL)
@@ -624,7 +624,7 @@ int CreateControls(HWND sHwndMain)
 		MessageBox(sHwndMain, TEXT("Could not create edit box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlEdtCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
-	SendMessage(sHwndCtlEdtCMDLine, EM_SETLIMITTEXT, (WPARAM) 1499, TRUE);
+	SendMessage(sHwndCtlEdtCMDLine, EM_SETLIMITTEXT, (WPARAM) 1500, TRUE);
 
 	sHwndCtlEdtFile = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
 	10, 490, 840, 170, sHwndMain, (HMENU) IDC_EDIT_RSLT, vHmodInst, NULL);

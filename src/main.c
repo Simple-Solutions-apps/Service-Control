@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	vHmodInst = GetModuleHandle(NULL);
 
 	//define window class name
-	LPCWSTR cWindowClassName = TEXT("CommandAppGUI"); 
+	LPCWSTR cWindowClassName = TEXT("CmdAppGUI"); 
 
 	//assign window class structure
 	sWinClass.cbSize = sizeof (WNDCLASSEX);

@@ -84,7 +84,34 @@ HWND sHwndCtlBtnRun;
 	
 //main window callback procedure
 LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
-{	
+{
+	sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
+	sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
+	sHwndCtlEdtReq = GetDlgItem(sHwndMain, IDC_EDIT_REQ);
+	sHwndCtlEdtSvr = GetDlgItem(sHwndMain, IDC_EDIT_SVRNAME);
+	sHwndCtlEdtSvc = GetDlgItem(sHwndMain, IDC_EDIT_SVCNAME);
+	sHwndCtlEdtGrp = GetDlgItem(sHwndMain, IDC_EDIT_GROUP);
+	sHwndCtlEdtBin = GetDlgItem(sHwndMain, IDC_EDIT_PATHBIN);
+	sHwndCtlEdtDpd = GetDlgItem(sHwndMain, IDC_EDIT_DEPEND);
+	sHwndCtlEdtAcc = GetDlgItem(sHwndMain, IDC_EDIT_ACCNAME);
+	sHwndCtlEdtObj = GetDlgItem(sHwndMain, IDC_EDIT_OBJNAME);
+	sHwndCtlEdtDisp = GetDlgItem(sHwndMain, IDC_EDIT_DISPNAME);
+	sHwndCtlEdtPw = GetDlgItem(sHwndMain, IDC_EDIT_PW);
+	sHwndCtlEdtBuf = GetDlgItem(sHwndMain, IDC_EDIT_BUFF);
+	sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
+	sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
+	sHwndCtlEdtRslt = GetDlgItem(sHwndMain, IDC_EDIT_RSLT);
+	sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
+	sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
+	sHwndCtlCmbInteract = GetDlgItem(sHwndMain, IDC_COMBO_INTERACT);
+	sHwndCtlCmbStart = GetDlgItem(sHwndMain, IDC_COMBO_START);
+	sHwndCtlCmbErr = GetDlgItem(sHwndMain, IDC_COMBO_ERROR);	
+	sHwndCtlCmbTag = GetDlgItem(sHwndMain, IDC_COMBO_TAG);	
+	sHwndCtlCmbQyType = GetDlgItem(sHwndMain, IDC_COMBO_QYTYPE);
+	sHwndCtlCmbState = GetDlgItem(sHwndMain, IDC_COMBO_STATE);
+	sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
+	sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);
+
 	switch(sMsg)
 	{
 		//begin window messages
@@ -127,41 +154,13 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cPathFileSaveBat = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cPathFolderMyDocs = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cFileName = calloc(50, sizeof (LPCWSTR));
-			cContentsResult = calloc(128, sizeof (LPCWSTR));
-
-			//definitions
-			sHwndTbText = GetDlgItem(sHwndMain, IDC_BTN_TBTEXT);
-			sHwndCtlEdtDes = GetDlgItem(sHwndMain, IDC_EDIT_DESC);
-			sHwndCtlEdtReq = GetDlgItem(sHwndMain, IDC_EDIT_REQ);
-			sHwndCtlEdtSvr = GetDlgItem(sHwndMain, IDC_EDIT_SVRNAME);
-			sHwndCtlEdtSvc = GetDlgItem(sHwndMain, IDC_EDIT_SVCNAME);
-			sHwndCtlEdtGrp = GetDlgItem(sHwndMain, IDC_EDIT_GROUP);
-			sHwndCtlEdtBin = GetDlgItem(sHwndMain, IDC_EDIT_PATHBIN);
-			sHwndCtlEdtDpd = GetDlgItem(sHwndMain, IDC_EDIT_DEPEND);
-			sHwndCtlEdtAcc = GetDlgItem(sHwndMain, IDC_EDIT_ACCNAME);
-			sHwndCtlEdtObj = GetDlgItem(sHwndMain, IDC_EDIT_OBJNAME);
-			sHwndCtlEdtDisp = GetDlgItem(sHwndMain, IDC_EDIT_DISPNAME);
-			sHwndCtlEdtPw = GetDlgItem(sHwndMain, IDC_EDIT_PW);
-			sHwndCtlEdtBuf = GetDlgItem(sHwndMain, IDC_EDIT_BUFF);
-			sHwndCtlEdtResm = GetDlgItem(sHwndMain, IDC_EDIT_RESUME);
-			sHwndCtlEdtCMDLine = GetDlgItem(sHwndMain, IDC_EDIT_CMDLINE);
-			sHwndCtlEdtRslt = GetDlgItem(sHwndMain, IDC_EDIT_RSLT);
-			sHwndCtlCmbCmd = GetDlgItem(sHwndMain, IDC_COMBO_COMMAND);
-			sHwndCtlCmbType = GetDlgItem(sHwndMain, IDC_COMBO_TYPE);
-			sHwndCtlCmbInteract = GetDlgItem(sHwndMain, IDC_COMBO_INTERACT);
-			sHwndCtlCmbStart = GetDlgItem(sHwndMain, IDC_COMBO_START);
-			sHwndCtlCmbErr = GetDlgItem(sHwndMain, IDC_COMBO_ERROR);	
-			sHwndCtlCmbTag = GetDlgItem(sHwndMain, IDC_COMBO_TAG);	
-			sHwndCtlCmbQyType = GetDlgItem(sHwndMain, IDC_COMBO_QYTYPE);
-			sHwndCtlCmbState = GetDlgItem(sHwndMain, IDC_COMBO_STATE);
-			sHwndCtlBtnBrowse = GetDlgItem(sHwndMain, IDC_BTN_BROWSE);
-			sHwndCtlBtnRun = GetDlgItem(sHwndMain, IDC_BTN_RUN);
+			cContentsResult = calloc(128, sizeof (LPCWSTR));			
 
 			//define path defaults
 			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT,(LPWSTR) cPathFolderMyDocs);
 			if(hResult != S_OK)
 			{
-				MessageBox(sHwndMain, TEXT("Could not find user profile folder"), TEXT("Error"), MB_OK | MB_ICONERROR);
+				MessageBox(NULL, TEXT("Could not find user profile folder"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return FALSE;
 			}						
 			wcscpy_s((wchar_t *) cPathFileSaveText, MAX_PATH, (wchar_t *) cPathFolderMyDocs);
@@ -175,17 +174,15 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			sTipAcc.pszText = TEXT("Either account name or object\nname is allowed but not both");
 			sTipAcc.ttiIcon = TTI_INFO;
 
-			//atempt to create controls
+			//attempt to create controls
 			if(CreateControls(sHwndMain) != 0) //function to create all controls. Review controls.h and controls.c
 			{
 				MessageBox(sHwndMain, TEXT("Could not create controls"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return FALSE;
 			}
-
 			//attempt to preset controls			
-			//SendMessage(sHwndMain, WMU_WIPE_CONTROLS, 0, 0);
-			SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-			SendMessage(sHwndCtlCmbCmd, CBN_SELCHANGE, (WPARAM) 0, (LPARAM) 0);
+			SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, 0, 0);
+			SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 			break;
 
 		case WM_CLOSE:
@@ -213,18 +210,18 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			SetTextColor((HDC) wParam, RGB(0, 0, 0));
 			return (LRESULT) GetStockObject(DC_BRUSH);
 			break;
-		/*
-		//begin custom/userdefined messgaes
+		
+		//begin custom/user defined messgaes
 		case WMU_WIPE_CONTROLS:
 			//MessageBox(sHwndMain, TEXT("Controls cleared"), TEXT("Error"), MB_OK | MB_ICONERROR);
 			SendMessage(sHwndCtlCmbType, CB_SETCURSEL, 0, 0);
-			SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) 0, 0);
+			SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
 			SendMessage(sHwndCtlCmbInteract, CB_DELETESTRING,(WPARAM) 7,0);
-			SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) 0, 0);
-			SendMessage(sHwndCtlCmbErr, CB_SETCURSEL, (WPARAM) 0, 0);
-			SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) 0, 0);
-			SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) 0, 0);
-			SendMessage(sHwndCtlCmbTag, CB_SETCURSEL, (WPARAM) 0, 0);
+			SendMessage(sHwndCtlCmbStart, CB_SETCURSEL, (WPARAM) -1, 0);
+			SendMessage(sHwndCtlCmbErr, CB_SETCURSEL, (WPARAM) -1, 0);
+			SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, (WPARAM) -1, 0);
+			SendMessage(sHwndCtlCmbState, CB_SETCURSEL, (WPARAM) -1, 0);
+			SendMessage(sHwndCtlCmbTag, CB_SETCURSEL, (WPARAM) -1, 0);
 			SendMessage(sHwndCtlEdtSvr, WM_SETTEXT, 0, (LPARAM) TEXT(""));
 			SendMessage(sHwndCtlEdtSvc, WM_SETTEXT, 0, (LPARAM) TEXT(""));
 			SendMessage(sHwndCtlEdtBin, WM_SETTEXT, 0, (LPARAM) TEXT(""));
@@ -236,6 +233,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			SendMessage(sHwndCtlEdtPw, WM_SETTEXT, 0, (LPARAM) TEXT(""));
 			SendMessage(sHwndCtlEdtBuf,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
 			SendMessage(sHwndCtlEdtResm,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
+			SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
+			SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
 			EnableWindow(sHwndCtlEdtSvr, FALSE);
 			EnableWindow(sHwndCtlEdtSvc, FALSE);			
 			EnableWindow(sHwndCtlCmbType, FALSE);
@@ -256,6 +255,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			EnableWindow(sHwndCtlEdtBuf, FALSE);
 			EnableWindow(sHwndCtlEdtResm, FALSE);
 			EnableWindow(sHwndCtlBtnRun, FALSE);
+			EnableWindow(sHwndCtlEdtCMDLine, FALSE);			
 			wcscpy_s((wchar_t *) cSvr, 20,  TEXT(""));
 			wcscpy_s((wchar_t *) cSvc, 20,  TEXT(""));			
 			wcscpy_s((wchar_t *) cType, 20,  TEXT(""));
@@ -274,22 +274,21 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			wcscpy_s((wchar_t *) cBuf, 20,  TEXT(""));
 			wcscpy_s((wchar_t *) cResm, 8, TEXT(""));
 			break;
-		*/
+
 		case WM_COMMAND:
 			switch(LOWORD (wParam))
-			{	
+			{		
+
 				//begin toolbar messages
 
-				case IDC_BTN_TBCLEAR:
-					//SendMessage(sHwndMain, WM_COMMAND, (WPARAM) WIPE_CONTROLS, 0);				
-					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
+				case IDC_BTN_TBCLEAR:		
+					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 1);					
 					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save command results to text file?"), TEXT("Save text file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
 					{						
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) IDC_BTN_TBTEXT, (LPARAM) sHwndTbText);
 					}
 					//SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
-					//SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);					
-					//MessageBox(sHwndMain, TEXT("Controls cleared"), TEXT("Error"), MB_OK | MB_ICONERROR);
+					//SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 					break;
 
 				case IDC_BTN_TBTEXT:
@@ -353,18 +352,20 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 				case IDC_COMBO_COMMAND:
 					switch(HIWORD (wParam))
 					{
-						case CBN_SELCHANGE:							
-							iComboIndex = SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+						case CBN_SELCHANGE:			
+							iComboIndex = SendMessage((HWND) lParam, CB_GETCURSEL, 0, 0);
 							switch(iComboIndex)
 							{
-								case 0:						
-									LoadString(vHmodInst, IDS_COMMAND_CREATE, (LPWSTR) cTempBuff, 399);
+								case 0:
+									SendMessage(sHwndMain, WMU_WIPE_CONTROLS, 0, 0);					
+									LoadString(vHmodInst, IDS_COMMAND_CREATE, (LPWSTR) cTempBuff, 399);									
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name, Binary Path."));													
+									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name, Binary Path."));
 									wcscpy_s((wchar_t *) cCommand, 10, TEXT(" create"));
 									break;
 
 								case 1:
+									SendMessage(sHwndMain, WMU_WIPE_CONTROLS, 0, 0);
 									LoadString(vHmodInst, IDS_COMMAND_CONF, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name, one other parameter to modify."));
@@ -373,6 +374,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									break;
 
 								case 2:
+									SendMessage(sHwndMain, WMU_WIPE_CONTROLS, 0, 0);
 									LoadString(vHmodInst, IDS_COMMAND_DELETE, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name."));
@@ -380,6 +382,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									break;
 
 								case 3:
+									SendMessage(sHwndMain, WMU_WIPE_CONTROLS, 0, 0);
 									LoadString(vHmodInst, IDS_COMMAND_QUERY, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name."));
