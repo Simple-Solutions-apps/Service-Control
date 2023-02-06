@@ -13,7 +13,7 @@
 	//bitmaps
 	#define IDB_TBBITMAP_LARGE_COLOR 200
 
-	//strings (text)
+	//strings (text string table)
 	#define IDS_COMMAND_CONF 1400
 	#define IDS_COMMAND_CREATE 1401
 	#define IDS_COMMAND_DELETE 1402

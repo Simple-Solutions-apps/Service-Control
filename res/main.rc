@@ -21,13 +21,13 @@ IDB_TBBITMAP_LARGE_COLOR BITMAP "..\\assets\\images\\TB_BTNSET1.bmp"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "..\\Manifest\\ServiceControl.exe.manifest"
 
 //About dialog
-IDD_ABOUT DIALOGEX DISCARDABLE 255, 30, 239, 90
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUT DIALOGEX DISCARDABLE 255, 30, 239, 100
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 10, "Arial"
 BEGIN
-	GROUPBOX "About this program", IDC_STATIC,7,7,225,75
-	CTEXT "©2022 Simple Solutions\r\n\r\nA graphical user interface (GUI) for the windows sc.exe\r\n(Service control) command line interface program\r\n\r\nPlease consider supporting...",IDC_STATIC, 16, 18, 210, 60
+	GROUPBOX "About this program", 500, 7, 7, 225, 79
+	CTEXT "©2022 Simple Solutions\r\n\r\nA graphical user interface (GUI) for the windows sc.exe\r\n(Service control) command line interface program\r\n\r\nPlease consider supporting...", 501, 16, 18, 210, 60
 END
 
 //Description strings

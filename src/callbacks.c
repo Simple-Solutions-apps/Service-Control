@@ -20,12 +20,15 @@
 HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
 OPENFILENAME sOpenFileName;
+STARTUPINFO sStartUpInfo;
+PROCESS_INFORMATION sProcessInfo;
 LPCWSTR cPathFileSaveText;
 LPCWSTR cTempBuff;
 LPCWSTR cPathFolderMyDocs;
 HANDLE hFileToOpen;
 HANDLE hFileToSave;
 HRESULT hResult;
+HINSTANCE hShellInstance;
 BOOL bResult;
 int iComboIndex;
 int iTextLen;
@@ -56,8 +59,8 @@ LPCWSTR cContentsResult;
 LPCWSTR cFileName;
 LPCWSTR cFileExt;
 LPCWSTR cWinTitle;
-char *cPathFileSaveBat;
-char *cPathFolderUserProfile;
+LPCWSTR cPathFileSaveBat;
+LPCWSTR cPathFileServices;
 HWND sHwndTbText;
 HWND sHwndCtlEdtDes;
 HWND sHwndCtlEdtReq;
@@ -160,13 +163,16 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cContentsResult = calloc(128, sizeof (LPCWSTR));
 			cWinTitle = calloc(128, sizeof (LPCWSTR));			
 			cFileExt = calloc(9, sizeof (LPCWSTR));
+			cPathFileServices = calloc(15, sizeof (LPCWSTR));
+
 			//define path defaults
 			hResult = SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT,(LPWSTR) cPathFolderMyDocs);
 			if(hResult != S_OK)
 			{
 				MessageBox(NULL, TEXT("Could not find user profile folder"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return TRUE;
-			}						
+			}	
+			wcscpy_s((wchar_t *) cPathFileServices, 40, TEXT("C:\\Windows\\System32\\services.msc"));				
 			wcscpy_s((wchar_t *) cPathFileSaveText, MAX_PATH, (wchar_t *) cPathFolderMyDocs);
 			wcsncat((wchar_t *) cPathFileSaveText, TEXT("\\results.txt"), 15);
 			wcscpy_s((wchar_t *) cPathFileSaveBat, MAX_PATH, cPathFolderMyDocs);
@@ -287,16 +293,12 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 				//begin toolbar messages
 
-				case IDC_BTN_TBCLEAR:
-					/*		
+				case IDC_BTN_TBCLEAR:							
 					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 1);					
 					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save command results to text file?"), TEXT("Save text file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
 					{						
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) IDC_BTN_TBTEXT, (LPARAM) sHwndTbText);
 					}
-					*/
-					
-					
 					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
 					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 					break;
@@ -318,8 +320,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					sOpenFileName.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
 					sOpenFileName.lpstrTitle = TEXT("Save command results as text file");					
 					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
-					sOpenFileName.lpstrDefExt = TEXT("txt");
-									
+					sOpenFileName.lpstrDefExt = TEXT("txt");									
 					if(GetSaveFileName(&sOpenFileName) == TRUE) //for saving a file
 					{
 						
@@ -343,21 +344,73 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							CloseHandle(hFileToSave);
 							break;
 						}
-						//cFileName = (void *) basename((char *) cPathFileSaveText);
 						_wsplitpath_s(cPathFileSaveText, NULL, 0, NULL, 0, (wchar_t *) cFileName, 50, (wchar_t *) cFileExt, 8);
 						
 						wcscpy_s((wchar_t *) cWinTitle, 50, (wchar_t *) cFileName);
 						wcsncat((wchar_t *) cWinTitle, (wchar_t *)cFileExt, 5);
 						wcsncat((wchar_t *) cWinTitle, (wchar_t *) TEXT(" - Service Control"), 20);
 						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) cWinTitle);			
-						CloseHandle(hFileToSave);						
+						CloseHandle(hFileToSave);					
 					}
 					break;
 
 				case IDC_BTN_TBBAT:
+					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);					
+					if(iTextLen == 0)
+					{	
+						MessageBox(sHwndMain, TEXT("There are no results to save."), TEXT("Save results as batch"), MB_OK | MB_ICONINFORMATION);					
+						break;
+					}
+					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));					
+					sOpenFileName.lStructSize = sizeof (sOpenFileName);
+					sOpenFileName.hwndOwner = sHwndMain;
+					sOpenFileName.lpstrFilter = TEXT("Batch Files (*.bat)\0*.bat\0\0");
+					sOpenFileName.nFilterIndex = 1;
+					sOpenFileName.lpstrFile = (LPWSTR) cPathFileSaveBat;
+					sOpenFileName.nMaxFile = MAX_PATH;
+					sOpenFileName.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
+					sOpenFileName.lpstrTitle = TEXT("Save command results as batch file");					
+					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
+					sOpenFileName.lpstrDefExt = TEXT("bat");									
+					if(GetSaveFileName(&sOpenFileName) == TRUE) //for saving a file
+					{
+						
+						
+						HANDLE hFileToSave;
+						hFileToSave = CreateFile(cPathFileSaveBat, GENERIC_WRITE, 0, NULL,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+						if(hFileToSave == INVALID_HANDLE_VALUE)
+						{
+							MessageBox(sHwndMain, TEXT("Unable to open file for writing."), TEXT("Save results as batch"), MB_OK | MB_ICONASTERISK);
+							CloseHandle(hFileToSave);
+							break;
+						}						
+						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);						
+						SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen + 1, (LPARAM) cContentsResult);
+						iBuffSize =  WideCharToMultiByte(CP_UTF8, 0, cContentsResult, iTextLen, NULL, 0, NULL, NULL);
+						WideCharToMultiByte(CP_UTF8, 0, cContentsResult, iTextLen, (LPSTR) cTempBuff, iBuffSize, NULL, NULL);
+						bResult = WriteFile(hFileToSave, cTempBuff, iTextLen, NULL, NULL);
+						if(bResult == FALSE)
+						{
+							MessageBox(sHwndMain, TEXT("Unable to write to file."), TEXT("Save results as batch"), MB_OK | MB_ICONASTERISK);
+							CloseHandle(hFileToSave);
+							break;
+						};
+						_wsplitpath_s(cPathFileSaveBat, NULL, 0, NULL, 0, (wchar_t *) cFileName, 50, (wchar_t *) cFileExt, 8);
+						
+						wcscpy_s((wchar_t *) cWinTitle, 50, (wchar_t *) cFileName);
+						wcsncat((wchar_t *) cWinTitle, (wchar_t *)cFileExt, 5);
+						wcsncat((wchar_t *) cWinTitle, (wchar_t *) TEXT(" - Service Control"), 20);
+						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) cWinTitle);		
+						CloseHandle(hFileToSave);
+					}
 					break;
 
 				case IDC_BTN_TBSVC:
+					hShellInstance = ShellExecute(sHwndMain, NULL, TEXT("services.msc"), TEXT("-l"), NULL, SW_HIDE);				
+					if((INT_PTR) hShellInstance < 32)
+					{
+						MessageBox(sHwndMain, TEXT("Unable to open services console."), TEXT("Service console"), MB_OK | MB_ICONERROR);
+					}
 					break;
 
 				case IDC_BTN_TBABOUT:
@@ -1198,7 +1251,8 @@ BOOL CALLBACK AboutDlgProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 	switch(sMsg)
 	{
 		case WM_INITDIALOG:
-			
+			//EnableMenuItem(GetSystemMenu(sHwndMain, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
+			return TRUE;
 			break;
 
 		case WM_CTLCOLORDLG:
@@ -1231,7 +1285,7 @@ BOOL CALLBACK AboutDlgProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 			break;
 
 		default:
-			return TRUE;
+			return DefWindowProc(sHwndMain, sMsg, wParam, lParam);;
 	}	
-	return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
+	return TRUE;
 }
