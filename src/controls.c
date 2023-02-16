@@ -59,7 +59,7 @@ int CreateControls(HWND sHwndMain)
 	HWND sHwndCtlEdtBin;
 	HWND sHwndCtlEdtGrp;
 	HWND sHwndCtlEdtCMDLine;
-	HWND sHwndCtlEdtFile;
+	HWND sHwndCtlEdtRslt;
 	HWND sHwndCtlEdtBuf;
 	HWND sHwndCtlEdtResm;
 	HWND sHwndCtlBtnBrowse;
@@ -393,7 +393,7 @@ int CreateControls(HWND sHwndMain)
 	wcscpy_s(cComboOptions[0], 15, TEXT(""));
 	wcscpy_s(cComboOptions[1], 15, TEXT("own"));
 	wcscpy_s(cComboOptions[2], 15, TEXT("share"));
-	wcscpy_s(cComboOptions[3], 15, TEXT("kernal"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("kernel"));
 	wcscpy_s(cComboOptions[4], 15, TEXT("filesys"));
 	wcscpy_s(cComboOptions[5], 15, TEXT("rec"));
 	wcscpy_s(cComboOptions[6], 15, TEXT("interact"));
@@ -485,10 +485,11 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbQyType, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof (cComboOptions));
-	wcscpy_s(cComboOptions[0], 15, TEXT("service"));
-	wcscpy_s(cComboOptions[1], 15, TEXT("driver"));
-	wcscpy_s(cComboOptions[2], 15, TEXT("all"));
-	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
+	wcscpy_s(cComboOptions[0], 15, TEXT(""));
+	wcscpy_s(cComboOptions[1], 15, TEXT("service"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("driver"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("all"));
+	for(iLoopIndex = 0; iLoopIndex <= 3; iLoopIndex++)
 	{
 		SendMessage(sHwndCtlCmbQyType,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	}
@@ -502,10 +503,11 @@ int CreateControls(HWND sHwndMain)
 	}
 	SendMessage(sHwndCtlCmbState, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	memset(&cComboOptions, 0, sizeof (cComboOptions));
-	wcscpy_s(cComboOptions[0], 15, TEXT("active"));
-	wcscpy_s(cComboOptions[1], 15, TEXT("inactive"));
-	wcscpy_s(cComboOptions[2], 15, TEXT("all"));
-	for(iLoopIndex = 0; iLoopIndex <= 2; iLoopIndex++)
+	wcscpy_s(cComboOptions[0], 15, TEXT(""));
+	wcscpy_s(cComboOptions[1], 15, TEXT("active"));
+	wcscpy_s(cComboOptions[2], 15, TEXT("inactive"));
+	wcscpy_s(cComboOptions[3], 15, TEXT("all"));
+	for(iLoopIndex = 0; iLoopIndex <= 3; iLoopIndex++)
 	{
 		SendMessage(sHwndCtlCmbState,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) cComboOptions[iLoopIndex]); 
 	}
@@ -626,23 +628,25 @@ int CreateControls(HWND sHwndMain)
 	SendMessage(sHwndCtlEdtCMDLine, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
 	SendMessage(sHwndCtlEdtCMDLine, EM_SETLIMITTEXT, (WPARAM) 1500, TRUE);
 
-	sHwndCtlEdtFile = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
+	sHwndCtlEdtRslt = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE,
 	10, 490, 840, 170, sHwndMain, (HMENU) IDC_EDIT_RSLT, vHmodInst, NULL);
-	if(sHwndCtlEdtFile == NULL)
+	if(sHwndCtlEdtRslt == NULL)
 	{
 		MessageBox(sHwndMain, TEXT("Could not create edit box."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
-	SendMessage(sHwndCtlEdtFile, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtRslt, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+	SendMessage(sHwndCtlEdtRslt, EM_SETLIMITTEXT, (WPARAM) EDIT_MAX_CHARACTERS, 0);
 
 	//begin creating buttons
 	
-	sHwndCtlBtnBrowse = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Browse"), WS_CHILD | WS_VISIBLE, //BS_DEFPUSHBUTTON "Enter button"
+	sHwndCtlBtnBrowse = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Browse"), WS_CHILD | WS_VISIBLE, // | BS_DEFPUSHBUTTON //"Enter button"
 	548, 295, 60, 25, sHwndMain, (HMENU) IDC_BTN_BROWSE, vHmodInst, NULL);
 	if(sHwndCtlBtnBrowse == NULL)
 	{
 		MessageBox(sHwndMain, TEXT("Could not create button."), TEXT("Error"), MB_OK | MB_ICONERROR);
 	}
 	SendMessage(sHwndCtlBtnBrowse, WM_SETFONT, (WPARAM) sHfontGbl, TRUE);
+
 	sHwndCtlBtnRun = CreateWindowEx(0, TEXT("BUTTON"), TEXT("Run"), WS_CHILD | WS_VISIBLE,
 	790, 415, 60, 25, sHwndMain, (HMENU) IDC_BTN_RUN, vHmodInst, NULL);
 	if(sHwndCtlBtnRun == NULL)

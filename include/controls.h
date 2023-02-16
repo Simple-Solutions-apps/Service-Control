@@ -82,6 +82,8 @@
 	#define IDC_EDIT_RESUME 1055
 	#define IDC_EDIT_REQ 1056
 
+	#define EDIT_MAX_CHARACTERS 64000
+
 	//prototypes/functions
 	int CreateControls(HWND sHdlWinMain);
 

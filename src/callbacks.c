@@ -20,8 +20,10 @@
 HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
 OPENFILENAME sOpenFileName;
+HANDLE hReadPipe, hWritePipe;
 STARTUPINFO sStartUpInfo;
 PROCESS_INFORMATION sProcessInfo;
+SECURITY_ATTRIBUTES sSecurityAttributes;
 LPCWSTR cPathFileSaveText;
 LPCWSTR cTempBuff;
 LPCWSTR cPathFolderMyDocs;
@@ -134,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			}
 			
 			//initializations	
-			cTempBuff = malloc(400 * sizeof (LPCWSTR));
+			cTempBuff = calloc(EDIT_MAX_CHARACTERS, sizeof (LPCWSTR));
 			cCMDLine = calloc(1500, sizeof (LPCWSTR)); //The maximum command line length for the CreateProcess function is 32767 characters.
 			cCommand = calloc(10, sizeof (LPCWSTR));
 			cSvr = calloc(17, sizeof (LPCWSTR));
@@ -160,7 +162,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			cPathFileSaveBat = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cPathFolderMyDocs = calloc(MAX_PATH, sizeof (LPCWSTR));
 			cFileName = calloc(50, sizeof (LPCWSTR));
-			cContentsResult = calloc(128, sizeof (LPCWSTR));
+			cContentsResult = calloc(EDIT_MAX_CHARACTERS, sizeof (LPCWSTR));
 			cWinTitle = calloc(128, sizeof (LPCWSTR));			
 			cFileExt = calloc(9, sizeof (LPCWSTR));
 			cPathFileServices = calloc(15, sizeof (LPCWSTR));
@@ -286,7 +288,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			wcscpy_s((wchar_t *) cBuf, 20,  TEXT(""));
 			wcscpy_s((wchar_t *) cResm, 8, TEXT(""));
 			break;
-
+		
+		//begin command messages
 		case WM_COMMAND:
 			switch(LOWORD (wParam))
 			{		
@@ -299,7 +302,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					{						
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) IDC_BTN_TBTEXT, (LPARAM) sHwndTbText);
 					}
-					SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, (WPARAM) 0, (LPARAM) 0);
+					SendMessage(sHwndCtlEdtRslt,  WM_SETTEXT, 0, (LPARAM) TEXT(""));
 					SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
 					break;
 
@@ -334,7 +337,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 							break;
 						}						
 						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);						
-						SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen + 1, (LPARAM) cContentsResult);
+						SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen, (LPARAM) cContentsResult);
+						//swprintf(cContentsResult, iTextLen, TEXT("%hs\n\0"), ReadBuff);
 						iBuffSize =  WideCharToMultiByte(CP_UTF8, 0, cContentsResult, iTextLen, NULL, 0, NULL, NULL);
 						WideCharToMultiByte(CP_UTF8, 0, cContentsResult, iTextLen, (LPSTR) cTempBuff, iBuffSize, NULL, NULL);
 						bResult = WriteFile(hFileToSave, cTempBuff, iTextLen, NULL, NULL);
@@ -349,7 +353,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						wcscpy_s((wchar_t *) cWinTitle, 50, (wchar_t *) cFileName);
 						wcsncat((wchar_t *) cWinTitle, (wchar_t *)cFileExt, 5);
 						wcsncat((wchar_t *) cWinTitle, (wchar_t *) TEXT(" - Service Control"), 20);
-						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) cWinTitle);			
+						SendMessage(sHwndMain,  WM_SETTEXT, 0, (LPARAM) cWinTitle);		
 						CloseHandle(hFileToSave);					
 					}
 					break;
@@ -485,13 +489,11 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									SendMessage(sHwndMain, WMU_WIPE_CONTROLS, 0, 0);
 									LoadString(vHmodInst, IDS_COMMAND_QUERY, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
-									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n Service name."));									
+									SendMessage(sHwndCtlEdtReq,  WM_SETTEXT, 0, (LPARAM) TEXT("Required parameters:\r\n"));									
 									SendMessage(sHwndCtlCmbQyType, CB_SETCURSEL, 0, 0);
 									SendMessage(sHwndCtlCmbState, CB_SETCURSEL, 0, 0);
 									wcscpy_s((wchar_t *) cCommand, 10, TEXT(" query"));
 									SendMessage(sHwndCtlCmbType, CB_ADDSTRING, 7, (LPARAM) TEXT("adapt"));
-									wcscpy_s((wchar_t *) cQyType, 20,  TEXT(" type= service"));
-									wcscpy_s((wchar_t *) cState, 20, TEXT(" state= active"));
 									EnableWindow(sHwndCtlEdtSvr, TRUE);
 									EnableWindow(sHwndCtlEdtSvc, TRUE);			
 									EnableWindow(sHwndCtlCmbType, TRUE);
@@ -545,7 +547,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 									LoadString(vHmodInst, IDS_TYPE_KERNEL, (LPWSTR) cTempBuff, 399);
 									SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 									SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
-									wcscpy_s((wchar_t *) cType, 30, TEXT(" type= kernal"));
+									wcscpy_s((wchar_t *) cType, 30, TEXT(" type= kernel"));
 									wcscpy_s((wchar_t *) cInteract, 20, TEXT(""));
 									EnableWindow(sHwndCtlCmbInteract, FALSE);									
 									break;
@@ -754,18 +756,22 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 								switch(iComboIndex)
 								{
 									case 0:
+										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) TEXT("Exclude this paramater (type)"));
+										wcscpy_s((wchar_t *) cQyType, 20,  TEXT(""));
+										break;
+									case 1:
 										LoadString(vHmodInst, IDS_QYTYPE_SERVICE, (LPWSTR) cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										wcscpy_s((wchar_t *) cQyType, 20,  TEXT(" type= service"));
 										break;
 
-									case 1:
+									case 2:
 										LoadString(vHmodInst, IDS_QYTYPE_DRIVER, (LPWSTR) cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										wcscpy_s((wchar_t *) cQyType, 20,  TEXT(" type= driver"));
 										break;
 
-									case 2:
+									case 3:
 										LoadString(vHmodInst, IDS_QYTYPE_ALL, (LPWSTR) cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										wcscpy_s((wchar_t *) cQyType, 20,  TEXT(" type= all"));
@@ -785,18 +791,23 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 								switch(iComboIndex)
 								{
 									case 0:
+										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) TEXT("Exclude this paramater (state)"));
+										wcscpy_s((wchar_t *) cState, 20,  TEXT(""));
+										break;
+
+									case 1:
 										LoadString(vHmodInst, IDS_STATE_ACTIVE, (LPWSTR) cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										wcscpy_s((wchar_t *) cState, 20, TEXT(" state= active"));
 										break;
 
-									case 1:
+									case 2:
 										LoadString(vHmodInst, IDS_STATE_INACTIVE, (LPWSTR) cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										wcscpy_s((wchar_t *) cState, 20, TEXT(" state= inactive"));
 										break;
 
-									case 2:
+									case 3:
 										LoadString(vHmodInst, IDS_STATE_ALL, (LPWSTR) cTempBuff, 399);
 										SendMessage(sHwndCtlEdtDes,  WM_SETTEXT, 0, (LPARAM) cTempBuff);
 										wcscpy_s((wchar_t *) cState, 20, TEXT(" state= all"));
@@ -1168,8 +1179,67 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					}
 					break;
 
-				case IDC_BTN_RUN:
+				case IDC_BTN_RUN:				
 					
+					sSecurityAttributes.nLength = sizeof(sSecurityAttributes);
+					sSecurityAttributes.bInheritHandle = TRUE;
+					sSecurityAttributes.lpSecurityDescriptor = NULL;
+
+					if(CreatePipe(&hReadPipe, &hWritePipe, &sSecurityAttributes, 0) == FALSE)
+					{
+						MessageBox(sHwndMain, TEXT("Unable to create pipes."), TEXT("Create read and write pipes"), MB_OK | MB_ICONASTERISK);
+						break;
+					}
+
+					if(SetHandleInformation(hReadPipe, HANDLE_FLAG_INHERIT, 0) == FALSE)
+					{
+						MessageBox(sHwndMain, TEXT("Unable to set handle information."), TEXT("Set handle information"), MB_OK | MB_ICONASTERISK);
+						break;
+					}
+
+					ZeroMemory(&sStartUpInfo, sizeof(sStartUpInfo));
+					sStartUpInfo.cb = sizeof(sStartUpInfo);
+					sStartUpInfo.hStdError = hWritePipe;
+					sStartUpInfo.hStdOutput = hWritePipe; 
+					sStartUpInfo.dwFlags |= STARTF_USESTDHANDLES;
+					
+					ZeroMemory(&sProcessInfo, sizeof(sProcessInfo));			
+
+					if(CreateProcess(NULL, (LPWSTR) cCMDLine, NULL, NULL, TRUE, CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW, NULL, NULL, &sStartUpInfo, &sProcessInfo) == FALSE)
+					{
+						CloseHandle(sProcessInfo.hThread);
+						CloseHandle(sProcessInfo.hProcess);
+						MessageBox(sHwndMain, TEXT("Unable to create process."), TEXT("Create process"), MB_OK | MB_ICONASTERISK);
+						break;
+					}
+
+					CloseHandle(hWritePipe);
+
+					DWORD dwRead;
+					char ReadBuff[100];
+					wchar_t *cTempCommandBuff;
+					cTempCommandBuff = calloc(500, sizeof(cTempCommandBuff));
+
+					while(ReadFile(hReadPipe, (LPVOID) ReadBuff, 100, &dwRead, NULL) == TRUE && dwRead > 0)
+					{	
+						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0) - 1;
+						if(iTextLen == (EDIT_MAX_CHARACTERS - 1))
+						{
+							MessageBox(sHwndMain, TEXT("Maximum amount of characters have been reached. Please clear controls and try again"), TEXT("Results"), MB_OK | MB_ICONINFORMATION);
+							break;
+						}		
+									
+						swprintf(cTempCommandBuff, dwRead, TEXT("%hs\n"), ReadBuff);			
+						SendMessage(sHwndCtlEdtRslt, EM_SETSEL, (WPARAM) iTextLen + 1, (LPARAM) iTextLen + 1);
+						SendMessage(sHwndCtlEdtRslt, EM_REPLACESEL, FALSE, (LPARAM) cTempCommandBuff);
+					}
+
+					free(cTempCommandBuff);
+
+					CloseHandle(hReadPipe);
+					CloseHandle(sProcessInfo.hThread);
+					CloseHandle(sProcessInfo.hProcess);
+
 					break;
 			}
 		default:
@@ -1192,9 +1262,9 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 	switch(iComboIndex)
 	{
 		case 0:
-			if(strcmp((char *) cSvc, "") != 0 && strcmp((char *) cBin, "") != 0)
+			if(strcmp((char *) cSvc, "") == 0 || strcmp((char *) cBin, "") == 0)
 			{
-				EnableWindow(sHwndCtlBtnRun, TRUE);
+				EnableWindow(sHwndCtlBtnRun, FALSE);
 			}
 			else
 			{
@@ -1203,18 +1273,18 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 			break;
 
 		case 1:
-			if(strcmp((char *) cSvc, "") != 0 &&
-			(strcmp((char *) cBin, "") != 0 ||
-			strcmp((char *) cType, "") != 0 ||
-			strcmp((char *) cStart, "") != 0 ||
-			strcmp((char *) cErr, "") != 0 ||
-			strcmp((char *) cGrp, "") != 0 ||
-			strcmp((char *) cTag, "") != 0 ||
-			strcmp((char *) cDpd, "") != 0 ||
-			strcmp((char *) cAcc, "") != 0 ||
-			strcmp((char *) cDisp, "") != 0))
+			if(strcmp((char *) cSvc, "") == 0 ||
+			(strcmp((char *) cBin, "") == 0 &&
+			strcmp((char *) cType, "") == 0 &&
+			strcmp((char *) cStart, "") == 0 &&
+			strcmp((char *) cErr, "") == 0 &&
+			strcmp((char *) cGrp, "") == 0 &&
+			strcmp((char *) cTag, "") == 0 &&
+			strcmp((char *) cDpd, "") == 0 &&
+			strcmp((char *) cAcc, "") == 0 &&
+			strcmp((char *) cDisp, "") == 0))
 			{
-				EnableWindow(sHwndCtlBtnRun, TRUE);
+				EnableWindow(sHwndCtlBtnRun, FALSE);
 			}
 			else
 			{
@@ -1223,9 +1293,9 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 			break;
 
 		case 2:
-			if(strcmp((char *) cSvc, "") != 0 )
+			if(strcmp((char *) cSvc, "") == 0 )
 			{
-				EnableWindow(sHwndCtlBtnRun, TRUE);
+				EnableWindow(sHwndCtlBtnRun, FALSE);
 			}
 			else
 			{
@@ -1234,14 +1304,17 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 			break;
 
 		case 3:
-			if(strcmp((char *) cSvc, "") != 0)
+			EnableWindow(sHwndCtlBtnRun, TRUE);
+			/*
+			if(strcmp((char *) cSvc, "") == 0)
 			{
-				EnableWindow(sHwndCtlBtnRun, TRUE);
+				EnableWindow(sHwndCtlBtnRun, FALSE);
 			}
 			else
 			{
 				EnableWindow(sHwndCtlBtnRun, TRUE);
 			}
+			*/
 			break;			
 	};
 }

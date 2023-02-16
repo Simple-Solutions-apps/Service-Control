@@ -6,6 +6,7 @@
 //Standard includes
 #include <windows.h>
 #include <afxres.h>
+#include <Winver.h>
 
 //Custom includes
 #include "..\include\resource.h"
@@ -28,6 +29,40 @@ FONT 10, "Arial"
 BEGIN
 	GROUPBOX "About this program", 500, 7, 7, 225, 79
 	CTEXT "©2022 Simple Solutions\r\n\r\nA graphical user interface (GUI) for the windows sc.exe\r\n(Service control) command line interface program\r\n\r\nPlease consider supporting...", 501, 16, 18, 210, 60
+END
+
+//Executable version information.
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+	FILEFLAGS        (VS_FF_DEBUG | VS_FF_PRERELEASE)
+#else
+	FILEFLAGS        0
+#endif
+FILEOS             VOS_NT_WINDOWS32
+FILETYPE           VFT_APP
+FILESUBTYPE        VFT2_UNKNOWN
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904E4" //"080904b0"
+		BEGIN
+			VALUE "CompanyName", "Simple Solutions"
+			VALUE "FileDescription", "A graphical user interface (GUI) for the windows sc.exe command"
+			VALUE "FileVersion", "1.0.0.0"
+			VALUE "InternalName", "Service Control"
+			VALUE "LegalCopyright", "©2023 Sinmple Solutions"
+			VALUE "OriginalFilename", "ServiceControl.exe"
+			VALUE "ProductName", "Service Control GUI"
+			VALUE "ProductVersion", "1.0.0.0"
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 1200 //0x0409 = U.S. English, 1200 = Unicode
+	END
 END
 
 //Description strings

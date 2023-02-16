@@ -60,7 +60,10 @@
 	#define IDS_TOOLINFO 1443
 	
 	//Dialog windows
-	#define IDD_ABOUT 500		
+	#define IDD_ABOUT 500
+
+	//version info
+	#define VS_VERSION_INFO 1
 
 //end of wrapper
 #endif
