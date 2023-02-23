@@ -19,7 +19,7 @@
 //declarations
 HMODULE vHmodInst;
 EDITBALLOONTIP sTipAcc;
-OPENFILENAME sOpenFileName;
+OPENFILENAME sOpenSaveDlg;
 HANDLE hReadPipe, hWritePipe;
 STARTUPINFO sStartUpInfo;
 PROCESS_INFORMATION sProcessInfo;
@@ -34,7 +34,6 @@ HINSTANCE hShellInstance;
 BOOL bResult;
 int iComboIndex;
 int iTextLen;
-int iFileModified;
 int iBuffSize;
 LPCWSTR cCMDLine;
 LPCWSTR cCommand;
@@ -189,9 +188,9 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			//attempt to create controls
 			if(CreateControls(sHwndMain) != 0) //function to create all controls. Review controls.h and controls.c
 			{
-				MessageBox(sHwndMain, TEXT("Could not create controls"), TEXT("Error"), MB_OK | MB_ICONERROR);
 				return TRUE;
 			}
+
 			//attempt to preset controls			
 			SendMessage(sHwndCtlCmbCmd, CB_SETCURSEL, 0, 0);
 			SendMessage(sHwndMain, WM_COMMAND, (WPARAM) MAKELONG(IDC_COMBO_COMMAND, CBN_SELCHANGE), (LPARAM) sHwndCtlCmbCmd);
@@ -225,7 +224,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 		
 		//begin custom/user defined messgaes
 		case WMU_WIPE_CONTROLS:
-			//MessageBox(sHwndMain, TEXT("Controls cleared"), TEXT("Error"), MB_OK | MB_ICONERROR);
 			SendMessage(sHwndCtlCmbType, CB_SETCURSEL, -1, 0);
 			SendMessage(sHwndCtlCmbInteract, CB_SETCURSEL, (WPARAM) -1, 0);
 			SendMessage(sHwndCtlCmbType, CB_DELETESTRING,(WPARAM) 7,0);
@@ -289,16 +287,15 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 			wcscpy_s((wchar_t *) cResm, 8, TEXT(""));
 			break;
 		
-		//begin command messages
+		//begin command/control messages
 		case WM_COMMAND:
 			switch(LOWORD (wParam))
 			{		
 
 				//begin toolbar messages
-
 				case IDC_BTN_TBCLEAR:							
 					iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 1);					
-					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Save command results to text file?"), TEXT("Save text file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
+					if(iTextLen != 0 && MessageBox(sHwndMain, TEXT("Do you want save command results to text file?"), TEXT("Save text file"), MB_YESNO|MB_ICONQUESTION) == IDYES)
 					{						
 						SendMessage(sHwndMain, WM_COMMAND, (WPARAM) IDC_BTN_TBTEXT, (LPARAM) sHwndTbText);
 					}
@@ -313,18 +310,18 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						MessageBox(sHwndMain, TEXT("There are no results to save."), TEXT("Save results as text"), MB_OK | MB_ICONINFORMATION);					
 						break;
 					}
-					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));					
-					sOpenFileName.lStructSize = sizeof (sOpenFileName);
-					sOpenFileName.hwndOwner = sHwndMain;
-					sOpenFileName.lpstrFilter = TEXT("Text Files (*.txt)\0*.txt\0\0");
-					sOpenFileName.nFilterIndex = 1;
-					sOpenFileName.lpstrFile = (LPWSTR) cPathFileSaveText;
-					sOpenFileName.nMaxFile = MAX_PATH;
-					sOpenFileName.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
-					sOpenFileName.lpstrTitle = TEXT("Save command results as text file");					
-					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
-					sOpenFileName.lpstrDefExt = TEXT("txt");									
-					if(GetSaveFileName(&sOpenFileName) == TRUE) //for saving a file
+					ZeroMemory(&sOpenSaveDlg, sizeof (sOpenSaveDlg));					
+					sOpenSaveDlg.lStructSize = sizeof (sOpenSaveDlg);
+					sOpenSaveDlg.hwndOwner = sHwndMain;
+					sOpenSaveDlg.lpstrFilter = TEXT("Text Files (*.txt)\0*.txt\0\0");
+					sOpenSaveDlg.nFilterIndex = 1;
+					sOpenSaveDlg.lpstrFile = (LPWSTR) cPathFileSaveText;
+					sOpenSaveDlg.nMaxFile = MAX_PATH;
+					sOpenSaveDlg.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
+					sOpenSaveDlg.lpstrTitle = TEXT("Save command results as text file");					
+					sOpenSaveDlg.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
+					sOpenSaveDlg.lpstrDefExt = TEXT("txt");									
+					if(GetSaveFileName(&sOpenSaveDlg) == TRUE) //for saving a file
 					{
 						
 						
@@ -332,24 +329,22 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						hFileToSave = CreateFile(cPathFileSaveText, GENERIC_WRITE, 0, NULL,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 						if(hFileToSave == INVALID_HANDLE_VALUE)
 						{
-							MessageBox(sHwndMain, TEXT("Unable to open file for writing."), TEXT("Save results as text"), MB_OK | MB_ICONASTERISK);
+							MessageBox(sHwndMain, TEXT("Unable to open file for writing."), TEXT("Save results as text"), MB_OK | MB_ICONINFORMATION);
 							CloseHandle(hFileToSave);
 							break;
 						}						
 						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);						
 						SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) iTextLen, (LPARAM) cContentsResult);
-						//swprintf(cContentsResult, iTextLen, TEXT("%hs\n\0"), ReadBuff);
 						iBuffSize =  WideCharToMultiByte(CP_UTF8, 0, cContentsResult, iTextLen, NULL, 0, NULL, NULL);
 						WideCharToMultiByte(CP_UTF8, 0, cContentsResult, iTextLen, (LPSTR) cTempBuff, iBuffSize, NULL, NULL);
 						bResult = WriteFile(hFileToSave, cTempBuff, iTextLen, NULL, NULL);
 						if(bResult == FALSE)
 						{
-							MessageBox(sHwndMain, TEXT("Unable to write to file."), TEXT("Save results as text"), MB_OK | MB_ICONASTERISK);
+							MessageBox(sHwndMain, TEXT("Unable to write to file."), TEXT("Save results as text"), MB_OK | MB_ICONINFORMATION);
 							CloseHandle(hFileToSave);
 							break;
 						}
 						_wsplitpath_s(cPathFileSaveText, NULL, 0, NULL, 0, (wchar_t *) cFileName, 50, (wchar_t *) cFileExt, 8);
-						
 						wcscpy_s((wchar_t *) cWinTitle, 50, (wchar_t *) cFileName);
 						wcsncat((wchar_t *) cWinTitle, (wchar_t *)cFileExt, 5);
 						wcsncat((wchar_t *) cWinTitle, (wchar_t *) TEXT(" - Service Control"), 20);
@@ -365,18 +360,18 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						MessageBox(sHwndMain, TEXT("There are no results to save."), TEXT("Save results as batch"), MB_OK | MB_ICONINFORMATION);					
 						break;
 					}
-					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));					
-					sOpenFileName.lStructSize = sizeof (sOpenFileName);
-					sOpenFileName.hwndOwner = sHwndMain;
-					sOpenFileName.lpstrFilter = TEXT("Batch Files (*.bat)\0*.bat\0\0");
-					sOpenFileName.nFilterIndex = 1;
-					sOpenFileName.lpstrFile = (LPWSTR) cPathFileSaveBat;
-					sOpenFileName.nMaxFile = MAX_PATH;
-					sOpenFileName.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
-					sOpenFileName.lpstrTitle = TEXT("Save command results as batch file");					
-					sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
-					sOpenFileName.lpstrDefExt = TEXT("bat");									
-					if(GetSaveFileName(&sOpenFileName) == TRUE) //for saving a file
+					ZeroMemory(&sOpenSaveDlg, sizeof (sOpenSaveDlg));					
+					sOpenSaveDlg.lStructSize = sizeof (sOpenSaveDlg);
+					sOpenSaveDlg.hwndOwner = sHwndMain;
+					sOpenSaveDlg.lpstrFilter = TEXT("Batch Files (*.bat)\0*.bat\0\0");
+					sOpenSaveDlg.nFilterIndex = 1;
+					sOpenSaveDlg.lpstrFile = (LPWSTR) cPathFileSaveBat;
+					sOpenSaveDlg.nMaxFile = MAX_PATH;
+					sOpenSaveDlg.lpstrInitialDir = (LPWSTR) cPathFolderMyDocs;
+					sOpenSaveDlg.lpstrTitle = TEXT("Save command results as batch file");					
+					sOpenSaveDlg.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
+					sOpenSaveDlg.lpstrDefExt = TEXT("bat");									
+					if(GetSaveFileName(&sOpenSaveDlg) == TRUE) //for saving a file
 					{
 						
 						
@@ -384,7 +379,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						hFileToSave = CreateFile(cPathFileSaveBat, GENERIC_WRITE, 0, NULL,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 						if(hFileToSave == INVALID_HANDLE_VALUE)
 						{
-							MessageBox(sHwndMain, TEXT("Unable to open file for writing."), TEXT("Save results as batch"), MB_OK | MB_ICONASTERISK);
+							MessageBox(sHwndMain, TEXT("Unable to open file for writing."), TEXT("Save results as batch"), MB_OK | MB_ICONINFORMATION);
 							CloseHandle(hFileToSave);
 							break;
 						}						
@@ -395,7 +390,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						bResult = WriteFile(hFileToSave, cTempBuff, iTextLen, NULL, NULL);
 						if(bResult == FALSE)
 						{
-							MessageBox(sHwndMain, TEXT("Unable to write to file."), TEXT("Save results as batch"), MB_OK | MB_ICONASTERISK);
+							MessageBox(sHwndMain, TEXT("Unable to write to file."), TEXT("Save results as batch"), MB_OK | MB_ICONINFORMATION);
 							CloseHandle(hFileToSave);
 							break;
 						};
@@ -411,7 +406,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 				case IDC_BTN_TBSVC:
 					hShellInstance = ShellExecute(sHwndMain, NULL, TEXT("services.msc"), TEXT("-l"), NULL, SW_HIDE);				
-					if((INT_PTR) hShellInstance < 32)
+					if((INT_PTR) hShellInstance < 32) //If the function succeeds, it returns a value greater than 32.
 					{
 						MessageBox(sHwndMain, TEXT("Unable to open services console."), TEXT("Service console"), MB_OK | MB_ICONERROR);
 					}
@@ -422,7 +417,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					break;
 
 				//begin combo messages
-
 				case IDC_COMBO_COMMAND:
 					switch(HIWORD (wParam))
 					{
@@ -1133,47 +1127,37 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					switch(HIWORD (wParam))
 					{
 						case EN_SETFOCUS:							
-							//SendMessage(sHwndCtlEdtRslt,  WM_SETTEXT, 0, (LPARAM) "File contents.");								
+								
 							break;
 
 						case EN_CHANGE:
 							SendMessage(sHwndCtlEdtRslt, WM_GETTEXT, (WPARAM) 400,(LPARAM) cTempBuff);
-							if(strcmp((char *) cTempBuff, "") != 0)
-							{
-								iFileModified = 0;
-								//SendMessage(sHwndCtlEdtRslt, WM_SETTEXT, 0,(LPARAM) cTempBuff);									
-							}
-							else
-							{
-								iFileModified = 1;
-							}
 							break;
 					}
 					break;
 
-				//begin button messages 
-
+				//begin button messages
 				case IDC_BTN_BROWSE:
-					ZeroMemory(&sOpenFileName, sizeof (sOpenFileName));
+					ZeroMemory(&sOpenSaveDlg, sizeof (sOpenSaveDlg));
 					wcscpy_s((wchar_t *) cBin, 8, TEXT(""));
-					sOpenFileName.lStructSize = sizeof (sOpenFileName);
-					sOpenFileName.hwndOwner = sHwndMain;					
-					sOpenFileName.lpstrFilter = TEXT("Executable Files (*.exe)\0*.exe\0");					
-					sOpenFileName.nFilterIndex = 1;
-					sOpenFileName.lpstrFile = (LPWSTR) cBin;
-					sOpenFileName.nMaxFile = MAX_PATH;
-					sOpenFileName.lpstrFileTitle = NULL;
-					sOpenFileName.nMaxFileTitle = 0;
-					sOpenFileName.lpstrTitle = TEXT("Select executable file");
-					sOpenFileName.lpstrInitialDir = TEXT("C:\\Windows\\System32");
-					sOpenFileName.nFileExtension = 0;
-					sOpenFileName.lpstrDefExt = TEXT("exe");				
-					//For opening a file
-					sOpenFileName.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
-					//For saving a file
-					//sOpenFileName.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;					
-					if(GetOpenFileName(&sOpenFileName) == TRUE) //for opening a file
-					//if(GetSaveFileName(&sOpenFileName) > 0) //for saving a file
+					sOpenSaveDlg.lStructSize = sizeof (sOpenSaveDlg);
+					sOpenSaveDlg.hwndOwner = sHwndMain;					
+					sOpenSaveDlg.lpstrFilter = TEXT("Executable Files (*.exe)\0*.exe\0");					
+					sOpenSaveDlg.nFilterIndex = 1;
+					sOpenSaveDlg.lpstrFile = (LPWSTR) cBin;
+					sOpenSaveDlg.nMaxFile = MAX_PATH;
+					sOpenSaveDlg.lpstrFileTitle = NULL;
+					sOpenSaveDlg.nMaxFileTitle = 0;
+					sOpenSaveDlg.lpstrTitle = TEXT("Select executable file");
+					sOpenSaveDlg.lpstrInitialDir = TEXT("C:\\Windows\\System32");
+					sOpenSaveDlg.nFileExtension = 0;
+					sOpenSaveDlg.lpstrDefExt = TEXT("exe");				
+					//For opening a file:
+					sOpenSaveDlg.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;					
+					//For saving a file:
+					//sOpenSaveDlg.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;					
+					if(GetOpenFileName(&sOpenSaveDlg) == TRUE) //for opening a file
+					//if(GetSaveFileName(&sOpenSaveDlg) > 0) //for saving a file
 					{
 						SendMessage(sHwndCtlEdtBin, WM_SETTEXT, 0, (LPARAM) cBin);
 					}
@@ -1187,13 +1171,13 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 					if(CreatePipe(&hReadPipe, &hWritePipe, &sSecurityAttributes, 0) == FALSE)
 					{
-						MessageBox(sHwndMain, TEXT("Unable to create pipes."), TEXT("Create read and write pipes"), MB_OK | MB_ICONASTERISK);
+						MessageBox(sHwndMain, TEXT("Unable to create pipes."), TEXT("Create read and write pipes"), MB_OK | MB_ICONINFORMATION);
 						break;
 					}
 
 					if(SetHandleInformation(hReadPipe, HANDLE_FLAG_INHERIT, 0) == FALSE)
 					{
-						MessageBox(sHwndMain, TEXT("Unable to set handle information."), TEXT("Set handle information"), MB_OK | MB_ICONASTERISK);
+						MessageBox(sHwndMain, TEXT("Unable to set handle information."), TEXT("Set handle information"), MB_OK | MB_ICONINFORMATION);
 						break;
 					}
 
@@ -1209,7 +1193,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					{
 						CloseHandle(sProcessInfo.hThread);
 						CloseHandle(sProcessInfo.hProcess);
-						MessageBox(sHwndMain, TEXT("Unable to create process."), TEXT("Create process"), MB_OK | MB_ICONASTERISK);
+						MessageBox(sHwndMain, TEXT("Unable to create process."), TEXT("Create process"), MB_OK | MB_ICONINFORMATION);
 						break;
 					}
 
@@ -1222,14 +1206,14 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 
 					while(ReadFile(hReadPipe, (LPVOID) ReadBuff, 100, &dwRead, NULL) == TRUE && dwRead > 0)
 					{	
-						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0) - 1;
+						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0);
 						if(iTextLen == (EDIT_MAX_CHARACTERS - 1))
 						{
 							MessageBox(sHwndMain, TEXT("The maximum amount of characters have been reached. Please clear controls and try again"), TEXT("Results"), MB_OK | MB_ICONINFORMATION);
 							break;
 						}		
 						iTextLen++;		
-						swprintf(cTempCommandBuff, dwRead, TEXT("%hs\n"), ReadBuff);			
+						swprintf_s(cTempCommandBuff, dwRead * sizeof (wchar_t), TEXT("%hs\n"), ReadBuff);			
 						SendMessage(sHwndCtlEdtRslt, EM_SETSEL, (WPARAM) iTextLen, (LPARAM) iTextLen);
 						SendMessage(sHwndCtlEdtRslt, EM_REPLACESEL, FALSE, (LPARAM) cTempCommandBuff);
 					}
@@ -1247,10 +1231,14 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 	}
 	return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 }
+
 //custom functions
 LRESULT SetTextCMDLine(HWND sHwndCtlEdtCMDLine)
 {
-	swprintf_s((wchar_t *) cCMDLine, 1500, TEXT("sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s"),
+	iTextLen = 4 + wcsnlen( cSvr, 200) + wcsnlen( cCommand, 200) + wcsnlen( cSvc, 200) + wcsnlen( cType, 200) + wcsnlen( cQyType, 200) + wcsnlen( cState, 200) +
+	wcsnlen( cInteract, 200) + wcsnlen( cStart, 200) + wcsnlen( cErr, 200) + wcsnlen( cBin, MAX_PATH) + wcsnlen( cGrp, 200) + wcsnlen( cTag, 200) + wcsnlen( cDpd, 200) + 
+	wcsnlen( cAcc, 200) + wcsnlen( cPw, 200) + wcsnlen( cDisp, 200) + wcsnlen( cBuf, 200) + wcsnlen( cResm, 200);
+	swprintf_s((wchar_t *) cCMDLine, iTextLen * sizeof (wchar_t), TEXT("sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s"),
 	cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
 	cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
 	return SendMessage(sHwndCtlEdtCMDLine,  WM_SETTEXT, 0, (LPARAM) cCMDLine);
@@ -1305,16 +1293,6 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 
 		case 3:
 			EnableWindow(sHwndCtlBtnRun, TRUE);
-			/*
-			if(strcmp((char *) cSvc, "") == 0)
-			{
-				EnableWindow(sHwndCtlBtnRun, FALSE);
-			}
-			else
-			{
-				EnableWindow(sHwndCtlBtnRun, TRUE);
-			}
-			*/
 			break;			
 	};
 }
@@ -1324,7 +1302,6 @@ BOOL CALLBACK AboutDlgProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 	switch(sMsg)
 	{
 		case WM_INITDIALOG:
-			//EnableMenuItem(GetSystemMenu(sHwndMain, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_ENABLED);
 			return TRUE;
 			break;
 
