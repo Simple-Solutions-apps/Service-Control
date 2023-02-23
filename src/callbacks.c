@@ -1225,12 +1225,12 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						iTextLen = SendMessage(sHwndCtlEdtRslt, WM_GETTEXTLENGTH, 0, 0) - 1;
 						if(iTextLen == (EDIT_MAX_CHARACTERS - 1))
 						{
-							MessageBox(sHwndMain, TEXT("Maximum amount of characters have been reached. Please clear controls and try again"), TEXT("Results"), MB_OK | MB_ICONINFORMATION);
+							MessageBox(sHwndMain, TEXT("The maximum amount of characters have been reached. Please clear controls and try again"), TEXT("Results"), MB_OK | MB_ICONINFORMATION);
 							break;
 						}		
-									
+						iTextLen++;		
 						swprintf(cTempCommandBuff, dwRead, TEXT("%hs\n"), ReadBuff);			
-						SendMessage(sHwndCtlEdtRslt, EM_SETSEL, (WPARAM) iTextLen + 1, (LPARAM) iTextLen + 1);
+						SendMessage(sHwndCtlEdtRslt, EM_SETSEL, (WPARAM) iTextLen, (LPARAM) iTextLen);
 						SendMessage(sHwndCtlEdtRslt, EM_REPLACESEL, FALSE, (LPARAM) cTempCommandBuff);
 					}
 
