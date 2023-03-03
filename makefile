@@ -12,20 +12,19 @@ APPName = $(APPBase).exe
 APPPath = $(DirBin)\$(APPName)
 
 srcMain = $(DirSrc)\main.c
-srcMsgBoxes = $(DirSrc)\MsgBoxes.c
+
 srcControls = $(DirSrc)\controls.c
 srcCallbacks = $(DirSrc)\callbacks.c
 srcResources = $(DirRes)\main.rc
 
 objMain = $(DirObj)\main.o
-objMsgBoxes = $(DirObj)\MsgBoxes.o
 objControls = $(DirObj)\controls.o
 objCallbacks = $(DirObj)\callbacks.o
 objResources = $(DirObj)\resources.o
 
 dllCommCtrls = $(DirLib)\comctl32.dll
 
-objs = $(objMain) $(objMsgBoxes) $(objControls) $(objCallbacks) $(objResources)
+objs = $(objMain) $(objControls) $(objCallbacks) $(objResources)
 
 $(objMain): $(srcMain)
 	$(CC) $(CFlags) -c $(srcMain) -o $(objMain)
@@ -33,8 +32,6 @@ $(objCallbacks): $(srcCallbacks)
 	$(CC) $(CFlags) -c $(srcCallbacks) -o $(objCallbacks)
 $(objControls): $(srcControls)
 	$(CC) $(CFlags) -c $(srcControls) -o $(objControls)
-$(objMsgBoxes): $(srcMsgBoxes)
-	$(CC) $(CFlags) -c $(srcMsgBoxes) -o $(objMsgBoxes)
 $(objResources): $(srcResources)
 	windres.exe --codepage=65001 $(srcResources) -o $(objResources)
 

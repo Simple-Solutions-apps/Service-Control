@@ -372,9 +372,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					sOpenSaveDlg.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT; //For saving a file
 					sOpenSaveDlg.lpstrDefExt = TEXT("bat");									
 					if(GetSaveFileName(&sOpenSaveDlg) == TRUE) //for saving a file
-					{
-						
-						
+					{						
 						HANDLE hFileToSave;
 						hFileToSave = CreateFile(cPathFileSaveBat, GENERIC_WRITE, 0, NULL,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 						if(hFileToSave == INVALID_HANDLE_VALUE)
@@ -1238,6 +1236,7 @@ LRESULT SetTextCMDLine(HWND sHwndCtlEdtCMDLine)
 	iTextLen = 4 + wcsnlen( cSvr, 200) + wcsnlen( cCommand, 200) + wcsnlen( cSvc, 200) + wcsnlen( cType, 200) + wcsnlen( cQyType, 200) + wcsnlen( cState, 200) +
 	wcsnlen( cInteract, 200) + wcsnlen( cStart, 200) + wcsnlen( cErr, 200) + wcsnlen( cBin, MAX_PATH) + wcsnlen( cGrp, 200) + wcsnlen( cTag, 200) + wcsnlen( cDpd, 200) + 
 	wcsnlen( cAcc, 200) + wcsnlen( cPw, 200) + wcsnlen( cDisp, 200) + wcsnlen( cBuf, 200) + wcsnlen( cResm, 200);
+	
 	swprintf_s((wchar_t *) cCMDLine, iTextLen * sizeof (wchar_t), TEXT("sc.exe%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s"),
 	cSvr, cCommand, cSvc, cType, cQyType, cState, cInteract, cStart,
 	cErr, cBin, cGrp, cTag, cDpd, cAcc, cPw, cDisp, cBuf, cResm);
