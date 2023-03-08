@@ -411,7 +411,8 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					break;
 
 				case IDC_BTN_TBABOUT:
-					DialogBox(vHmodInst, MAKEINTRESOURCE(IDD_ABOUT), sHwndMain, (DLGPROC) AboutDlgProc);
+					DialogBox(NULL, MAKEINTRESOURCE(IDD_ABOUT), sHwndMain, (DLGPROC) AboutDlgProc);					
+					SetForegroundWindow(sHwndMain);
 					break;
 
 				//begin combo messages
@@ -813,7 +814,6 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 						break;
 				
 				//begin edit messages
-
 				case IDC_EDIT_SVRNAME:
 					switch(HIWORD (wParam))
 					{
@@ -1161,8 +1161,7 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					}
 					break;
 
-				case IDC_BTN_RUN:				
-					
+				case IDC_BTN_RUN:					
 					sSecurityAttributes.nLength = sizeof(sSecurityAttributes);
 					sSecurityAttributes.bInheritHandle = TRUE;
 					sSecurityAttributes.lpSecurityDescriptor = NULL;
@@ -1221,12 +1220,16 @@ LRESULT CALLBACK WndProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam
 					CloseHandle(hReadPipe);
 					CloseHandle(sProcessInfo.hThread);
 					CloseHandle(sProcessInfo.hProcess);
-
 					break;
+
+				default:			
+					return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 			}
+
 		default:
 			return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 	}
+
 	return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 }
 
@@ -1293,7 +1296,7 @@ VOID EnableBtnRun(HWND sHwndCtlBtnRun, HWND sHwndCtlCmbCmd)
 		case 3:
 			EnableWindow(sHwndCtlBtnRun, TRUE);
 			break;			
-	};
+	}
 }
 
 BOOL CALLBACK AboutDlgProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lParam)
@@ -1321,20 +1324,18 @@ BOOL CALLBACK AboutDlgProc(HWND sHwndMain, UINT sMsg, WPARAM wParam, LPARAM lPar
 			SetTextColor((HDC) wParam, RGB(0, 0, 0));
 			return (LRESULT) GetStockObject(DC_BRUSH);
 			break;
-		
-		case WM_CLOSE:
-			EndDialog(sHwndMain, sMsg);
-			break;
-
-		case WM_DESTROY:
-			EndDialog(sHwndMain, sMsg);
-			break;
 
 		case WM_COMMAND: //no other controls on this dialog window
 			break;
+		
+		case WM_DESTROY:
+
+		case WM_CLOSE:
+			EndDialog(sHwndMain, sMsg);
 
 		default:
-			return DefWindowProc(sHwndMain, sMsg, wParam, lParam);;
-	}	
-	return TRUE;
+			return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
+	}
+
+	return DefWindowProc(sHwndMain, sMsg, wParam, lParam);
 }
