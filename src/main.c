@@ -25,11 +25,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG sMsg;
 	RECT sRect;
 	HANDLE vHmodInst;
-	INITCOMMONCONTROLSEX sInitCtrlEx;	
-	HMODULE dllComctl32;	
+	INITCOMMONCONTROLSEX sInitCtrlEx;		
 
 	//definitions
-	//dllComctl32 = LoadLibrary(TEXT("C:\\BackUp\\Projects\\VSCode\\WIPS\\Service Control\\lib\\comctl32.dll"));
 
 	//define handle to this module/executable
 	vHmodInst = GetModuleHandle(NULL);
