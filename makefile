@@ -22,8 +22,6 @@ objControls = $(DirObj)\controls.o
 objCallbacks = $(DirObj)\callbacks.o
 objResources = $(DirObj)\resources.o
 
-dllCommCtrls = $(DirLib)\comctl32.dll
-
 objs = $(objMain) $(objControls) $(objCallbacks) $(objResources)
 
 $(objMain): $(srcMain)
@@ -36,7 +34,7 @@ $(objResources): $(srcResources)
 	windres.exe --codepage=65001 $(srcResources) -o $(objResources)
 
 build: $(objs)
-	$(CC) -o $(APPPath) $(objs) $(dllCommCtrls) -s -mwindows
+	$(CC) -o $(APPPath) $(objs) -lcomctl32 -s -mwindows
 clean:
 	del $(DirObj)\*.o $(DirBin)\*.exe
 run:

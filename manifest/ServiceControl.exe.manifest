@@ -12,11 +12,10 @@
             <assemblyIdentity
                 type="win32"
                 name="Microsoft.Windows.Common-Controls"
-                version="6.0.0.0"
+                version="6.10.19041.884"
                 processorArchitecture="*"
                 publicKeyToken="6595b64144ccf1df"
-                language="*"
-            />
+                language="*"/>
         </dependentAssembly>
     </dependency>
     <!-- Identify the application security requirements. -->

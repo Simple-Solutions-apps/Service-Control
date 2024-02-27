@@ -5,6 +5,7 @@
 
 //standard includes
 #include <windows.h>
+#define _WIN32_ 0x0600 //
 #include <commctrl.h>
 
 //Custom includes
@@ -24,9 +25,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG sMsg;
 	RECT sRect;
 	HANDLE vHmodInst;
-	INITCOMMONCONTROLSEX sInitCtrlEx;		
+	INITCOMMONCONTROLSEX sInitCtrlEx;	
+	HMODULE dllComctl32;	
 
 	//definitions
+	//dllComctl32 = LoadLibrary(TEXT("C:\\BackUp\\Projects\\VSCode\\WIPS\\Service Control\\lib\\comctl32.dll"));
 
 	//define handle to this module/executable
 	vHmodInst = GetModuleHandle(NULL);
